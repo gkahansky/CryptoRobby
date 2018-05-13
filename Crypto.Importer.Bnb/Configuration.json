@@ -1,0 +1,16 @@
+﻿{
+	"BnbConfiguration": {
+		"BinanceApiKey": "ZoNKEKTL1gbZgzkuLmm1ZhM9E09FRSGBeAkOevCy5eU82lFsb21qL24o5ZAu6Z6U",
+		"BinanceApiSecret": "6hN3Bzopz17fTykWwUtXjjW4Rfhy31fmBYYXaAs1vZrVjNRt401qVQwr0STSQwWS",
+		"SampleInterval" :  60000
+	},
+	"CmcConfiguration": {
+		"SampleInterval": 3600000
+	},
+	"SqlConfiguration": {
+			"Host": "Kahansky",
+			"UserName": "CryptoAdmin",
+			"Password": "CryptoAdmin",
+			"DbName": "Crypto"
+	}
+}
