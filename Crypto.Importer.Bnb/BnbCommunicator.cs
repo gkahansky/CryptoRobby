@@ -21,11 +21,10 @@ namespace Crypto.Importer.Bnb
         private readonly ILogger _logger;
         readonly IDbHandler _dbHandler;
         private bool StartupComplete { get; set; }
-        //public Queue<List<Kline>> KlineQueue { get; set; }
+
 
         //string Source { get; set; }
         #endregion
-        
 
         public BnbCommunicator(ILogger logger, IDbHandler dbHandler) : base(logger, dbHandler)
         {
@@ -45,10 +44,7 @@ namespace Crypto.Importer.Bnb
             metaData = new MetaData();
             _logger.Log("Metadata Lists Initialized Successfully");
             CoinPairs = new Dictionary<string, CoinPair>();
-            //KlineQueue = new Queue<List<Kline>>();
         }
-
-
 
         #region Connectivity
         public BinanceClient Connect()
@@ -68,7 +64,7 @@ namespace Crypto.Importer.Bnb
         }
         #endregion
 
-        #region Metadata
+        #region Metadata Public
         public void UpdateTickerPrices()
         {
             try
@@ -97,51 +93,18 @@ namespace Crypto.Importer.Bnb
         public async Task SaveCandleStickData()
         {
             _logger.Log("Retreiving latest CandleStick data");
-            string klineRawData = null;
             //Load List of pairs & intervals required
             List<string> intervals = new List<string> { /*"1m", "3m",*/ "5m", "15m", "30m", "1h",/* "2h",*/ "4h",/* "6h", "8h", "12h",*/ "1d"/*, "3d", "1w", "1M"*/ };
-
 
             //for each pair-interval combo, find the most recent update
             foreach (var pair in Config.PairsOfInterest)
             {
-                foreach (var interval in intervals)
-                {
-                    try
-                    {
-                        //Get last update from db for this pair-kline combo
-                        var last = LoadKlineLastUpdate(pair.Symbol, interval);
-                        _logger.Log(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
-                        //Request Data & save to Db for each pair-interval combo
-                        var now = Calculator.CalculateEpochNow();
-                        _logger.Log("Current Time (Epoch): " + now);
-                        var klineRawDataTask = BnbRequestKlinesByTime(pair.Symbol, interval, last, now);
-                        klineRawData = await klineRawDataTask;
-                        //Convert raw data to list of Klines
-                        var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
-                        //Save klines to Db.
-                        //KlineQueue.Enqueue(klineList);
-                        _dbHandler.SaveKlines(klineList);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Log(String.Format("Failed to get kline data.\n{0}", e.ToString()));
-                    }
-                }
-            }
-        }
-
-        public void LoadUsersFromDatabse()
-        {
-            var users = _dbHandler.LoadUsers();
-            foreach (var u in users)
-            {
-                metaData.UserDict.Add(u.Id, u);
+                await GetKlines(pair,intervals);
             }
         }
 
         //Get Last Close for kline of symbol-interval combo
-        public long LoadKlineLastUpdate(string symbol, string interval)
+        public async Task<long> LoadKlineLastUpdate(string symbol, string interval)
         {
             try
             {
@@ -154,27 +117,47 @@ namespace Crypto.Importer.Bnb
                 return -1;
             }
         }
+
+
         
-        private BinanceClient InitClientByUserId(int id)
+        #endregion
+
+        #region Metada Private
+        //Load all coinpairs from Bnb
+        private async Task GetKlines(CoinPair pair,List<string> intervals)
         {
-            try
+            foreach (var interval in intervals)
             {
-                if (metaData.UserDict.ContainsKey(id))
+                try
                 {
-                    var user = metaData.UserDict[id];
-                    var restClient = InitRestClient(user.BinanceAPI, user.BinanceSecret);
-                    return restClient;
+                    //Get last update from db for this pair-kline combo
+                    var last = await LoadKlineLastUpdate(pair.Symbol, interval);
+                    //_logger.Log(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
+                    //Request Data & save to Db for each pair-interval combo
+                    var now = Calculator.CalculateEpochNow();
+                    //_logger.Log("Current Time (Epoch): " + now);
+
+                    var IsUpdateRequired = Calculator.CheckIfUpdateRequired(now, last, metaData.Intervals[interval]);
+                    if (IsUpdateRequired)
+                    {
+                        //Download Klines from BNB
+                        var klineRawData = await BnbRequestKlinesByTime(pair.Symbol, interval, last, now);
+                        //Convert raw data to list of Klines
+                        var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
+                        //Save klines to KlinesQueue.
+                        MetaDataContainer.KlineQueue.Enqueue(klineList);
+                    }
+                    else
+                        _logger.Log(String.Format("{0} {1} is up to date, moving to next interval",pair.Symbol, interval));
+
                 }
-                return null;
-            }
-            catch (Exception e)
-            {
-                _logger.Log("Failed to initialize restclient for user");
-                return null;
+                catch (Exception e)
+                {
+                    _logger.Log(String.Format("Failed to get kline data.\n{0}", e.ToString()));
+                }
             }
         }
 
-        //Load all coinpairs from Bnb
         private List<CoinPair> GetAllTickers(BinanceClient publicRestClient)
         {
             //Get All Ticker Information
@@ -246,6 +229,7 @@ namespace Crypto.Importer.Bnb
             return responseFromServer;
         }
 
+        //Download Candlestick Data from BNB by time frame
         private async Task<string> BnbRequestKlinesByTime(string symbol, string interval, long startTime, long endTime)
         {
 
@@ -298,10 +282,41 @@ namespace Crypto.Importer.Bnb
             }
         }
 
-
+        
         #endregion
 
         #region Trading
+
+        #endregion
+
+        #region UserManagement
+        public void LoadUsersFromDatabse()
+        {
+            var users = _dbHandler.LoadUsers();
+            foreach (var u in users)
+            {
+                metaData.UserDict.Add(u.Id, u);
+            }
+        }
+
+        private BinanceClient InitClientByUserId(int id)
+        {
+            try
+            {
+                if (metaData.UserDict.ContainsKey(id))
+                {
+                    var user = metaData.UserDict[id];
+                    var restClient = InitRestClient(user.BinanceAPI, user.BinanceSecret);
+                    return restClient;
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to initialize restclient for user");
+                return null;
+            }
+        }
 
         #endregion
 

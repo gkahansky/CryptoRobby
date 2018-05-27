@@ -24,6 +24,7 @@ namespace RobbyConsole
         private readonly IDbHandler _dbHandler;
         static void Main(string[] args)
         {
+            
             var last = DateTime.Now;
             Console.WriteLine(last);
 
@@ -43,14 +44,14 @@ namespace RobbyConsole
             //var interval = "1h";
             Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
             var logger = new Logger("Robby");
+
+            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+
             var dbl = new DbHandler(logger);
 
-
-
-
-
+           MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             MetaData meta = new MetaData();
-           
+
 
             Config.LoadConfiguration(logger);
 

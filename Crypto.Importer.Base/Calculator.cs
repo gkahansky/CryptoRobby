@@ -38,5 +38,16 @@ namespace Crypto.Importer.Base
 
             return epoch;
         }
+
+        public static bool CheckIfUpdateRequired(long now, long last, long gap)
+        {
+            bool res = false;
+
+            var diff = now - last;
+            if (diff > gap)
+                res = true;
+
+            return res;
+        }
     }
 }

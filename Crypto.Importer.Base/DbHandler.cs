@@ -17,9 +17,22 @@ namespace Crypto.Importer.Base
         public DbHandler(ILogger logger)
         {
             _logger = logger;
-         
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            timer.Elapsed += Timer_Elapsed;
         }
 
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            while(MetaDataContainer.KlineQueue.Count > 0)
+            {
+                var list = MetaDataContainer.KlineQueue.Dequeue();
+                SaveKlines(list);
+            }
+                
+        }
         #region CMC Methods
         public void SaveCoin(string symbol, string name)
         {
@@ -92,7 +105,7 @@ namespace Crypto.Importer.Base
                         }
                         state = context.SaveChanges();
                     }
-                    _logger.Log(String.Format("{0} klines updated in database", numOfRows));
+                    _logger.Log(String.Format("{0} klines updated in database for {1} {2}", numOfRows, klines[0].Symbol, klines[0].Interval));
                 }
                 catch (Exception e)
                 {
@@ -108,6 +121,7 @@ namespace Crypto.Importer.Base
             else
                 _logger.Log("No new data received for current interval");
         }
+
         #endregion
 
         #region Generic Methods

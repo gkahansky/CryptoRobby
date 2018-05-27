@@ -11,15 +11,32 @@ namespace Crypto.Infra
         public Dictionary<string, Coin> CoinDict { get; set; }
         public Dictionary<string, CoinPair> CoinPairDict { get; set; }
         public Dictionary<int, User> UserDict { get; set; }
-        public List<string> Intervals { get; set; }
+        public Dictionary<string,long> Intervals { get; set; }
 
         public MetaData()
         {
             CoinDict = new Dictionary<string, Coin>();
             CoinPairDict = new Dictionary<string, CoinPair>();
             UserDict = new Dictionary<int, User>();
-            Intervals = new List<string>() { "m1", "m3", "m5", "m15", "m30", "h1", "h2", "h4", "h6", "h8", "h12", "d1", "d3", "w1", "M1", "unknown" };
-            
+            Intervals = new Dictionary<string, long>();
+            PopulateIntervals();
+        }
+
+        private void PopulateIntervals()
+        {
+            Intervals.Add("1m", 60000);
+            Intervals.Add("3m", 180000);
+            Intervals.Add("5m", 300000);
+            Intervals.Add("15m", 900000);
+            Intervals.Add("30m", 1800000);
+            Intervals.Add("1h", 3600000);
+            Intervals.Add("2h", 7200000);
+            Intervals.Add("4h", 14400000);
+            Intervals.Add("8h", 28800000);
+            Intervals.Add("12h", 43200000);
+            Intervals.Add("1d", 86400000);
+            Intervals.Add("1w", 604800000);
+            Intervals.Add("1M", 18144000000);
         }
     }
 }

@@ -20,6 +20,5 @@ namespace Crypto.Importer.Base
         void SaveKlines(List<Kline> list);
 
         long FindKlineLastUpdate(string symbol, string interval);
-
     }
 }

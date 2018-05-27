@@ -25,6 +25,7 @@ namespace Crypto.Importer.Bnb
         {
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
+            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
             BnbImporter = new BnbCommunicator(logger,dbHandler);
 
@@ -35,19 +36,20 @@ namespace Crypto.Importer.Bnb
 
 
             float sampleInterval = Config.BinanceSampleInterval / 60000;
-
-            BnbImporter.UpdateTickerPrices();
-            BnbImporter.SaveCandleStickData();
-
-            //System.Timers.Timer timer = new System.Timers.Timer(Config.BinanceSampleInterval);
-            //timer.AutoReset = true;
-            //timer.Enabled = true;
-
-            //timer.Elapsed += Timer_Elapsed;
             
+            BnbImporter.UpdateTickerPrices();
+            
+
+            System.Timers.Timer timer = new System.Timers.Timer(Config.BinanceSampleInterval);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            timer.Elapsed += Timer_Elapsed;
+
+            BnbImporter.SaveCandleStickData();
         }
 
-
+        
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             BnbImporter.UpdateTickerPrices();

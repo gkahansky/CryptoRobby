@@ -83,6 +83,7 @@
     <Compile Include="CoinCmc.cs" />
     <Compile Include="CoinPair.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="MetaDataContainer.cs" />
     <Compile Include="EnumCollection.cs" />
     <Compile Include="GlobalMarketData.cs" />
     <Compile Include="ILogger.cs" />
