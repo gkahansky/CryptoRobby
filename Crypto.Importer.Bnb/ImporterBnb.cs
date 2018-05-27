@@ -28,7 +28,7 @@ namespace Crypto.Importer.Bnb
 
             BnbImporter = new BnbCommunicator(logger,dbHandler);
 
-            BnbImporter.CoinPairs = new Dictionary<string, CoinPair>();
+            //BnbImporter.CoinPairs = new Dictionary<string, CoinPair>();
 
             //Initialize Binance Client
             var restClient = BnbImporter.Connect();
@@ -37,20 +37,22 @@ namespace Crypto.Importer.Bnb
             float sampleInterval = Config.BinanceSampleInterval / 60000;
 
             BnbImporter.UpdateTickerPrices();
+            BnbImporter.SaveCandleStickData();
 
-            System.Timers.Timer timer = new System.Timers.Timer(Config.BinanceSampleInterval);
-            timer.AutoReset = true;
-            timer.Enabled = true;
+            //System.Timers.Timer timer = new System.Timers.Timer(Config.BinanceSampleInterval);
+            //timer.AutoReset = true;
+            //timer.Enabled = true;
 
-            timer.Elapsed += Timer_Elapsed;
-
-
+            //timer.Elapsed += Timer_Elapsed;
+            
         }
 
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             BnbImporter.UpdateTickerPrices();
+            BnbImporter.SaveCandleStickData(); 
+            //BnbImporter.UpdateKlines();
         }
 
         protected override void OnStop()

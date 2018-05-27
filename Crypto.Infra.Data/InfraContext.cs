@@ -13,11 +13,20 @@ namespace Crypto.Infra.Data
         public DbSet<CoinCmc> CoinCmcs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<GlobalMarketData> MarketData { get; set; }
+        public DbSet<Kline> Klines { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(Config.SqlConnectionString);
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Kline>()
+                .HasKey(k => new { k.Symbol, k.Interval, k.OpenTime });
+
+            
         }
     }
 }

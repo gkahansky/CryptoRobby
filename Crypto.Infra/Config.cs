@@ -8,13 +8,15 @@ using Newtonsoft.Json.Linq;
 namespace Crypto.Infra
 {
     public static class Config
-    {        
+    {
+        #region Members
         public static string BinanceApiKey { get; set; }
         public static string BinanceApiSecret { get; set; }
         public static int BinanceSampleInterval { get; set; }
+        public static List<CoinPair> PairsOfInterest { get; set; }
         public static int CmcSampleInterval { get; set; }
         public static string SqlConnectionString { get; set; }
-
+        #endregion
 
         public static void LoadConfiguration(ILogger _logger)
         {
@@ -30,6 +32,7 @@ namespace Crypto.Infra
             GetCmcConfiguration(json, _logger);
             GetBnbConfiguration(json, _logger);
             BuildSqlConnectionString(json, _logger);
+            PairsOfInterest = new List<CoinPair>();
         }
 
         private static void GetBnbConfiguration(JObject json, ILogger _logger)

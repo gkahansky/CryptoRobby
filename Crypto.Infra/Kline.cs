@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ namespace Crypto.Infra
 {
     public class Kline
     {
-        public EnumCollection.KlineInterval Interval { get; set; }
+        public string Symbol { get; set; }
+        public string Interval { get; set; }
         public decimal Open { get; set; }
         public decimal Close { get; set; }
         public decimal High { get; set; }
@@ -17,6 +19,8 @@ namespace Crypto.Infra
         public decimal Volume { get; set; }
         public long OpenTime { get; set; }
         public long CloseTime { get; set; }
+
+        
     }
 
 }

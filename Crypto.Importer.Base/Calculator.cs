@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Crypto.Importer.Base
 {
-    public class Calculator
+    public static class Calculator
     {
-        public void CheckOrderValidity()
+        public static void CheckOrderValidity()
         {
             throw new NotImplementedException();
         }
-
-        public void ConvertUsdToCoinValue()
+                
+        public static void ConvertUsdToCoinValue()
         {
             throw new NotImplementedException();
             //Get BTCUSD rate
@@ -24,10 +24,19 @@ namespace Crypto.Importer.Base
 
             //
         }
-
-        public void CheckFunds()
+                
+        public static void CheckFunds()
         {
             throw new NotImplementedException();
+        }
+                
+        public static long CalculateEpochNow()
+        {
+            var now = DateTime.Now;
+            long epoch = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            epoch *= 1000;
+
+            return epoch;
         }
     }
 }

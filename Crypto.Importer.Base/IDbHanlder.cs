@@ -17,5 +17,9 @@ namespace Crypto.Importer.Base
 
         void SaveCoinPairs(List<CoinPair> list);
 
+        void SaveKlines(List<Kline> list);
+
+        long FindKlineLastUpdate(string symbol, string interval);
+
     }
 }

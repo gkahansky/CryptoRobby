@@ -114,7 +114,7 @@
       <DependentUpon>20180428204536_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\CoinContextModelSnapshot.cs" />
-    <Compile Include="OrderValidator.cs" />
+    <Compile Include="Calculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

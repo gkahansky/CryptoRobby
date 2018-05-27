@@ -78,7 +78,7 @@ namespace Crypto.Infra
             }
         }
 
-        public List<Kline> ConvertKlineStringToList(string response, string interval)
+        public List<Kline> ConvertKlineStringToList(string response, string interval, string symbol)
         {
             List<string[]> klineList = new List<string[]>();
             string[] klineArray = response.Substring(1, response.Length - 1).Split('[');
@@ -91,13 +91,13 @@ namespace Crypto.Infra
 
             }
 
-            var jsons = ConvertKlineArraystoJobject(klineList);
+            var jsons = ConvertKlineArraystoJobject(klineList, symbol, interval);
 
-            var list = ConvertJsonsToKlines(jsons, interval);
+            var list = ConvertJsonsToKlines(jsons, symbol, interval);
             return list;
         }
 
-        private List<JObject> ConvertKlineArraystoJobject(List<string[]> stringArrays)
+        private List<JObject> ConvertKlineArraystoJobject(List<string[]> stringArrays, string symbol, string interval)
         {
             try
             {
@@ -105,14 +105,15 @@ namespace Crypto.Infra
                 foreach (var s in stringArrays)
                 {
                     var kline = new JObject();
-                    kline.Add("OpenTime",JToken.Parse(s[0]));
+                    kline.Add("Symbol", symbol);
+                    kline.Add("Interval", interval);
+                    kline.Add("OpenTime", JToken.Parse(s[0]));
                     kline.Add("Open", JToken.Parse(s[1]));
-                    kline.Add("Close", JToken.Parse(s[2]));
-                    kline.Add("High", JToken.Parse(s[3]));
-                    kline.Add("Low", JToken.Parse(s[4]));
+                    kline.Add("High", JToken.Parse(s[2]));
+                    kline.Add("Low", JToken.Parse(s[3])); 
+                    kline.Add("Close", JToken.Parse(s[4])); 
                     kline.Add("Volume", JToken.Parse(s[5]));
                     kline.Add("CloseTime", JToken.Parse(s[6]));
-                    
                     jsons.Add(kline);
                 }
 
@@ -125,35 +126,31 @@ namespace Crypto.Infra
             }
         }
 
-        private List<Kline> ConvertJsonsToKlines(List<JObject> jsons, string interval)
+        private List<Kline> ConvertJsonsToKlines(List<JObject> jsons, string symbol, string interval)
         {
             try
             {
                 var klines = new List<Kline>();
-                var klineInterval = EnumCollection.ConvertIntervalStringToEnum(interval);
+                //var klineInterval = EnumCollection.ConvertIntervalStringToEnum(interval);
 
-                if (klineInterval != EnumCollection.KlineInterval.unknown)
+                foreach (var j in jsons)
                 {
-                    foreach (var j in jsons)
-                    {
-                        var kline = new Kline();
-                        kline.OpenTime = long.Parse(j["OpenTime"].ToString());
-                        kline.Open = decimal.Parse(j["Open"].ToString());
-                        kline.High = decimal.Parse(j["High"].ToString());
-                        kline.Low = decimal.Parse(j["Low"].ToString());
-                        kline.Close = decimal.Parse(j["Close"].ToString());
-                        kline.Volume = decimal.Parse(j["Volume"].ToString());
-                        kline.CloseTime = long.Parse(j["CloseTime"].ToString());
-                        kline.Interval = klineInterval;
-                        klines.Add(kline);
-                    }
-                    return klines;
+                    var kline = new Kline();
+                    kline.Symbol = symbol;
+                    kline.Interval = interval;
+                    kline.OpenTime = long.Parse(j["OpenTime"].ToString());
+                    kline.Open = decimal.Parse(j["Open"].ToString());
+                    kline.High = decimal.Parse(j["High"].ToString());
+                    kline.Low = decimal.Parse(j["Low"].ToString());
+                    kline.Close = decimal.Parse(j["Close"].ToString());
+                    kline.Volume = decimal.Parse(j["Volume"].ToString());
+                    kline.CloseTime = long.Parse(j["CloseTime"].ToString());
+
+                    klines.Add(kline);
                 }
-                else
-                {
-                    _logger.Log("Failed to Parse JObject to CandleSticks: Unknown Interval");
-                    return null;
-                }
+                return klines;
+
+
             }
             catch (Exception e)
             {

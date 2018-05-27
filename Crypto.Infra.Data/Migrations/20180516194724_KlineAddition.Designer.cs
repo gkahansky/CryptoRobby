@@ -12,9 +12,10 @@ using System;
 namespace Crypto.Infra.Data.Migrations
 {
     [DbContext(typeof(InfraContext))]
-    partial class InfraContextModelSnapshot : ModelSnapshot
+    [Migration("20180516194724_KlineAddition")]
+    partial class KlineAddition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

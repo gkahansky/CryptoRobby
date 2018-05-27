@@ -24,20 +24,77 @@ namespace RobbyConsole
         private readonly IDbHandler _dbHandler;
         static void Main(string[] args)
         {
+            var last = DateTime.Now;
+            Console.WriteLine(last);
+
+            Thread.Sleep(3000);
+            var diff = DateTime.Now - last;
+            var span = new TimeSpan(0, 0, 3);
+            var span2 = new TimeSpan(0, 0, 5);
+            Console.WriteLine(diff);
+            if (diff > span)
+                Console.WriteLine("TRUE");
+            if(diff<span2)
+                Console.WriteLine("FALSE");
+
+
+
+            //var symbol = "ETHBTC";
+            //var interval = "1h";
             Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
             var logger = new Logger("Robby");
             var dbl = new DbHandler(logger);
-            //Config.LoadConfiguration(_logger);
+
+
+
+
+
+            MetaData meta = new MetaData();
+           
+
+            Config.LoadConfiguration(logger);
+
+            //CoinPair pair = new CoinPair();
+            //pair.Id = 1;
+            //pair.Symbol = "BNBBTC";
+            //pair.Value = 123;
+            //Config.PairsOfInterest.Add(pair);
+
             var bnb = new BnbCommunicator(logger, dbl);
-            //var users = dbl.LoadUsers();
-            var klines = bnb.GetCandleStickData("NANOBTC", "1h", 15);
-            
-            foreach(var k in klines)
-            {
-                logger.Log(String.Format(" OpenTime: {0}\n Open: {1}\n Close: {2}\n High: {3}\n Low: {4}\n CloseTime: {5}\n Interval: {6}",
-                    k.OpenTime.ToString(), k.Open.ToString(), k.Close.ToString(), k.High.ToString(), k.Low.ToString(), k.CloseTime.ToString(), k.Interval.ToString()));
-            }
-            Console.ReadLine();
+            bnb.UpdateTickerPrices();
+            bnb.SaveCandleStickData();
+            Console.ReadKey();
+            //var kline = new Kline();
+            //kline.Symbol = "LRCBTC";
+            //kline.Interval = "1w";
+            //kline.OpenTime = 1514764800000;
+            //kline.CloseTime = 1515369599999;
+            //kline.Open = 0.00003280m;
+            //kline.Close = 0.00007105m;
+            //kline.High = 0.00008360m;
+            //kline.Low = 0.00002890m;
+            //kline.Volume = 6150.33545379m;
+
+            //var klines = new List<Kline>();
+            //klines.Add(kline);
+            //dbl.SaveKlines(klines);
+
+            ////var users = dbl.LoadUsers();
+            ////var klines = bnb.GetCandleStickData(symbol, interval, 0, 1525726800000, 1526500800000);
+            //logger.Log("Retrieving data for symbol: " + symbol + ", Interval: " + interval + 
+            //    "\n OpenTime, Open, Close, High, Low, Volume, CloseTime");
+            //foreach(var k in klines)
+            //{
+            //    logger.Log(String.Format("{0},{1},{2},{3},{4},{5},{6}",
+            //          k.OpenTime.ToString()
+            //        , k.Open.ToString()
+            //        , k.Close.ToString()
+            //        , k.High.ToString()
+            //        , k.Low.ToString()
+            //        , k.Volume.ToString()
+            //        , k.CloseTime.ToString()));
+            //}
+            //Console.ReadLine();
         }
 
     }

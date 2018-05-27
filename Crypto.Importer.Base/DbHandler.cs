@@ -17,6 +17,7 @@ namespace Crypto.Importer.Base
         public DbHandler(ILogger logger)
         {
             _logger = logger;
+         
         }
 
         #region CMC Methods
@@ -72,6 +73,41 @@ namespace Crypto.Importer.Base
             }
             _logger.Log(String.Format("{0} Coin Pairs updated in database", numOfRows * -1));
         }
+
+        public void SaveKlines(List<Kline> klines)
+        {
+            if (klines.Count > 0)
+            {
+                int numOfRows = 0;
+                int state = 0;
+                try
+                {
+                    
+                    using (var context = new InfraContext())
+                    {
+                        foreach (var kline in klines)
+                        {
+                            context.Klines.Add(kline);
+                            numOfRows += 1;
+                        }
+                        state = context.SaveChanges();
+                    }
+                    _logger.Log(String.Format("{0} klines updated in database", numOfRows));
+                }
+                catch (Exception e)
+                {
+                    _logger.Log(String.Format("Failed to save klines to database.\nSymbol: {0}, Interval: {1},\nOpen/Close Time: {2}/{3}\nOpen/Close: {4}/{5},\nHigh/Low: {6}/{7}\nVolume: {8}\n{9}",
+                        klines[numOfRows].Symbol, klines[numOfRows].Interval
+                        , klines[numOfRows].OpenTime, klines[numOfRows].CloseTime
+                        , klines[numOfRows].Open, klines[numOfRows].Close
+                        , klines[numOfRows].High, klines[numOfRows].Low
+                        , klines[numOfRows].Volume
+                        , e.ToString()));
+                }
+            }
+            else
+                _logger.Log("No new data received for current interval");
+        }
         #endregion
 
         #region Generic Methods
@@ -93,6 +129,35 @@ namespace Crypto.Importer.Base
                 //Logger.Log(String.Format("New Coin Saved: Id={0}, Symbol = {1}, Name={2}", coin.Id, coin.Symbol, coin.Name));
             }
 
+        }
+
+        public long FindKlineLastUpdate(string symbol, string interval)
+        {
+            try
+            {
+                long lastupdate = 0;
+                using (var context = new InfraContext())
+                {
+                    try
+                    {
+                        lastupdate = context.Klines.Where(a => a.Symbol == symbol && a.Interval == interval).Max(a => a.CloseTime);
+                    }
+                    catch (Exception)
+                    {
+                        lastupdate = 0;
+                    }
+
+
+                    //var last = context.Klines.FromSql("GetLastUpdateBySymbolAndInterval @Symbol = {0}, @Interval = {1}", symbol, interval);
+                    return lastupdate;
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to load last update date for kline.\n" + e.ToString());
+                return -1;
+            }
         }
 
         public Dictionary<string, Coin> LoadCoins()
