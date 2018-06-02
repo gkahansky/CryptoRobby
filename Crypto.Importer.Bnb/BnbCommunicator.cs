@@ -8,6 +8,8 @@ using M3C.Finance.BinanceSdk.Methods;
 using M3C.Finance.BinanceSdk.ResponseObjects;
 using Crypto.Infra;
 using Crypto.Importer.Base;
+using System.Configuration;
+using RabbitMQ.Client;
 
 namespace Crypto.Importer.Bnb
 {
@@ -44,9 +46,12 @@ namespace Crypto.Importer.Bnb
             metaData = new MetaData();
             _logger.Log("Metadata Lists Initialized Successfully");
             CoinPairs = new Dictionary<string, CoinPair>();
+            //_rabbit.Connect();
         }
 
         #region Connectivity
+
+
         public BinanceClient Connect()
         {
             restClient = InitRestClient(Config.BinanceApiKey, Config.BinanceApiSecret);
@@ -148,12 +153,12 @@ namespace Crypto.Importer.Bnb
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
                     }
                     else
-                        _logger.Log(String.Format("{0} {1} is up to date, moving to next interval",pair.Symbol, interval));
+                       await _logger.LogAsync(String.Format("{0} {1} is up to date, moving to next interval",pair.Symbol, interval));
 
                 }
                 catch (Exception e)
                 {
-                    _logger.Log(String.Format("Failed to get kline data.\n{0}", e.ToString()));
+                    await _logger.LogAsync(String.Format("Failed to get kline data.\n{0}", e.ToString()));
                 }
             }
         }

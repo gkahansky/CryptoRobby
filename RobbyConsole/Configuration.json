@@ -12,5 +12,9 @@
 		"UserName": "CryptoAdmin",
 		"Password": "CryptoAdmin",
 		"DbName": "Crypto"
+	},
+	"RabbitMQConfiguration": {
+		"Host": "Kahansky",
+		"UserName": "CryptoAdmin",
+		"Password": "CryptoAdmin"
 	}
-}

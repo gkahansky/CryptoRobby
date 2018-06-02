@@ -8,14 +8,14 @@ using Crypto.Infra;
 
 namespace Crypto.RuleEngine
 {
-    public class CoinContext : DbContext
-    {
-        DbSet<CoinCmc> CmcCoins { get; set; }
+    //public class CoinContext : DbContext
+    //{
+    //    DbSet<CoinCmc> CmcCoins { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=Kahansky;Initial Catalog=Crypto;Integrated Security=True");
-            base.OnConfiguring(optionsBuilder);
-        }
-    }
+    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    {
+    //        optionsBuilder.UseSqlServer("Data Source=Kahansky;Initial Catalog=Crypto;Integrated Security=True");
+    //        base.OnConfiguring(optionsBuilder);
+    //    }
+    //}
 }

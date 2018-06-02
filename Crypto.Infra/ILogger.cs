@@ -8,6 +8,7 @@ namespace Crypto.Infra
 {
     public interface ILogger
     {
+        Task LogAsync(string msg, int severity = 1);
         void Log(string msg, int severity = 1);
     }
 }

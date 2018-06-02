@@ -30,6 +30,7 @@ namespace Crypto.Importer.Cmc
             var logger = new Logger("CmcImporter");
             var dbHandler = new DbHandler(logger);
 
+
             Cmc = new CmcCommunicator(logger, dbHandler);
             Cmc.UpdateCmcData();
 

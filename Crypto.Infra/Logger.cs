@@ -17,6 +17,25 @@ namespace Crypto.Infra
             this.path = pathString + source + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + ".txt";
         }
 
+        public async Task LogAsync(string msg, int severity = 1)
+        {
+
+            using (StreamWriter sw = File.AppendText(path))
+            {
+                var now = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss\t");
+                sw.WriteLine(now + msg);
+                switch (severity)
+                {
+                    case 0:
+                        break;
+                    default:
+                        Console.WriteLine(now + msg);
+                        break;
+                }
+
+            }
+        }
+
         public void Log(string msg, int severity = 1)
         {
 
@@ -36,6 +55,6 @@ namespace Crypto.Infra
             }
         }
 
-        
+
     }
 }

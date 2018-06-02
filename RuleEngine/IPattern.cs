@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace Crypto.RuleEngine
 {
-    public static class RuleProcessor
+    public interface IPattern
     {
-
-
-        public static void LoadRules()
-        {
-
-        }
+        
     }
 }

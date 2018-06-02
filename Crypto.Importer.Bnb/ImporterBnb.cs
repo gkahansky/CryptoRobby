@@ -25,6 +25,8 @@ namespace Crypto.Importer.Bnb
         {
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
+
+
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
             BnbImporter = new BnbCommunicator(logger,dbHandler);

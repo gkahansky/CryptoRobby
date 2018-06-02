@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Crypto.Infra;
+using RabbitMQ.Client;
 
 namespace Crypto.Importer.Base
 {
@@ -19,6 +20,6 @@ namespace Crypto.Importer.Base
             Parser parser = new Parser(logger);
         }
 
-       
+        
     }
 }

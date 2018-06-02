@@ -14,6 +14,7 @@ namespace Crypto.Infra.Data
         public DbSet<User> Users { get; set; }
         public DbSet<GlobalMarketData> MarketData { get; set; }
         public DbSet<Kline> Klines { get; set; }
+        public DbSet<CoinCmc> CmcCoins { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
