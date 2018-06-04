@@ -23,42 +23,60 @@ namespace RobbyConsole
     class Program
     {
         private readonly IDbHandler _dbHandler;
+        private readonly IDataHandler dataHandler;
+
         static void Main(string[] args)
         {
-             var logger = new Logger("Robby");
 
-            var pFactory = new PatternFactory(logger);
 
-            var p = new PatternSpring(logger);
+            var logger = new Logger("Robby");
+            //Config.LoadConfiguration(logger);
 
-            decimal[] prices = new decimal[] { 5.4m, 5, 6.1m, 6.11m, 7, 6.998m, 6.9m, 6.5m, 6.55m, 6.6m, 6.7m, 6.9m, 6.997m, 6.99m, 7.1m, 7.5m };
-            //decimal[] prices = new decimal[] { 5, 7, 9, 8, 10 };
+            //var pFactory = new PatternFactory(logger);
+            //var data = new DataHandler(logger);
 
-            foreach(var price in prices)
-            {
-                p.CheckPattern(price);
-            }
+            //var coinData = data.LoadCoinDataFromCsv(@"C:\Users\gkaha\Dropbox\Crypto\POABTC_30m.csv");
 
-            
+            //Parser parser = new Parser(logger);
+            //var klineList = parser.ParseKlinesFromCsvToList(coinData);
+
+            //var pat = new PatternSpring(logger);
+            //PatternEngine pEngine = new PatternEngine(logger);
+            //pEngine.Patterns.Add(pat);
+
+
+            //pEngine.CalculatePatternsFromDataFeed(klineList, pEngine.Patterns);
+
+            //var p = new PatternSpring(logger, "ETHBTC", "15m");
+
+            //decimal[] prices = new decimal[] { 5.4m, 5, 6.1m, 6.11m, 7, 6.998m, 6.9m, 6.5m, 6.55m, 6.6m, 6.7m, 6.9m, 6.997m, 6.99m, 7.1m, 7.5m, 7.3m, 7.2m, 7.1m, 7.2m, 7.5m, 6, 7 };
+            //////decimal[] prices = new decimal[] { 5, 7, 9, 8, 10 };
+
+            //foreach (var price in prices)
+            //{
+            //    p.CheckPattern(price, 1234);
+            //}
+
+
 
             //BnbImporter
-            // Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
+            Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
 
 
-            // MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
-            // var dbl = new DbHandler(logger);
-            //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-            // MetaData meta = new MetaData();
-
-
-            // Config.LoadConfiguration(logger);
+            var dbl = new DbHandler(logger);
+            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+            MetaData meta = new MetaData();
 
 
-            // var bnb = new BnbCommunicator(logger, dbl);
-            // bnb.UpdateTickerPrices();
-            // bnb.SaveCandleStickData();
-            // Console.ReadKey();
+            Config.LoadConfiguration(logger);
+
+
+            var bnb = new BnbCommunicator(logger, dbl);
+            bnb.UpdateTickerPrices();
+            bnb.SaveCandleStickData();
+            Console.ReadKey();
 
         }
 

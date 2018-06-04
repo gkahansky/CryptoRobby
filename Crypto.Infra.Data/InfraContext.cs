@@ -27,7 +27,12 @@ namespace Crypto.Infra.Data
             modelBuilder.Entity<Kline>()
                 .HasKey(k => new { k.Symbol, k.Interval, k.OpenTime });
 
-            
+            modelBuilder.Entity<CoinPair>().Ignore(p => p.AvgPrice);
+            modelBuilder.Entity<CoinPair>().Ignore(p => p.AvgPriceOpenTime);
+            modelBuilder.Entity<CoinPair>().Ignore(p => p.LastPrices);
         }
+        
+
+        
     }
 }

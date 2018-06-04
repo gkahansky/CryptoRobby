@@ -11,5 +11,10 @@ namespace Crypto.Infra
         public int Id { get; set; }
         public string Symbol { get; set; }
         public decimal Value { get; set; }
+        public Dictionary<string, Queue<decimal>> LastPrices { get; set; }
+        public decimal AvgPrice { get; set; }
+        public long AvgPriceOpenTime { get; set; }
     }
+
+    
 }

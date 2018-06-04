@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Crypto.Infra;
+using Newtonsoft.Json.Linq;
 
 namespace Crypto.RuleEngine
 {
     public class PatternSpring : IPattern
     {
         private ILogger _logger;
+        public string Symbol { get; set; }
+        public string Interval { get; set; }
         private decimal InitialPrice { get; set; }
         public decimal H1 { get; set; }
         public decimal H2 { get; set; }
@@ -20,24 +23,29 @@ namespace Crypto.RuleEngine
         public decimal Pivot { get; set; }
         public bool Trend { get; set; }
         public bool TrendShift { get; set; }
+        public bool TrendValid { get; set; }
 
-        public PatternSpring(ILogger logger)
+        public PatternSpring(ILogger logger, JObject config)
         {
             _logger = logger;
+            //Symbol = config["Symbol"].ToString();
+            //Interval = config[Interval].ToString();
             H1 = 0;
             H2 = 0;
             L1 = 0;
             L2 = 0;
             LastPrice = 0;
             Pivot = 0;
-            Margin = 0.02m;
+            Margin = Config.PatternSpringThreshold;
             Trend = false;
             TrendShift = false;
+            TrendValid = false;
         }
 
-        public bool CheckPattern(decimal cp)
+        public bool CheckPattern(decimal cp, long time)
         {
             var result = false;
+            var timeDate = Parser.ConvertTimeMsToDateTime(time);
 
             if (H1 == 0 & H2 == 0 & L1 == 0 & L2 == 0)
             {
@@ -46,17 +54,21 @@ namespace Crypto.RuleEngine
                 L1 = cp;
                 L2 = cp;
                 LastPrice = cp;
+                //Pivot = cp; //Erase if going back to previous function
                 return result;
             }
 
-            if (cp-H1 > (H1 * Margin))
+            if (cp - H1 > (H1 * Margin)) //strict
+            //if (Math.Abs((cp - H1) / H1) < Margin) //lean
             {
                 if (L1 - H2 > H2 * Margin)
                 {
                     if (H1 - H2 > H2 * Margin)
                     {
-                        _logger.Log("**** Pattern Achieved!!! Buy Now at " + cp + " ****");
+                        if (!TrendValid)
+                            _logger.Log("**** Pattern Achieved!!! Buy Now at " + cp + " priceTime: " + timeDate.ToString()  + " ****");
                         result = true;
+                        TrendValid = true;
                     }
                 }
             }
@@ -64,127 +76,61 @@ namespace Crypto.RuleEngine
 
             _logger.Log(String.Format("Current Price: {0}, Last Price {1}, H1: {2}, H2: {3}, L1: {4}, L2: {5}", cp, LastPrice, H1, H2, L1, L2));
             LastPrice = cp;
-
+            if (!result)
+                TrendValid = false;
             return result;
 
         }
 
-
-
         private void CalculatePatternPrices(decimal cp)
         {
-            var L1Over = L1 + (L1 * Margin);
-            var L1Under = L1 - (L1 * Margin);
-            var H1Over = H1 + (H1 * Margin);
-            var H1Under = H1 - (H1 * Margin);
-            var lastOver = LastPrice + (LastPrice * Margin);
-            var lastUnder = LastPrice - (LastPrice * Margin);
-
-
-            if(L1==L2 && H1 == H2 && LastPrice == H1) //first time
+            if (Pivot == 0)
             {
-                if (cp > H1Over)
+                if (cp > H1)
                 {
+                    Pivot = cp;
                     Trend = true;
-                    TrendShift = false;
                 }
-                else if (cp < L1Under)
+                else if (cp < L1)
                 {
+                    Pivot = cp;
                     Trend = false;
-                    TrendShift = false;
                 }
+
             }
 
-            //5.4m, 5, 6.1m, 6.11m, 7, 6.998m, 6.9m, 6.5m, 6.55m, 6.6m, 6.7m, 6.9m, 6.997m, 6.99m, 7.1m, 7.5
-
-            else if (cp > LastPrice) // cp greater than before
+            else if (cp / Pivot > Margin + 1) // Higher than H1
             {
-                if (Trend) // Trend continues
+                if (Trend) // Trend up cont.
                 {
-                    if(cp > H1Over) // H1 rises
-                    {
-                        TrendShift = false;
-                    }
+                    if (Pivot < cp)
+                        Pivot = cp;
                 }
-                else if (!Trend) //We are currently trending down and a higher price arrived
+                else if (!Trend) //trending up after downtrend
                 {
-                    if(Pivot == 0) // first positive after downtrend
-                    { 
-                        if(cp > lastOver) // new price above last and ABOVE margin
-                        {
-                            L2 = L1;
-                            L1 = LastPrice;
-                            Trend = true;
-                            TrendShift = true;
-                        }
-                        else if (cp <= lastUnder) // new price above last but BELOW margin
-                        {
-                            Pivot = LastPrice;
-                            TrendShift = false;
-                        }
-                    }
-                    else // trend is down, previous price was positive but below margin
-                    {
-                        if (cp - Pivot > Pivot * Margin) // new high ABOVE margin, trend shift up, update lows & reset pivot
-                        {
-                            L2 = L1;
-                            L1 = LastPrice;
-                            Pivot = 0;
-                            Trend = true;
-                            TrendShift = true;
-                        }
-                        else if (cp - Pivot < Pivot * Margin) // new high BELOW margin
-                        {
-                            TrendShift = false;
-                        }
-                    }
+                    L2 = L1;
+                    L1 = LastPrice;
+                    Trend = true;
+                    TrendShift = true;
+                    Pivot = cp;
                 }
             }
-            else if(cp <= LastPrice) // price goes down
+            else if (Pivot / cp > Margin + 1) //Lower than L1
             {
-                if (!Trend) // Price in downtrend and continues to drop
+                if (!Trend)
                 {
-                    if(cp < L1Under)
-                    {
-                        L1 = cp;
-                        TrendShift = false;
-                    }
+                    if (Pivot > cp)
+                        Pivot = cp;
                 }
-                else if (Trend) // price in up trend and a low price arrived
+                else if (Trend)
                 {
-                    if(Pivot == 0) // first time a low price arrives after up trend
-                    {
-                        if(cp < lastUnder) //low price sets new trend, update Highs 
-                        {
-                            H2 = H1;
-                            H1 = LastPrice;
-                            Trend = false;
-                            TrendShift = true;
-                        }
-                        else // low price not enough to change trend. setting Pivot
-                        {
-                            Pivot = LastPrice;
-                            TrendShift = false;
-                        }
-                    }
-                    else // low price arrives during downtrend but not first time.
-                    {
-                        if(Pivot - cp > Pivot * Margin) //low price sets new trend, update Highs and reset pivot
-                        {
-                            H2 = H1;
-                            H1 = LastPrice;
-                            Pivot = 0;
-                            Trend = false;
-                            TrendShift = true;
-                        }
-                        else
-                        {
-                            TrendShift = false;
-                        }
-                    }
+                    H2 = H1;
+                    H1 = cp;
+                    Trend = false;
+                    TrendShift = true;
+                    Pivot = cp;
                 }
             }
         }
-       
     }
 }

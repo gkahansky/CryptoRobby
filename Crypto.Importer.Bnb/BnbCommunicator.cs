@@ -318,7 +318,7 @@ namespace Crypto.Importer.Bnb
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to initialize restclient for user");
+                _logger.Log("Failed to initialize restclient for user" + e.ToString());
                 return null;
             }
         }

@@ -13,9 +13,7 @@ namespace M3C.Finance.BinanceSdk.Methods
     public static class PublicMethods
     {
         private static readonly ILogger _logger;
-
-
-
+        
         public static DepthResponse GetPairPrice(BinanceClient publicRestClient, string pair)
         {
             var depthResult = publicRestClient.Depth(pair).Result;

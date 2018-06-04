@@ -30,15 +30,6 @@ namespace Crypto.Importer.Base
             throw new NotImplementedException();
         }
                 
-        public static long CalculateEpochNow()
-        {
-            var now = DateTime.Now;
-            long epoch = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-            epoch *= 1000;
-
-            return epoch;
-        }
-
         public static bool CheckIfUpdateRequired(long now, long last, long gap)
         {
             bool res = false;
@@ -48,6 +39,15 @@ namespace Crypto.Importer.Base
                 res = true;
 
             return res;
+        }
+
+        public static long CalculateEpochNow()
+        {
+            var now = DateTime.Now;
+            long epoch = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            epoch *= 1000;
+
+            return epoch;
         }
     }
 }

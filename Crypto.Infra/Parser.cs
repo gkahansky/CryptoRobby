@@ -17,6 +17,20 @@ namespace Crypto.Infra
             _logger = logger;
         }
 
+        public static DateTime ConvertTimeMsToDateTime(long timeInMs)
+        {
+            var date = (new DateTime(1970, 1, 1)).AddMilliseconds(timeInMs);
+            return date;
+        }
+
+        public static long ConvertTimeDateTimeToMs(DateTime date)
+        {
+            TimeSpan span = (date - new DateTime(1970, 1, 1));
+            var ms = long.Parse(span.TotalMilliseconds.ToString());
+            return ms;
+        }
+
+
         public List<JObject> ParseCmcCoins(List<string> coinSetList)
         {
             var list = new List<JObject>();
@@ -78,6 +92,43 @@ namespace Crypto.Infra
             }
         }
 
+        public List<Kline> ParseKlinesFromCsvToList(List<string> list, string symbol=null, string interval = null)
+        {
+            try
+            {
+                var klineList = new List<Kline>();
+                foreach (var line in list)
+                {
+                    if (!line.StartsWith("Symbol"))
+                    {
+                        var split = line.Split(',');
+                        var kline = new Kline();
+                        if ((string.IsNullOrEmpty(symbol) || symbol == split[0].ToString()) && (string.IsNullOrEmpty(interval) || interval == split[1]))
+                        {
+                            kline.Symbol = split[0];
+                            kline.Interval = split[1];
+                            kline.OpenTime = long.Parse(split[2]);
+                            kline.CloseTime = long.Parse(split[3]);
+                            kline.Open = decimal.Parse(split[4]);
+                            kline.Close = decimal.Parse(split[5]);
+                            kline.High = decimal.Parse(split[6]);
+                            kline.Low = decimal.Parse(split[7]);
+                            kline.Volume = decimal.Parse(split[8]);
+                            klineList.Add(kline);
+                        }
+                        //Symbol,Interval,OpenTime,CloseTime,Open,Close,High,Low,Volume
+                    }
+                }
+
+                return klineList;
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to parse klines from text to kline list.\n" + e.ToString());
+                return null;
+            }
+        }
+
         public List<Kline> ConvertKlineStringToList(string response, string interval, string symbol)
         {
             List<string[]> klineList = new List<string[]>();
@@ -110,8 +161,8 @@ namespace Crypto.Infra
                     kline.Add("OpenTime", JToken.Parse(s[0]));
                     kline.Add("Open", JToken.Parse(s[1]));
                     kline.Add("High", JToken.Parse(s[2]));
-                    kline.Add("Low", JToken.Parse(s[3])); 
-                    kline.Add("Close", JToken.Parse(s[4])); 
+                    kline.Add("Low", JToken.Parse(s[3]));
+                    kline.Add("Close", JToken.Parse(s[4]));
                     kline.Add("Volume", JToken.Parse(s[5]));
                     kline.Add("CloseTime", JToken.Parse(s[6]));
                     jsons.Add(kline);
@@ -158,6 +209,8 @@ namespace Crypto.Infra
                 return null;
             }
         }
+
+
     }
 
 

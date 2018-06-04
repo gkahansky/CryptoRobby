@@ -22,6 +22,8 @@ namespace Crypto.Infra
         public static string RabbitUser { get; set; }
         public static string RabbitPass { get; set; }
         public static string DbHandlerQueue { get; set; }
+        public static decimal PatternSpringThreshold { get; set; }
+        public static int PatternSpringToKeep { get; set; }
         #endregion
 
         public static void LoadConfiguration(ILogger _logger)
@@ -46,6 +48,8 @@ namespace Crypto.Infra
             _logger.Log("********Loading DBhandler Configuration********");
             LoadDbHandlerConfiguration(json, _logger);
             PairsOfInterest = new List<CoinPair>();
+            PatternSpringThreshold = 0.03m;
+            PatternSpringToKeep = 20;
         }
 
         private static void GetBnbConfiguration(JObject json, ILogger _logger)
