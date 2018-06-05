@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Crypto.Infra
 {
-    public class CoinPair
+    public class CoinPair 
+
     {
         public int Id { get; set; }
         public string Symbol { get; set; }

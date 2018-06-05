@@ -25,13 +25,33 @@ namespace RobbyConsole
         private readonly IDbHandler _dbHandler;
         private readonly IDataHandler dataHandler;
 
+        static IEnumerable<CoinPair> GetNext(CoinPair pair)
+        {
+            pair.AvgPrice += 1;
+            yield return pair;
+        }
+
         static void Main(string[] args)
         {
 
 
             var logger = new Logger("Robby");
-            //Config.LoadConfiguration(logger);
 
+            var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
+
+            var ethMonitor = new CoinMonitor(logger);
+            var ethTicker = new CoinPairTicker(logger);
+            ethTicker.Pair = pair;
+
+            ethTicker.PriceChange += ethMonitor.OnPriceChange;
+
+
+            ethTicker.UpdateTicker(3);
+
+
+
+            Config.LoadConfiguration(logger);
+            
             //var pFactory = new PatternFactory(logger);
             //var data = new DataHandler(logger);
 
@@ -80,5 +100,9 @@ namespace RobbyConsole
 
         }
 
+        private static void EthTicker_PriceChange(object sender, EventArgs args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
