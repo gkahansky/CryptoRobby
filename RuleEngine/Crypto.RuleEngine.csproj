@@ -112,7 +112,9 @@
     <Compile Include="IDbHandler.cs" />
     <Compile Include="IPattern.cs" />
     <Compile Include="PatternFactory.cs" />
-    <Compile Include="PatternSpring.cs" />
+    <Compile Include="Patterns\SimpleSpringPattern.cs" />
+    <Compile Include="Patterns\SpringPattern.cs" />
+    <Compile Include="Patterns\WPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PatternEngine.cs" />
     <Compile Include="TradeEngine.cs" />
@@ -131,6 +133,9 @@
       <Project>{6ff1207d-4f5f-4cc8-8614-96071db529b6}</Project>
       <Name>Crypto.Infra</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Rules\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

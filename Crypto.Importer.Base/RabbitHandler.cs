@@ -33,7 +33,7 @@ namespace Crypto.Importer.Base
                 Model = connection.CreateModel();
 
                 Properties = Model.CreateBasicProperties();
-                Properties.SetPersistent(false);
+                Properties.Persistent = false;
 
                 Model.ExchangeDeclare(this.Exchange, ExchangeType.Topic);
 

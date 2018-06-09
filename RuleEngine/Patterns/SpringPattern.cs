@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Crypto.Infra;
 using Newtonsoft.Json.Linq;
 
-namespace Crypto.RuleEngine
+namespace Crypto.RuleEngine.Patterns
 {
-    public class PatternSpring : IPattern
+    public class SpringPattern : IPattern
     {
         private ILogger _logger;
         public string Symbol { get; set; }
@@ -25,7 +25,7 @@ namespace Crypto.RuleEngine
         public bool TrendShift { get; set; }
         public bool TrendValid { get; set; }
 
-        public PatternSpring(ILogger logger, JObject config)
+        public SpringPattern(ILogger logger, JObject config) 
         {
             _logger = logger;
             //Symbol = config["Symbol"].ToString();
@@ -49,10 +49,10 @@ namespace Crypto.RuleEngine
 
             if (H1 == 0 & H2 == 0 & L1 == 0 & L2 == 0)
             {
-                H1 = cp;
-                H2 = cp;
-                L1 = cp;
-                L2 = cp;
+                H1 = 0.0010035m;      //cp;
+                H2 = 0.0009733m;       //cp;
+                L1 = 0.0009472m;       //cp;
+                L2 = 0.0009271m;       //cp;
                 LastPrice = cp;
                 //Pivot = cp; //Erase if going back to previous function
                 return result;
@@ -74,7 +74,7 @@ namespace Crypto.RuleEngine
             }
             CalculatePatternPrices(cp);
 
-            _logger.Log(String.Format("Current Price: {0}, Last Price {1}, H1: {2}, H2: {3}, L1: {4}, L2: {5}", cp, LastPrice, H1, H2, L1, L2));
+            _logger.Log(String.Format("Current Price: {0}, Last Price {1}, H1: {2}, H2: {3}, L1: {4}, L2: {5}, time: {6}", cp, LastPrice, H1, H2, L1, L2, timeDate));
             LastPrice = cp;
             if (!result)
                 TrendValid = false;
@@ -106,7 +106,7 @@ namespace Crypto.RuleEngine
                     if (Pivot < cp)
                         Pivot = cp;
                 }
-                else if (!Trend) //trending up after downtrend
+                else if (!Trend) //trending down after uptrend
                 {
                     L2 = L1;
                     L1 = LastPrice;

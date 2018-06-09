@@ -60,14 +60,14 @@ namespace RobbyConsole
             //Parser parser = new Parser(logger);
             //var klineList = parser.ParseKlinesFromCsvToList(coinData);
 
-            //var pat = new PatternSpring(logger);
+            //var pat = new SpringPattern(logger);
             //PatternEngine pEngine = new PatternEngine(logger);
             //pEngine.Patterns.Add(pat);
 
 
             //pEngine.CalculatePatternsFromDataFeed(klineList, pEngine.Patterns);
 
-            //var p = new PatternSpring(logger, "ETHBTC", "15m");
+            //var p = new SpringPattern(logger, "ETHBTC", "15m");
 
             //decimal[] prices = new decimal[] { 5.4m, 5, 6.1m, 6.11m, 7, 6.998m, 6.9m, 6.5m, 6.55m, 6.6m, 6.7m, 6.9m, 6.997m, 6.99m, 7.1m, 7.5m, 7.3m, 7.2m, 7.1m, 7.2m, 7.5m, 6, 7 };
             //////decimal[] prices = new decimal[] { 5, 7, 9, 8, 10 };

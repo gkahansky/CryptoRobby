@@ -28,7 +28,7 @@ namespace Crypto.RuleEngine
             {
                 foreach (var kline in klineList)
                 {
-                    var price = (kline.Low + kline.High) / 2;
+                    var price = kline.Close;// (kline.Low + kline.High) / 2;
                     var interval = kline.Interval;
 
                     // pair doesn't exist in dictionary. initialize New Pair in dictionary + new queue for interval.

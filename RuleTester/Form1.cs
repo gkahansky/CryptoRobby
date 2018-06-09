@@ -53,6 +53,7 @@ namespace RuleTester
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
+            _logger = new Logger("CryptoTesterLog");
             PopulateOutputObject();
             LogConfiguration(RunSettings);
             var executor = new Executor();
