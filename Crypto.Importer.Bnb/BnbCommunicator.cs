@@ -204,6 +204,7 @@ namespace Crypto.Importer.Bnb
                         var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
                         //Save klines to KlinesQueue.
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
+                        pair.LastUpdate[interval] = now;
                         _logger.Log(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
                     else
@@ -237,6 +238,7 @@ namespace Crypto.Importer.Bnb
                     pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
                 }
             }
+            _logger.Log(string.Format("{0} {1} last update: {2}", pair.Symbol, interval, pair.LastUpdate[interval]));
             return pair.LastUpdate[interval];
         }
 
