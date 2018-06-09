@@ -47,7 +47,6 @@ namespace Crypto.Importer.Bnb
             timer.Enabled = true;
 
             timer.Elapsed += Timer_Elapsed;
-
             BnbImporter.SaveCandleStickData();
         }
 

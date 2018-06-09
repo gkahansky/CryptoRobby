@@ -74,10 +74,15 @@ namespace Crypto.Importer.Bnb
         {
             try
             {
-                var restClient = Connect();
-                _logger.Log("Fetching Coin Pairs from BNB...");
-                var tickers = GetAllTickers(restClient);
-                _dbHandler.SaveCoinPairs(tickers);
+                //var restClient = Connect();
+                _logger.Log("Working in No DB Mode - Fetching Coin Pairs from BNB...");
+                var tickers = new List<CoinPair>();
+
+                if (Config.BnbUseSql)
+                    tickers = UpdateTickerPricesToDb();
+                else
+                    tickers = UpdateTickerPricesToDictionary();
+
                 var newTickers = SavePairsToMetadata(tickers);
                 _logger.Log(newTickers + " new Coin Pairs were loaded");
 
@@ -86,12 +91,50 @@ namespace Crypto.Importer.Bnb
                     BnbSelectPairsOfInterest(tickers);
                     _logger.Log("Number of \"Pairs of interest\" found: " + Config.PairsOfInterest.Count);
                 }
-
-
             }
             catch (Exception e)
             {
                 _logger.Log("Failed to update coin pairs.\n" + e.ToString());
+            }
+
+
+
+            
+        }
+
+        private List<CoinPair> UpdateTickerPricesToDictionary()
+        {
+            var tickers = new List<CoinPair>();
+            try
+            {
+                
+                //var restClient = Connect();
+                _logger.Log("Working in No DB Mode - Fetching Coin Pairs from BNB...");
+                tickers = GetCoinPairsFromBinance();
+                return tickers;
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to update coin pairs.\n" + e.ToString());
+                return tickers;
+            }
+        }
+
+        private List<CoinPair> UpdateTickerPricesToDb()
+        {
+            var tickers = new List<CoinPair>();
+            try
+            {
+                //var restClient = Connect();
+                _logger.Log("Fetching Coin Pairs from BNB...");
+                tickers = GetAllTickers(restClient);
+                _dbHandler.SaveCoinPairs(tickers);
+                return tickers;
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to update coin pairs.\n" + e.ToString());
+                return tickers;
             }
         }
 
@@ -104,6 +147,7 @@ namespace Crypto.Importer.Bnb
             //for each pair-interval combo, find the most recent update
             foreach (var pair in Config.PairsOfInterest)
             {
+                _logger.Log("Getting Candlestick data for " + pair.Symbol);
                 await GetKlines(pair,intervals);
             }
         }
@@ -123,7 +167,12 @@ namespace Crypto.Importer.Bnb
             }
         }
 
-
+        public List<CoinPair> GetCoinPairsFromBinance()
+        {
+            var tickersString = BnbRequestAllTickers().Result;
+            var pairList = parser.ParseBnbTickers(tickersString);
+            return pairList;
+        }
         
         #endregion
 
@@ -135,11 +184,15 @@ namespace Crypto.Importer.Bnb
             {
                 try
                 {
+                    var now = Calculator.CalculateEpochNow();
                     //Get last update from db for this pair-kline combo
-                    var last = await LoadKlineLastUpdate(pair.Symbol, interval);
+
+                    var lastTask = CheckPairLastUpdate(pair, interval, now);
+                    var last = lastTask.Result;
+
                     //_logger.Log(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
                     //Request Data & save to Db for each pair-interval combo
-                    var now = Calculator.CalculateEpochNow();
+
                     //_logger.Log("Current Time (Epoch): " + now);
 
                     var IsUpdateRequired = Calculator.CheckIfUpdateRequired(now, last, metaData.Intervals[interval]);
@@ -151,6 +204,7 @@ namespace Crypto.Importer.Bnb
                         var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
                         //Save klines to KlinesQueue.
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
+                        _logger.Log(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
                     else
                        await _logger.LogAsync(String.Format("{0} {1} is up to date, moving to next interval",pair.Symbol, interval));
@@ -161,6 +215,29 @@ namespace Crypto.Importer.Bnb
                     await _logger.LogAsync(String.Format("Failed to get kline data.\n{0}", e.ToString()));
                 }
             }
+        }
+
+        private async Task<long> CheckPairLastUpdate(CoinPair pair, string interval, long now)
+        {
+            long lastUpdate = 0;
+            var diff = metaData.Intervals[interval] + 1000;
+            if (!Config.BnbUseSql)
+            {
+                if (!pair.LastUpdate.ContainsKey(interval))
+                    pair.LastUpdate.Add(interval, now-diff);
+            }
+            else
+            {
+                if (!pair.LastUpdate.ContainsKey(interval))
+                    pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+
+                else
+                {
+                    pair.LastUpdate.Add(interval, 0);
+                    pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+                }
+            }
+            return pair.LastUpdate[interval];
         }
 
         private List<CoinPair> GetAllTickers(BinanceClient publicRestClient)
@@ -215,6 +292,37 @@ namespace Crypto.Importer.Bnb
             request.Credentials = CredentialCache.DefaultCredentials;
             // Get the response.
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            // Display the status.
+            Console.WriteLine(response.StatusDescription);
+            // Get the stream containing content returned by the server.
+            Stream dataStream = response.GetResponseStream();
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+            var responseFromServer = reader.ReadToEnd();
+            // Display the content.
+
+            // Cleanup the streams and the response.
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+
+
+            return responseFromServer;
+        }
+
+        //Download all Tickers from Binance
+        private async Task<string> BnbRequestAllTickers()
+        {
+            string url = String.Format(@"https://www.binance.com/api/v3/ticker/price");
+            //Logger.Log("Requesting klines... \nUrl: " + url);
+            // Create a request for the URL. 		
+            WebRequest request = WebRequest.Create(url);
+            // If required by the server, set the credentials.
+            request.Credentials = CredentialCache.DefaultCredentials;
+            // Get the response.
+            var responseAsync = await request.GetResponseAsync();
+            HttpWebResponse response = (HttpWebResponse)responseAsync;
             // Display the status.
             Console.WriteLine(response.StatusDescription);
             // Get the stream containing content returned by the server.

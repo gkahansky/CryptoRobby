@@ -14,7 +14,9 @@ namespace Crypto.Infra
         public static string BinanceApiSecret { get; set; }
         public static int BinanceSampleInterval { get; set; }
         public static string BnbExchange { get; set; }
+        public static bool BnbUseSql { get; set; }
         public static string CmcExchange { get; set; }
+        public static bool CmcUseSql { get; set; }
         public static List<CoinPair> PairsOfInterest { get; set; }
         public static int CmcSampleInterval { get; set; }
         public static string SqlConnectionString { get; set; }
@@ -60,11 +62,13 @@ namespace Crypto.Infra
             BinanceApiSecret= bnbJson["BinanceApiSecret"].ToString();
             BinanceSampleInterval = int.Parse(bnbJson["SampleInterval"].ToString());
             BnbExchange = bnbJson["RabbitExchange"].ToString();
+            BnbUseSql = bool.Parse(bnbJson["UseSql"].ToString());
 
             _logger.Log(String.Format("Binance API Key: {0}", BinanceApiKey));
             _logger.Log(String.Format("Binance API Secret: {0}", BinanceApiSecret));
             _logger.Log(String.Format("Binance Sample Interval: {0}", BinanceSampleInterval));
             _logger.Log(String.Format("BnbImporter Exchange: {0}", BnbExchange));
+            _logger.Log(String.Format("BnbImporter Use Sql: {0}", BnbUseSql));
         }
 
         private static void GetCmcConfiguration(JObject json, ILogger _logger)
@@ -72,6 +76,7 @@ namespace Crypto.Infra
             var cmcJson = json["CmcConfiguration"];
             CmcSampleInterval = int.Parse(cmcJson["SampleInterval"].ToString());
             CmcExchange = cmcJson["RabbitExchange"].ToString();
+            CmcUseSql = bool.Parse(cmcJson["UseSql"].ToString());
             _logger.Log(String.Format("CMC Sample Interval: {0}", CmcSampleInterval));
             _logger.Log(String.Format("CMC Exchange: {0}", CmcExchange));
         }

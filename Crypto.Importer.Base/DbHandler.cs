@@ -26,12 +26,14 @@ namespace Crypto.Importer.Base
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            while(MetaDataContainer.KlineQueue.Count > 0)
+            if (Config.BnbUseSql)
             {
-                var list = MetaDataContainer.KlineQueue.Dequeue();
-                SaveKlines(list);
+                while (MetaDataContainer.KlineQueue.Count > 0)
+                {
+                    var list = MetaDataContainer.KlineQueue.Dequeue();
+                    SaveKlines(list);
+                }
             }
-                
         }
         #region CMC Methods
         public void SaveCoin(string symbol, string name)

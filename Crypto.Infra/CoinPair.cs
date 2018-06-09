@@ -15,6 +15,7 @@ namespace Crypto.Infra
         public Dictionary<string, Queue<decimal>> LastPrices { get; set; }
         public decimal AvgPrice { get; set; }
         public long AvgPriceOpenTime { get; set; }
+        public Dictionary<string, long> LastUpdate { get; set; }
     }
 
     

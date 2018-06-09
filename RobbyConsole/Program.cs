@@ -37,16 +37,16 @@ namespace RobbyConsole
 
             var logger = new Logger("Robby");
 
-            var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
+            //var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
 
-            var ethMonitor = new CoinMonitor(logger);
-            var ethTicker = new CoinPairTicker(logger);
-            ethTicker.Pair = pair;
+            //var ethMonitor = new CoinMonitor(logger);
+            //var ethTicker = new CoinPairTicker(logger);
+            //ethTicker.Pair = pair;
 
-            ethTicker.PriceChange += ethMonitor.OnPriceChange;
+            //ethTicker.PriceChange += ethMonitor.OnPriceChange;
 
 
-            ethTicker.UpdateTicker(3);
+            //ethTicker.UpdateTicker(3);
 
 
 
@@ -80,19 +80,19 @@ namespace RobbyConsole
 
 
             //BnbImporter
-            Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
+            //Config.SqlConnectionString = "Data Source=KAHANSKY;Initial Catalog=Crypto;User Id=CryptoAdmin;Password=CryptoAdmin";
 
 
-            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+            //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
             var dbl = new DbHandler(logger);
+            //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+            //MetaData meta = new MetaData();
+
+
+            //Config.LoadConfiguration(logger);
+
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-            MetaData meta = new MetaData();
-
-
-            Config.LoadConfiguration(logger);
-
-
             var bnb = new BnbCommunicator(logger, dbl);
             bnb.UpdateTickerPrices();
             bnb.SaveCandleStickData();

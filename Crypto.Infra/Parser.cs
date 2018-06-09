@@ -4,8 +4,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-
-
+using System.Text.RegularExpressions;
 
 namespace Crypto.Infra
 {
@@ -92,7 +91,7 @@ namespace Crypto.Infra
             }
         }
 
-        public List<Kline> ParseKlinesFromCsvToList(List<string> list, string symbol=null, string interval = null)
+        public List<Kline> ParseKlinesFromCsvToList(List<string> list, string symbol = null, string interval = null)
         {
             try
             {
@@ -125,6 +124,35 @@ namespace Crypto.Infra
             catch (Exception e)
             {
                 _logger.Log("Failed to parse klines from text to kline list.\n" + e.ToString());
+                return null;
+            }
+        }
+
+        public List<CoinPair> ParseBnbTickers(string tickers)
+        {
+            try
+            {
+                var tickerList = ConvertBnbResponseToArray(tickers);
+                var pairList = new List<CoinPair>();
+
+                foreach (var ticker in tickerList)
+                {
+                    var json = JObject.Parse(ticker);
+                    var pair = new CoinPair();
+
+                    pair.Symbol = json["symbol"].ToString();
+                    pair.Value = decimal.Parse(json["price"].ToString());
+                    pair.LastUpdate = new Dictionary<string, long>();
+                    pairList.Add(pair);
+                }
+
+                _logger.Log(String.Format("{0} pairs received from Binance", pairList.Count));
+
+                return pairList;
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Parser failed to parse coin pairs from text to CoinPair list.\n" + e.ToString());
                 return null;
             }
         }
@@ -210,8 +238,28 @@ namespace Crypto.Infra
             }
         }
 
+        private List<string> ConvertBnbResponseToArray(string response)
+        {
+            var end = response.Length - 1;
+            var resClean = response.Substring(1, end);
+            var jsonstrings = resClean.Replace('}', '^');
+            var splitJsons = jsonstrings.Split('^');
+            var pairList = new List<string>();
+            foreach (var pair in splitJsons)
+            {
+                string pairNew;
+                if (pair.StartsWith(",{"))
+                {
+                    if (!pair.EndsWith("}"))
+                        pairNew = pair.Substring(1) + "}";
+                    else
+                        pairNew = pair.Substring(1);
 
+                    pairList.Add(pairNew);
+                }
+            }
+            return pairList;
+        }
     }
-
 
 }
