@@ -36,7 +36,6 @@ namespace RobbyConsole
 
 
             var logger = new Logger("Robby");
-
             //var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
 
             //var ethMonitor = new CoinMonitor(logger);
@@ -51,7 +50,10 @@ namespace RobbyConsole
 
 
             Config.LoadConfiguration(logger);
+
+
             
+
             //var pFactory = new PatternFactory(logger);
             //var data = new DataHandler(logger);
 

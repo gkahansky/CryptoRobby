@@ -16,7 +16,14 @@ namespace Crypto.Infra
         public decimal AvgPrice { get; set; }
         public long AvgPriceOpenTime { get; set; }
         public Dictionary<string, long> LastUpdate { get; set; }
+
+        public CoinPair()
+        {
+            LastPrices = new Dictionary<string, Queue<decimal>>();
+            LastUpdate = new Dictionary<string, long>();
+        }
     }
+
 
     
 }

@@ -99,7 +99,7 @@ namespace Crypto.Importer.Bnb
 
 
 
-            
+
         }
 
         private List<CoinPair> UpdateTickerPricesToDictionary()
@@ -107,7 +107,7 @@ namespace Crypto.Importer.Bnb
             var tickers = new List<CoinPair>();
             try
             {
-                
+
                 //var restClient = Connect();
                 _logger.Log("Working in No DB Mode - Fetching Coin Pairs from BNB...");
                 tickers = GetCoinPairsFromBinance();
@@ -148,7 +148,7 @@ namespace Crypto.Importer.Bnb
             foreach (var pair in Config.PairsOfInterest)
             {
                 _logger.Log("Getting Candlestick data for " + pair.Symbol);
-                await GetKlines(pair,intervals);
+                await GetKlines(pair, intervals);
             }
         }
 
@@ -173,12 +173,12 @@ namespace Crypto.Importer.Bnb
             var pairList = parser.ParseBnbTickers(tickersString);
             return pairList;
         }
-        
+
         #endregion
 
         #region Metada Private
         //Load all coinpairs from Bnb
-        private async Task GetKlines(CoinPair pair,List<string> intervals)
+        private async Task GetKlines(CoinPair pair, List<string> intervals)
         {
             foreach (var interval in intervals)
             {
@@ -208,7 +208,7 @@ namespace Crypto.Importer.Bnb
                         _logger.Log(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
                     else
-                       await _logger.LogAsync(String.Format("{0} {1} is up to date, moving to next interval",pair.Symbol, interval));
+                        await _logger.LogAsync(String.Format("{0} {1} is up to date, moving to next interval", pair.Symbol, interval));
 
                 }
                 catch (Exception e)
@@ -225,7 +225,7 @@ namespace Crypto.Importer.Bnb
             if (!Config.BnbUseSql)
             {
                 if (!pair.LastUpdate.ContainsKey(interval))
-                    pair.LastUpdate.Add(interval, now-diff);
+                    pair.LastUpdate.Add(interval, now - diff);
             }
             else
             {
@@ -349,7 +349,9 @@ namespace Crypto.Importer.Bnb
         {
 
             if (startTime <= 0)
-                startTime = 1514764800000; //2018-01-01 00:00:00.000
+                //startTime = 1514764800000; //2018-01-01 00:00:00.000
+                startTime = 1496275200000; //2017-06-01 00:00:00.000
+            
             string url = String.Format(@"https://www.binance.com/api/v1/klines?symbol={0}&interval={1}&startTime={2}&endTime={3}",
                 symbol, interval, startTime, endTime);
             //Logger.Log("Requesting klines... \nUrl: " + url);
@@ -397,7 +399,7 @@ namespace Crypto.Importer.Bnb
             }
         }
 
-        
+
         #endregion
 
         #region Trading

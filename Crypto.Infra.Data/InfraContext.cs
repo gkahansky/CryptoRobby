@@ -30,6 +30,7 @@ namespace Crypto.Infra.Data
             modelBuilder.Entity<CoinPair>().Ignore(p => p.AvgPrice);
             modelBuilder.Entity<CoinPair>().Ignore(p => p.AvgPriceOpenTime);
             modelBuilder.Entity<CoinPair>().Ignore(p => p.LastPrices);
+            modelBuilder.Entity<CoinPair>().Ignore(p => p.LastUpdate);
         }
         
 
