@@ -57,7 +57,7 @@ namespace RuleTester
             PopulateOutputObject();
             LogConfiguration(RunSettings);
             var executor = new Executor();
-            executor.Execute(_logger, RunSettings);
+            executor.RunTest(_logger, RunSettings);
         }
 
         private void LogConfiguration(JObject runSettings)
@@ -67,7 +67,8 @@ namespace RuleTester
             var retention = RunSettings["Retention"].ToString();
             var threshold = RunSettings["Threshold"].ToString();
             var file = RunSettings["Path"].ToString();
-
+            var defaultSl = RunSettings["DefaultSLThreshold"].ToString();
+            var DynamicSl = RunSettings["DynamicSLThreshold"].ToString();
             if (!string.IsNullOrWhiteSpace(RunSettings["Symbol"].ToString()))
                 symbol = RunSettings["Symbol"].ToString();
             
@@ -76,7 +77,7 @@ namespace RuleTester
 
 
 
-            var msg = String.Format("Running analysis for {0}_{1} for {2}, MA Aggregation: {3}, Accuracy: {4}", symbol, interval, file, retention, threshold);
+            var msg = String.Format("Running analysis for {0}_{1} for {2}, MA Aggregation: {3}, Accuracy: {4}, Default Stop Loss Threshold: {5}, Dynamic Stop Loss Threshold: {6}", symbol, interval, file, retention, threshold, defaultSl, DynamicSl);
             _logger.Log(msg);
         }
 
@@ -93,6 +94,18 @@ namespace RuleTester
             else
                 RunSettings["Interval"] = null;
             RunSettings["Path"] = filePathTextBox.Text;
+
+            if (!string.IsNullOrWhiteSpace(DefaultSLText.Text))
+                RunSettings["DefaultSLThreshold"] = DefaultSLText.Text;
+            else
+                RunSettings["DefaultSLThreshold"] = 0;
+
+            if (!string.IsNullOrWhiteSpace(DynamicSLText.Text))
+                RunSettings["DynamicSLThreshold"] = DynamicSLText.Text;
+            else
+                RunSettings["DynamicSLThreshold"] = 0;
+            
+
         }
 
 

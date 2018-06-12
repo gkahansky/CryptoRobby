@@ -229,7 +229,7 @@ namespace Crypto.Importer.Bnb
             }
             else
             {
-                if (!pair.LastUpdate.ContainsKey(interval))
+                if (pair.LastUpdate.ContainsKey(interval))
                     pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
 
                 else

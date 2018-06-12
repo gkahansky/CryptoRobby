@@ -13,5 +13,7 @@ namespace RuleTester
         public static string Symbol { get; set; }
         public static string Interval { get; set; }
         public static string Path { get; set; }
+        public static decimal DefaultSLThreshold { get; set; }
+        public static decimal DynamicSLThreshold { get; set; }
     }
 }

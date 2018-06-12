@@ -39,6 +39,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.intervalText = new System.Windows.Forms.TextBox();
             this.buttonGo = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.DefaultSLText = new System.Windows.Forms.TextBox();
+            this.DynamicSLText = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // filePathTextBox
@@ -69,7 +73,7 @@
             // 
             // retentionText
             // 
-            this.retentionText.Location = new System.Drawing.Point(248, 90);
+            this.retentionText.Location = new System.Drawing.Point(269, 90);
             this.retentionText.Name = "retentionText";
             this.retentionText.Size = new System.Drawing.Size(84, 22);
             this.retentionText.TabIndex = 3;
@@ -85,7 +89,7 @@
             // 
             // thresholdText
             // 
-            this.thresholdText.Location = new System.Drawing.Point(248, 130);
+            this.thresholdText.Location = new System.Drawing.Point(269, 130);
             this.thresholdText.Name = "thresholdText";
             this.thresholdText.Size = new System.Drawing.Size(84, 22);
             this.thresholdText.TabIndex = 5;
@@ -101,7 +105,7 @@
             // 
             // symbolText
             // 
-            this.symbolText.Location = new System.Drawing.Point(248, 179);
+            this.symbolText.Location = new System.Drawing.Point(269, 179);
             this.symbolText.Name = "symbolText";
             this.symbolText.Size = new System.Drawing.Size(84, 22);
             this.symbolText.TabIndex = 7;
@@ -117,7 +121,7 @@
             // 
             // intervalText
             // 
-            this.intervalText.Location = new System.Drawing.Point(248, 218);
+            this.intervalText.Location = new System.Drawing.Point(269, 218);
             this.intervalText.Name = "intervalText";
             this.intervalText.Size = new System.Drawing.Size(84, 22);
             this.intervalText.TabIndex = 9;
@@ -132,11 +136,47 @@
             this.buttonGo.UseVisualStyleBackColor = true;
             this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(51, 272);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(188, 17);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Default Stop Loss Threshold";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(51, 312);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(197, 17);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "Dynamic Stop Loss Threshold";
+            // 
+            // DefaultSLText
+            // 
+            this.DefaultSLText.Location = new System.Drawing.Point(269, 267);
+            this.DefaultSLText.Name = "DefaultSLText";
+            this.DefaultSLText.Size = new System.Drawing.Size(84, 22);
+            this.DefaultSLText.TabIndex = 13;
+            // 
+            // DynamicSLText
+            // 
+            this.DynamicSLText.Location = new System.Drawing.Point(269, 307);
+            this.DynamicSLText.Name = "DynamicSLText";
+            this.DynamicSLText.Size = new System.Drawing.Size(84, 22);
+            this.DynamicSLText.TabIndex = 14;
+            // 
             // CryptoRuleTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.DynamicSLText);
+            this.Controls.Add(this.DefaultSLText);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonGo);
             this.Controls.Add(this.intervalText);
             this.Controls.Add(this.label4);
@@ -168,6 +208,10 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox intervalText;
         private System.Windows.Forms.Button buttonGo;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox DefaultSLText;
+        private System.Windows.Forms.TextBox DynamicSLText;
     }
 }
 

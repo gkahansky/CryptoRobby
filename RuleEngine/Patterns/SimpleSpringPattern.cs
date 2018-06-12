@@ -8,26 +8,23 @@ using Newtonsoft.Json.Linq;
 
 namespace Crypto.RuleEngine.Patterns
 {
-    public class SimpleSpringPattern : IPattern
+    public class SimpleSpringPattern : Pattern
     {
         private ILogger _logger;
-        public string Symbol { get; set; }
-        public string Interval { get; set; }
-        public string Name { get; set; }
-        private bool Trend { get; set; }
-        private decimal Threshold { get; set; }
-        private decimal Low { get; set; }
-        private decimal High { get; set; }
-        private decimal Spring { get; set; }
-        private decimal LastPrice { get; set; }
-        private decimal Pivot { get; set; }
+        public bool Trend { get; set; }
+        public decimal Threshold { get; set; }
+        public decimal Low { get; set; }
+        public decimal High { get; set; }
+        public decimal Spring { get; set; }
+        public decimal LastPrice { get; set; }
+        public decimal Pivot { get; set; }
         private DateTime TickTime { get; set; }
         private Dictionary<string, bool> Rules { get; set; }
 
         public SimpleSpringPattern(ILogger logger, JObject settings) 
         {
             Rules = new Dictionary<string, bool>();
-            Name = "Spring Pattern";
+            Name = "Spring";
             ResetRules();
             Trend = false;
             Threshold = decimal.Parse(settings["Threshold"].ToString());
@@ -37,9 +34,11 @@ namespace Crypto.RuleEngine.Patterns
             Pivot = 0;
             LastPrice = 0;
             _logger = logger;
+            DefaultStopLossThreshold = decimal.Parse(settings["DefaultSLThreshold"].ToString());
+            DynamicSLThreshold = decimal.Parse(settings["DynamicSLThreshold"].ToString());
         }
 
-        public bool CheckPattern(decimal avgPrice, long time)
+        public override bool CheckPattern(decimal avgPrice, long time)
         {
             TickTime = Parser.ConvertTimeMsToDateTime(time);
             //First data - Reset Params
@@ -70,9 +69,15 @@ namespace Crypto.RuleEngine.Patterns
                 return true;
             }
 
-            _logger.Log(String.Format("Low: {0}, High: {1}, Spring: {2}, Last Price: {3}, time: {4}", Low, High, Spring, LastPrice, TickTime));
+            _logger.Log(String.Format("Low: {0}, High: {1}, Spring: {2}, Last Price: {3}, Highest Price: {4}, time: {5}", Low, High, Spring, LastPrice, HighPrice, TickTime));
             LastPrice = avgPrice;
             return false;
+        }
+
+        public override void SetHighPrice(decimal price)
+        {
+            if (price > HighPrice)
+                HighPrice = price;
         }
 
         private decimal CheckLow(decimal avgPrice, decimal low)
