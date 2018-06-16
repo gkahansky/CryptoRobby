@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -29,10 +30,12 @@ namespace RuleTester
 
         private PatternEngine InitializeEngine(ILogger logger, JObject settings)
         {
+            var name = settings["Name"].ToString();
+
             PatternConfig = new Dictionary<string, JObject>();
             PatternConfiguration(settings);
 
-            var pat = new SimpleSpringPattern(logger, PatternConfig["Spring"]);
+            var pat = NewPattern(name, logger, PatternConfig[name]);
             //pat.DefaultStopLossThreshold = decimal.Parse(PatternConfig["DefaultSLThreshold"].ToString());
             PatternEngine engine = new PatternEngine(logger);
             engine.Patterns.Add(pat);
@@ -52,33 +55,37 @@ namespace RuleTester
             return klineList;
         }
 
-        //public void Execute(ILogger logger, JObject settings)
-        //{
-        //    PatternConfig = new Dictionary<string, JObject>();
-        //    PatternConfiguration(settings);
+       
+        private Pattern NewPattern(string name, ILogger logger, JObject settings)
+        {
+            var p = new Object();
 
-        //    //var factory = new PatternFactory(logger);
-            
-        //    var pat = new SimpleSpringPattern(logger, PatternConfig["Spring"]);
-        //    PatternEngine engine = new PatternEngine(logger);
-        //    engine.Patterns.Add(pat);
+            switch (name)
+            {
+                case "Spring":
+                    {
+                        p = new SpringPattern(logger, settings);
+                        break;
+                    }
+                case "Streak":
+                    {
+                        p = new StreakPattern(logger, settings);
+                        break;
+                    }
+            }
 
-        //    engine.CheckAllPatterns(klineList, engine.Patterns, patternsConfig);
-            
-
-        //    //engine.CalculatePatternsFromDataFeed(KlineList, engine.Patterns);
-        //}
-
-
+            return (Pattern)p;
+        }
 
         private void PatternConfiguration(JObject settings)
         {
-            PatternConfig.Add("Spring", PreparePatternSpringConfig(settings));
+            PatternConfig.Add(settings["Name"].ToString(), PreparePatternSpringConfig(settings));
         }
 
         private JObject PreparePatternSpringConfig(JObject settings)
         {
             var springConfig = new JObject();
+            springConfig.Add("Name", settings["Name"]);
             springConfig.Add("Symbol", settings["Symbol"]);
             springConfig.Add("Interval", settings["Interval"]);
             springConfig.Add("Threshold", settings["Threshold"]);

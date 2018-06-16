@@ -22,7 +22,7 @@ namespace RuleTester
         {
             InitializeComponent();
             _logger = new Logger("CryptoTesterLog");
-
+            PopulatePatternCombo();
             Config.LoadConfiguration(_logger);
             RunSettings = GenerateDefaultSettings();
 
@@ -54,10 +54,16 @@ namespace RuleTester
         private void buttonGo_Click(object sender, EventArgs e)
         {
             _logger = new Logger("CryptoTesterLog");
-            PopulateOutputObject();
-            LogConfiguration(RunSettings);
-            var executor = new Executor();
-            executor.RunTest(_logger, RunSettings);
+            if (!string.IsNullOrEmpty(patternCombo.Text))
+            {
+                PopulateOutputObject();
+                LogConfiguration(RunSettings);
+                var executor = new Executor();
+                executor.RunTest(_logger, RunSettings);
+            }
+            else
+                MessageBox.Show("Please Select a Pattern");
+            
         }
 
         private void LogConfiguration(JObject runSettings)
@@ -104,10 +110,14 @@ namespace RuleTester
                 RunSettings["DynamicSLThreshold"] = DynamicSLText.Text;
             else
                 RunSettings["DynamicSLThreshold"] = 0;
-            
 
+            RunSettings["Name"] = patternCombo.Text;
         }
 
-
+        private void PopulatePatternCombo()
+        {
+            patternCombo.Items.Add("Spring");
+            patternCombo.Items.Add("Streak");
+        }
     }
 }

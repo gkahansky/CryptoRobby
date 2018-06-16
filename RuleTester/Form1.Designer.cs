@@ -43,6 +43,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.DefaultSLText = new System.Windows.Forms.TextBox();
             this.DynamicSLText = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.patternCombo = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // filePathTextBox
@@ -131,7 +133,7 @@
             this.buttonGo.Location = new System.Drawing.Point(619, 90);
             this.buttonGo.Name = "buttonGo";
             this.buttonGo.Size = new System.Drawing.Size(96, 63);
-            this.buttonGo.TabIndex = 10;
+            this.buttonGo.TabIndex = 99;
             this.buttonGo.Text = "GO";
             this.buttonGo.UseVisualStyleBackColor = true;
             this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
@@ -168,11 +170,30 @@
             this.DynamicSLText.Size = new System.Drawing.Size(84, 22);
             this.DynamicSLText.TabIndex = 14;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(499, 90);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(54, 17);
+            this.label7.TabIndex = 100;
+            this.label7.Text = "Pattern";
+            // 
+            // patternCombo
+            // 
+            this.patternCombo.FormattingEnabled = true;
+            this.patternCombo.Location = new System.Drawing.Point(467, 127);
+            this.patternCombo.Name = "patternCombo";
+            this.patternCombo.Size = new System.Drawing.Size(121, 24);
+            this.patternCombo.TabIndex = 101;
+            // 
             // CryptoRuleTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.patternCombo);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.DynamicSLText);
             this.Controls.Add(this.DefaultSLText);
             this.Controls.Add(this.label6);
@@ -212,6 +233,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox DefaultSLText;
         private System.Windows.Forms.TextBox DynamicSLText;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox patternCombo;
     }
 }
 

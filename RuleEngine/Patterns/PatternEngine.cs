@@ -16,7 +16,7 @@ namespace Crypto.RuleEngine
         public Dictionary<string, Transaction> Transactions { get; set; }
         PatternFactory Factory { get; set; }
         public PatternRepository Patterns { get; set; }
-        public Dictionary<string, StopLossDefinition> StopLossCollection {get;set;}
+        public Dictionary<string, StopLossDefinition> StopLossCollection { get; set; }
         ILogger _logger;
 
         public PatternEngine(ILogger logger)
@@ -35,31 +35,32 @@ namespace Crypto.RuleEngine
             {
                 foreach (var kline in klineList)
                 {
-                    var price = kline.Close;
+                    //var price = kline.Close;
                     var interval = kline.Interval;
                     var sell = false;
                     SavePriceToQueue(CoinPairDict, kline);
 
-                    
+
                     //Check prerequisites and run pattern calculation if relevant.
                     if (CoinPairDict[kline.Symbol].AvgPrice > 0)
                     {
-                        foreach(var pattern in patterns)
+                        foreach (var pattern in patterns)
                         {
                             var p = pattern.Value;
-                            var buy = p.CheckPattern(CoinPairDict[kline.Symbol].AvgPrice, kline.OpenTime);
+                            var patternPrice = SetPriceForPattern(p, kline);
+                            var buy = CheckPatterns(p, kline);
                             p.SetHighPrice(kline.High);
 
                             if (buy)
                                 BuyPair(kline, patternsConfig, p.Name);
 
                             else
-                                if(Transactions.Count > 0)
-                                    sell = CheckStopLoss(p, kline);
+                                if (Transactions.Count > 0)
+                                sell = CheckStopLoss(p, kline);
 
                             if (sell)
-                                Sell(kline.Symbol, price);
-                                
+                                Sell(kline.Symbol, kline.Close);
+
                         }
                     }
                 }
@@ -72,7 +73,9 @@ namespace Crypto.RuleEngine
         {
             var t = Transactions[symbol];
             var profit = ((price / t.BuyPrice) - 1) * 100;
-            var profitText = profit.ToString().Substring(0, 5);
+            var profitText = profit.ToString();
+            if (profitText.Length > 5)
+                profitText = profit.ToString().Substring(0, 5);
             var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
             _logger.Log(msg);
             Transactions.Remove(symbol);
@@ -101,7 +104,7 @@ namespace Crypto.RuleEngine
             else
             {
                 var t = new Transaction(kline.Symbol, kline.Close);
-                t.StopLossConfig = GenerateStopLossObject(patternsConfig[name]);                
+                t.StopLossConfig = GenerateStopLossObject(patternsConfig[name]);
                 t.CalculateStopLoss(kline.Close);
                 Transactions.Add(t.Symbol, t);
                 _logger.Log(String.Format("Trade: Buying {0} at {1}", t.Symbol, t.BuyPrice));
@@ -114,6 +117,28 @@ namespace Crypto.RuleEngine
             sl.DefaultStopLossThreshold = decimal.Parse(settings["DefaultSLThreshold"].ToString());
             sl.DynamicSLThreshold = decimal.Parse(settings["DynamicSLThreshold"].ToString());
             return sl;
+        }
+
+        private bool CheckPatterns(IPattern p, Kline kline )
+        {
+            var buy = false;
+            switch (p.Name)
+            {
+                case "Spring":
+                    {
+                        buy = p.CheckPattern(CoinPairDict[kline.Symbol].AvgPrice, kline.CloseTime);
+                        break;
+                    }
+                case "Streak":
+                    {
+                        buy = p.CheckPattern(kline);
+                        break;
+                    }
+                default:
+                    buy = false;
+                    break;
+            }
+            return buy;
         }
 
         private void SavePriceToQueue(Dictionary<string, CoinPair> coinPairDict, Kline kline)
@@ -151,7 +176,7 @@ namespace Crypto.RuleEngine
 
         private void GeneratePatterns(string[] patterns)
         {
-            
+
             Patterns = new PatternRepository();
             Factory = new PatternFactory(_logger);
 
@@ -193,6 +218,35 @@ namespace Crypto.RuleEngine
 
             var avgPrice = price / queue.Count();
             return avgPrice;
+        }
+
+        private decimal SetPriceForPattern(IPattern p, Kline kline)
+        {
+            var priceDef = p.DefinePriceForCalculation(p);
+            decimal price = 0;
+
+            switch (priceDef)
+            {
+                case Pattern.PriceForCalc.AvgClose:
+                    {
+                        price = CoinPairDict[kline.Symbol].AvgPrice;
+                        break;
+                    }
+
+                case Pattern.PriceForCalc.Close:
+                    {
+                        price = kline.Close;
+                        break;
+                    }
+
+                default:
+                    {
+                        price = kline.Close;
+                        break;
+                    }
+            }
+
+            return price;
         }
     }
 }
