@@ -25,11 +25,11 @@ namespace Crypto.Importer.Bnb
         {
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
-
+            var rabbit = new RabbitHandler(logger, "Crypto");
 
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
-            BnbImporter = new BnbCommunicator(logger,dbHandler);
+            BnbImporter = new BnbCommunicator(logger,dbHandler, rabbit);
 
             //BnbImporter.CoinPairs = new Dictionary<string, CoinPair>();
 

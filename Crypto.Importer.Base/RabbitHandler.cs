@@ -48,7 +48,53 @@ namespace Crypto.Importer.Base
 
         public void PublishMessage(string msg)
         {
-            throw new NotImplementedException();
+            byte[] payload = Encoding.Default.GetBytes(msg);
+            this.Model.BasicPublish(Config.BnbExchange, "#", Properties, payload);
         }
+
+        public void PublishKlineList(List<Kline> list)
+        {
+            try
+            {
+                foreach (var k in list)
+                {
+                    var kString = ConvertKlineToString(k);
+                    PublishMessage(kString);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Log("Failed to publish klines to RabbitMQ.\n" + e.ToString());
+            }
+
+        }
+
+        public void KlineListener(object sender, EventArgs e)
+        {
+            MetaDataContainer.klinePush += MetaDataContainer_klinePush;
+
+        }
+
+        private void MetaDataContainer_klinePush(object sender, EventArgs e)
+        {
+            _logger.LogAsync("new kline update arrived");
+        }
+
+        private string ConvertKlineToString(Kline kline)
+        {
+            var msg = "{";
+            msg += " \"Symbol\" : \"" + kline.Symbol + "\",";
+            msg += " \"Interval\" : \"" + kline.Interval + "\",";
+            msg += " \"OpenTime\" : \"" + kline.OpenTime + "\",";
+            msg += " \"CloseTime\" : \"" + kline.CloseTime + "\",";
+            msg += " \"Open\" : \"" + kline.Open + "\",";
+            msg += " \"Close\" : \"" + kline.Close + "\",";
+            msg += " \"High\" : \"" + kline.High + "\",";
+            msg += " \"Low\" : \"" + kline.Low + "\",";
+            msg += " \"Volume\" : \"" + kline.Volume + "\"";
+            msg += " }";
+            return msg;
+        }
+
     }
 }

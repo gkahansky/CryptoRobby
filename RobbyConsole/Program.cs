@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
+using RabbitMQ.Client;
 
 
 namespace RobbyConsole
@@ -52,7 +53,7 @@ namespace RobbyConsole
             Config.LoadConfiguration(logger);
 
 
-            
+
 
             //var pFactory = new PatternFactory(logger);
             //var data = new DataHandler(logger);
@@ -86,7 +87,7 @@ namespace RobbyConsole
 
 
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-
+            var rabbit = new RabbitHandler(logger, "BNB");
             var dbl = new DbHandler(logger);
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             //MetaData meta = new MetaData();
@@ -95,7 +96,7 @@ namespace RobbyConsole
             //Config.LoadConfiguration(logger);
 
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-            var bnb = new BnbCommunicator(logger, dbl);
+            var bnb = new BnbCommunicator(logger, dbl, rabbit);
             bnb.UpdateTickerPrices();
             bnb.SaveCandleStickData();
             Console.ReadKey();

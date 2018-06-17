@@ -21,17 +21,19 @@ namespace Crypto.Importer.Bnb
         public Parser parser { get; set; }
         public MetaData metaData { get; set; }
         private readonly ILogger _logger;
-        readonly IDbHandler _dbHandler;
+        private readonly IDbHandler _dbHandler;
+        private readonly IRabbitHandler _rabbit;
         private bool StartupComplete { get; set; }
 
 
         //string Source { get; set; }
         #endregion
 
-        public BnbCommunicator(ILogger logger, IDbHandler dbHandler) : base(logger, dbHandler)
+        public BnbCommunicator(ILogger logger, IDbHandler dbHandler, IRabbitHandler rabbit) : base(logger, dbHandler)
         {
             _logger = logger;
             _dbHandler = dbHandler;
+            _rabbit = rabbit;
             StartupComplete = false;
 
             _logger.Log("    Starting Binance Importer...");
@@ -46,7 +48,7 @@ namespace Crypto.Importer.Bnb
             metaData = new MetaData();
             _logger.Log("Metadata Lists Initialized Successfully");
             CoinPairs = new Dictionary<string, CoinPair>();
-            //_rabbit.Connect();
+            _rabbit.Connect();
         }
 
         #region Connectivity
@@ -204,6 +206,7 @@ namespace Crypto.Importer.Bnb
                         var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
                         //Save klines to KlinesQueue.
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
+                        _rabbit.PublishKlineList(klineList);
                         pair.LastUpdate[interval] = now;
                         _logger.Log(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
