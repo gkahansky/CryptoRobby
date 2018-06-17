@@ -26,6 +26,7 @@ namespace Crypto.Infra
         public static string DbHandlerQueue { get; set; }
         public static decimal PatternSpringThreshold { get; set; }
         public static int PatternSpringToKeep { get; set; }
+        public static string[] RabbitExchanges { get; set; }
         #endregion
 
         public static void LoadConfiguration(ILogger _logger)
@@ -103,13 +104,24 @@ namespace Crypto.Infra
                 RabbitHost = rabbitConf["Host"].ToString();
                 RabbitUser = rabbitConf["UserName"].ToString();
                 RabbitPass = rabbitConf["Password"].ToString();
+                RabbitExchanges = ExtractRabbitExchanges(rabbitConf);
                 _logger.Log(String.Format("RabbitMQ host : {0}, User : {1}, Pass : {2}", RabbitHost, RabbitUser, RabbitPass));
+                foreach(var e in RabbitExchanges)
+                {
+                    _logger.Log("New Exchange: " + e);
+                }
             }
             catch (Exception e)
             {
                 _logger.Log("Failed to load RabbitMQ Configuration.\n" + e.ToString());
                 throw;
             }
+        }
+
+        private static string[] ExtractRabbitExchanges(JToken rabbitConf)
+        {
+            var exchanges = rabbitConf["Exchanges"].ToObject<string[]>();
+            return exchanges;
         }
 
         private static void LoadDbHandlerConfiguration(JObject json, ILogger _logger)

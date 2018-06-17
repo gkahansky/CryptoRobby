@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Crypto.Infra;
 using RabbitMQ.Client;
 
-namespace Crypto.Importer.Base
+namespace Crypto.Infra.Rabbit
 {
     public interface IRabbitHandler
     {

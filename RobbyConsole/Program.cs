@@ -5,6 +5,7 @@ using System.Configuration;
 using System;
 using System.Collections.Generic;
 using Crypto.Infra.Data;
+using Crypto.Infra.Rabbit;
 using Crypto.Importer.Cmc;
 using Crypto.Importer.Bnb;
 using Crypto.Importer.Base;
@@ -51,9 +52,9 @@ namespace RobbyConsole
 
 
             Config.LoadConfiguration(logger);
-
-
-
+            string[] exchanges = { "BNB", "CMC" };
+            var rabbitClient = new RabbitClient(logger, "TestQueue", exchanges);
+            rabbitClient.Connect();
 
             //var pFactory = new PatternFactory(logger);
             //var data = new DataHandler(logger);

@@ -8,6 +8,7 @@ using System.ServiceProcess;
 using System.IO;
 using System.Threading.Tasks;
 using Crypto.Infra;
+using Crypto.Infra.Rabbit;
 using Crypto.Importer.Base;
 
 namespace Crypto.Importer.Bnb
@@ -25,7 +26,7 @@ namespace Crypto.Importer.Bnb
         {
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
-            var rabbit = new RabbitHandler(logger, "Crypto");
+            var rabbit = new RabbitHandler(logger, "BNB");
 
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 

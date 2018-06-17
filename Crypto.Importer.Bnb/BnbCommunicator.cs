@@ -7,6 +7,7 @@ using M3C.Finance.BinanceSdk;
 using M3C.Finance.BinanceSdk.Methods;
 using M3C.Finance.BinanceSdk.ResponseObjects;
 using Crypto.Infra;
+using Crypto.Infra.Rabbit;
 using Crypto.Importer.Base;
 using System.Configuration;
 using RabbitMQ.Client;
