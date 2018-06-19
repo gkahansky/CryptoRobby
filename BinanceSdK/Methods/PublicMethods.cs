@@ -12,7 +12,6 @@ namespace M3C.Finance.BinanceSdk.Methods
 {
     public static class PublicMethods
     {
-        private static readonly ILogger _logger;
         
         public static DepthResponse GetPairPrice(BinanceClient publicRestClient, string pair)
         {
@@ -39,7 +38,7 @@ namespace M3C.Finance.BinanceSdk.Methods
             var kLines = publicRestClient.KLines(pair, klineInterval).Result;
             foreach (var item in kLines)
             {
-                _logger.Log($"# of Trades: {item.NumberOfTrades} Close: {item.Close} Volume: {item.Volume}");
+                //_logger.Log($"# of Trades: {item.NumberOfTrades} Close: {item.Close} Volume: {item.Volume}");
             }
         }
 
@@ -47,7 +46,7 @@ namespace M3C.Finance.BinanceSdk.Methods
         {
             //Get Daily Ticker for given Trade Pair
             var dailyTicker = publicRestClient.TickerDaily(pair).Result;
-            _logger.Log($"Ask: {dailyTicker.AskPrice} Bid: {dailyTicker.BidPrice} Change: {dailyTicker.PriceChange}");
+            //_logger.Log($"Ask: {dailyTicker.AskPrice} Bid: {dailyTicker.BidPrice} Change: {dailyTicker.PriceChange}");
 
         }
 
@@ -57,7 +56,7 @@ namespace M3C.Finance.BinanceSdk.Methods
             var allPricesTicker = publicRestClient.TickerAllPrices().Result;
             foreach (var item in allPricesTicker)
             {
-                _logger.Log($"{item.Symbol} : {item.Price}");
+               // _logger.Log($"{item.Symbol} : {item.Price}");
             }
 
             return allPricesTicker;
@@ -69,7 +68,7 @@ namespace M3C.Finance.BinanceSdk.Methods
             var allBookTickers = publicRestClient.AllBookTickers().Result;
             foreach (var item in allBookTickers)
             {
-                _logger.Log($"{item.Symbol} : AskPrice/Quantity {item.AskPrice} / {item.AskQuantity} BidPrice/Quantity {item.BidPrice} / {item.BidQuantity}");
+              //  _logger.Log($"{item.Symbol} : AskPrice/Quantity {item.AskPrice} / {item.AskQuantity} BidPrice/Quantity {item.BidPrice} / {item.BidQuantity}");
             }
         }
         

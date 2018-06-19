@@ -15,6 +15,11 @@ namespace Crypto.RuleEngine.Patterns
             Items = new Dictionary<string, IPattern>();
         }
 
+        public Dictionary<string, IPattern> GetPatterns()
+        {
+            return this.Items;
+        }
+
         public void Add(IPattern p)
         {
             var hash = p.Symbol + "_" + p.Interval;
@@ -36,7 +41,5 @@ namespace Crypto.RuleEngine.Patterns
             else
                 return null;
         }
-
-
     }
 }

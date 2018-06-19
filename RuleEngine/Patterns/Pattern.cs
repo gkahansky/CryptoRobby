@@ -21,11 +21,11 @@ namespace Crypto.RuleEngine.Patterns
         public decimal DynamicStopLoss { get; set; }
         public enum PriceForCalc { AvgClose, Close, High, Low, Open, AvgOC, avgHL }
 
-        public Pattern(JObject settings)
+        public Pattern(PatternConfig settings)
         {
-            Symbol = settings["Symbol"].ToString();
-            Interval = settings["Interval"].ToString();
-            Name = settings["Name"].ToString();
+            Symbol = settings.Symbol;
+            Interval = settings.Interval;
+            Name = settings.Name;
         }
 
 

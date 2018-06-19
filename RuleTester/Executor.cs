@@ -15,27 +15,31 @@ namespace RuleTester
 {
     public class Executor
     {
-        private Dictionary<string, JObject> PatternConfig { get; set; }
+        private Dictionary<string, PatternConfig> PatternConfig { get; set; }
         private PatternEngine Engine { get; set; }
         private List<Kline> KlineList { get; set; }
 
 
-        public void RunTest(ILogger logger, JObject settings)
+        public void RunTest(ILogger logger, PatternConfig settings, string path)
         {
-            KlineList = GenerateKlinesFromCsv(logger, settings);
+            KlineList = GenerateKlinesFromCsv(logger, settings, path);
             Engine = InitializeEngine(logger, settings);
 
             Engine.CheckAllPatterns(KlineList, Engine.Patterns.Items, PatternConfig);
         }
 
-        private PatternEngine InitializeEngine(ILogger logger, JObject settings)
+        private PatternEngine InitializeEngine(ILogger logger, PatternConfig settings)
         {
-            var name = settings["Name"].ToString();
+            //var name = settings["Name"].ToString();
 
-            PatternConfig = new Dictionary<string, JObject>();
+            //var obj = settings.ToObject<JObject>();
+            //obj.Remove("Path");
+            //var patternSetting = obj.ToObject<PatternConfig>();
+
+            PatternConfig = new Dictionary<string, PatternConfig>();
             PatternConfiguration(settings);
 
-            var pat = NewPattern(name, logger, PatternConfig[name]);
+            var pat = NewPattern(settings.Name, logger, settings);
             //pat.DefaultStopLossThreshold = decimal.Parse(PatternConfig["DefaultSLThreshold"].ToString());
             PatternEngine engine = new PatternEngine(logger);
             engine.Patterns.Add(pat);
@@ -44,19 +48,19 @@ namespace RuleTester
             return engine;
         }
 
-        private List<Kline> GenerateKlinesFromCsv(ILogger logger, JObject settings)
+        private List<Kline> GenerateKlinesFromCsv(ILogger logger, PatternConfig settings, string path)
         {
             var data = new DataHandler(logger);
-            var coinData = data.LoadCoinDataFromCsv(settings["Path"].ToString());
+            var coinData = data.LoadCoinDataFromCsv(path);
 
             Parser parser = new Parser(logger);
-            var klineList = parser.ParseKlinesFromCsvToList(coinData, settings["Symbol"].ToString(), settings["Interval"].ToString());
+            var klineList = parser.ParseKlinesFromCsvToList(coinData, settings.Symbol, settings.Interval);
 
             return klineList;
         }
 
        
-        private Pattern NewPattern(string name, ILogger logger, JObject settings)
+        private Pattern NewPattern(string name, ILogger logger, PatternConfig settings)
         {
             var p = new Object();
 
@@ -77,9 +81,9 @@ namespace RuleTester
             return (Pattern)p;
         }
 
-        private void PatternConfiguration(JObject settings)
+        private void PatternConfiguration(PatternConfig settings)
         {
-            PatternConfig.Add(settings["Name"].ToString(), PreparePatternSpringConfig(settings));
+            PatternConfig.Add(settings.Name, settings);//PreparePatternSpringConfig(settings));
         }
 
         private JObject PreparePatternSpringConfig(JObject settings)

@@ -19,7 +19,7 @@ namespace Crypto.RuleEngine.Patterns
         private int Retention { get; set; }
         private decimal StreakThreshold { get; set; }
 
-        public StreakPattern(ILogger logger, JObject settings) : base(settings)
+        public StreakPattern(ILogger logger, PatternConfig settings) : base(settings)
         {
             _logger = logger;
             Streak = 0;
@@ -27,9 +27,9 @@ namespace Crypto.RuleEngine.Patterns
             LastOpen = 0;
             PriceQueue = new Queue<decimal>();
             VolumeQueue = new Queue<decimal>();
-            Retention = int.Parse(settings["Retention"].ToString());
+            Retention = settings.Retention;
             HighPrice = 0;
-            StreakThreshold = decimal.Parse(settings["Threshold"].ToString());
+            StreakThreshold = settings.Threshold;
             Name = "Streak";
         }
 

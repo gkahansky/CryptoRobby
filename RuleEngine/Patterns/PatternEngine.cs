@@ -29,7 +29,7 @@ namespace Crypto.RuleEngine
             Transactions = new Dictionary<string, Transaction>();
         }
 
-        public void CheckAllPatterns(List<Kline> klineList, Dictionary<string, IPattern> patterns, Dictionary<string, JObject> patternsConfig)
+        public void CheckAllPatterns(List<Kline> klineList, Dictionary<string, IPattern> patterns, Dictionary<string, PatternConfig> patternsConfig)
         {
             if (klineList.Count > 0)
             {
@@ -95,7 +95,7 @@ namespace Crypto.RuleEngine
             return sell;
         }
 
-        private void BuyPair(Kline kline, Dictionary<string, JObject> patternsConfig, string name)
+        private void BuyPair(Kline kline, Dictionary<string, PatternConfig> patternsConfig, string name)
         {
             if (Transactions.ContainsKey(kline.Symbol))
             {
@@ -111,11 +111,11 @@ namespace Crypto.RuleEngine
             }
         }
 
-        public StopLossDefinition GenerateStopLossObject(JObject settings)
+        public StopLossDefinition GenerateStopLossObject(PatternConfig settings)
         {
             var sl = new StopLossDefinition();
-            sl.DefaultStopLossThreshold = decimal.Parse(settings["DefaultSLThreshold"].ToString());
-            sl.DynamicSLThreshold = decimal.Parse(settings["DynamicSLThreshold"].ToString());
+            sl.DefaultStopLossThreshold = settings.DefaultStopLoss;
+            sl.DynamicSLThreshold = settings.DynamicStopLoss;
             return sl;
         }
 

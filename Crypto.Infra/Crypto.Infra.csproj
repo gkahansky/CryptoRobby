@@ -89,6 +89,7 @@
     <Compile Include="CoinCmc.cs" />
     <Compile Include="CoinPair.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="PatternConfig.cs" />
     <Compile Include="Rabbit\IRabbitHandler.cs" />
     <Compile Include="MetaDataContainer.cs" />
     <Compile Include="EnumCollection.cs" />

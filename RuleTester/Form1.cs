@@ -17,6 +17,7 @@ namespace RuleTester
     {
         private ILogger _logger { get; set; }
         private JObject RunSettings { get; set; }
+        private string Path { get; set; }
 
         public CryptoRuleTester()
         {
@@ -56,30 +57,31 @@ namespace RuleTester
             _logger = new Logger("CryptoTesterLog");
             if (!string.IsNullOrEmpty(patternCombo.Text))
             {
-                PopulateOutputObject();
-                LogConfiguration(RunSettings);
+                
+                var settings = PopulateOutputObject();
+                LogConfiguration(settings);
                 var executor = new Executor();
-                executor.RunTest(_logger, RunSettings);
+                executor.RunTest(_logger, settings, Path);
             }
             else
                 MessageBox.Show("Please Select a Pattern");
-            
+
         }
 
-        private void LogConfiguration(JObject runSettings)
+        private void LogConfiguration(PatternConfig settings)
         {
             var symbol = "All Pairs";
             var interval = "All Intervals";
-            var retention = RunSettings["Retention"].ToString();
-            var threshold = RunSettings["Threshold"].ToString();
-            var file = RunSettings["Path"].ToString();
-            var defaultSl = RunSettings["DefaultSLThreshold"].ToString();
-            var DynamicSl = RunSettings["DynamicSLThreshold"].ToString();
-            if (!string.IsNullOrWhiteSpace(RunSettings["Symbol"].ToString()))
-                symbol = RunSettings["Symbol"].ToString();
-            
-            if (!string.IsNullOrWhiteSpace(RunSettings["Interval"].ToString()))
-                interval = RunSettings["Interval"].ToString();
+            var retention = settings.Retention;
+            var threshold = settings.Threshold;
+            var file = Path;
+            var defaultSl = settings.DefaultStopLoss;
+            var DynamicSl = settings.DynamicStopLoss;
+            if (!string.IsNullOrWhiteSpace(settings.Symbol))
+                symbol = settings.Symbol;
+
+            if (!string.IsNullOrWhiteSpace(settings.Interval))
+                interval = settings.Interval;
 
 
 
@@ -87,31 +89,50 @@ namespace RuleTester
             _logger.Log(msg);
         }
 
-        private void PopulateOutputObject()
+        private PatternConfig PopulateOutputObject()
         {
-            RunSettings["Retention"] = retentionText.Text;
-            RunSettings["Threshold"] = thresholdText.Text;
-            if (!string.IsNullOrWhiteSpace(symbolText.Text))
-                RunSettings["Symbol"] = symbolText.Text;
-            else
-                RunSettings["Symbol"] = null;
-            if (!string.IsNullOrWhiteSpace(intervalText.Text))
-                RunSettings["Interval"] = intervalText.Text;
-            else
-                RunSettings["Interval"] = null;
-            RunSettings["Path"] = filePathTextBox.Text;
+            var settings = new PatternConfig();
 
+            settings.Name = patternCombo.Text;
+            settings.Symbol = symbolText.Text;
+            settings.Interval = intervalText.Text;
+            settings.Retention = int.Parse(retentionText.Text);
+            settings.Threshold = decimal.Parse(thresholdText.Text);
             if (!string.IsNullOrWhiteSpace(DefaultSLText.Text))
-                RunSettings["DefaultSLThreshold"] = DefaultSLText.Text;
+                settings.DefaultStopLoss = decimal.Parse(DefaultSLText.Text);
             else
-                RunSettings["DefaultSLThreshold"] = 0;
+                settings.DefaultStopLoss = 0;
 
             if (!string.IsNullOrWhiteSpace(DynamicSLText.Text))
-                RunSettings["DynamicSLThreshold"] = DynamicSLText.Text;
+                settings.DynamicStopLoss = decimal.Parse(DynamicSLText.Text);
             else
-                RunSettings["DynamicSLThreshold"] = 0;
+                settings.DynamicStopLoss = 0;
 
-            RunSettings["Name"] = patternCombo.Text;
+            //RunSettings["Retention"] = retentionText.Text;
+            //RunSettings["Threshold"] = thresholdText.Text;
+            //if (!string.IsNullOrWhiteSpace(symbolText.Text))
+            //    RunSettings["Symbol"] = symbolText.Text;
+            //else
+            //    RunSettings["Symbol"] = null;
+            //if (!string.IsNullOrWhiteSpace(intervalText.Text))
+            //    RunSettings["Interval"] = intervalText.Text;
+            //else
+            //    RunSettings["Interval"] = null;
+            Path = filePathTextBox.Text;
+
+            //if (!string.IsNullOrWhiteSpace(DefaultSLText.Text))
+            //    RunSettings["DefaultSLThreshold"] = DefaultSLText.Text;
+            //else
+            //    RunSettings["DefaultSLThreshold"] = 0;
+
+            //if (!string.IsNullOrWhiteSpace(DynamicSLText.Text))
+            //    RunSettings["DynamicSLThreshold"] = DynamicSLText.Text;
+            //else
+            //    RunSettings["DynamicSLThreshold"] = 0;
+
+            //RunSettings["Name"] = patternCombo.Text;
+
+            return settings;
         }
 
         private void PopulatePatternCombo()

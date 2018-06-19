@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Crypto.Infra;
 
-namespace Crypto.RuleEngine
+namespace Crypto.RuleEngine.Data
 {
     internal class Unsubscriber : IDisposable
     {
-        private List<IObserver<CoinPair>> _observers;
-        private IObserver<CoinPair> _observer;
+        private List<IObserver<Kline>> _observers;
+        private IObserver<Kline> _observer;
 
-        public Unsubscriber(List<IObserver<CoinPair>> observers, IObserver<CoinPair> observer)
+        public Unsubscriber(List<IObserver<Kline>> observers, IObserver<Kline> observer)
         {
             _observers = observers;
             _observer = observer;

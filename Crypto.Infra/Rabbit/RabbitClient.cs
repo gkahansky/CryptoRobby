@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using Newtonsoft.Json;
+using System.Threading;
 
 namespace Crypto.Infra.Rabbit
 {
@@ -12,9 +15,10 @@ namespace Crypto.Infra.Rabbit
         private readonly ILogger _logger;
         private IBasicProperties Properties { get; set; }
         private IModel Model { get; set; }
-        private IDictionary<string, List<string>> Subscriptions;
         private string QueueName { get; set; }
         private string[] Exchanges { get; set; }
+        private IConnection Connection { get; set; }
+        private EventingBasicConsumer Consumer { get; set; }
 
         public RabbitClient(ILogger logger, string queueName, string[] exchanges)
         {
@@ -24,13 +28,13 @@ namespace Crypto.Infra.Rabbit
             _logger.Log("Rabbit Client Initialized.");
         }
 
-        public void Connect()
+        public IModel Connect()
         {
             try
             {
                 var connectionFactory = new ConnectionFactory() { HostName = Config.RabbitHost, UserName = Config.RabbitUser, Password = Config.RabbitPass };
-                var connection = connectionFactory.CreateConnection();
-                Model = connection.CreateModel();
+                Connection = connectionFactory.CreateConnection();
+                Model = Connection.CreateModel();
 
                 Properties = Model.CreateBasicProperties();
                 Properties.Persistent = false;
@@ -38,6 +42,7 @@ namespace Crypto.Infra.Rabbit
                 InitializeQueues(Exchanges);
 
                 _logger.Log("RabbitMQ Connection Established.");
+                return Model;
             }
             catch (Exception e)
             {
@@ -58,6 +63,7 @@ namespace Crypto.Infra.Rabbit
                         Model.ExchangeDeclare(e, ExchangeType.Topic);
                         Model.QueueBind(QueueName, e, "#");
                         _logger.Log("Successfully Binded " + QueueName + " to exchange: " + e);
+
                     }
                 }
             }
@@ -65,6 +71,29 @@ namespace Crypto.Infra.Rabbit
             {
                 _logger.Log("Failed to Generate Queues.\n" + e.ToString());
             }
+        }
+
+        public void InitializeConsumer(string queue, IModel model)
+        {
+
+            Consumer = new EventingBasicConsumer(model);
+            Consumer.Received += (ch, ea) =>
+            {
+                var body = ea.Body;
+                // ... process the message
+                var jsonString = Encoding.Default.GetString(ea.Body);
+                var kline = JsonConvert.DeserializeObject<Kline>(jsonString);
+                _logger.Log(kline.Symbol + "_" + kline.Interval + "Received from Exchange");
+                //
+                model.BasicAck(ea.DeliveryTag, false);
+            };
+            String consumerTag = model.BasicConsume(queue, false, Consumer);
+        }
+
+        public void Dispose()
+        {
+            Connection.Close();
+            Model.Close();
         }
     }
 }

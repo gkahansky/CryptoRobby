@@ -33,6 +33,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=2.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.0.2\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
@@ -75,6 +78,9 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.1.1\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -109,11 +115,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoinContext.cs" />
-    <Compile Include="CoinMonitor.cs" />
-    <Compile Include="CoinPairTicker.cs" />
-    <Compile Include="DataHandler.cs" />
-    <Compile Include="IDbHandler.cs" />
+    <Compile Include="Data\KlineReporter.cs" />
+    <Compile Include="Data\Publisher.cs" />
+    <Compile Include="NotInUse\CoinMonitor.cs" />
+    <Compile Include="NotInUse\CoinPairTicker.cs" />
+    <Compile Include="Data\DataHandler.cs" />
+    <Compile Include="Data\IDbHandler.cs" />
     <Compile Include="Patterns\IPattern.cs" />
     <Compile Include="Patterns\PatternFactory.cs" />
     <Compile Include="Patterns\Pattern.cs" />
@@ -132,7 +139,7 @@
     </Compile>
     <Compile Include="Transactions\StopLossDefinition.cs" />
     <Compile Include="Transactions\Transaction.cs" />
-    <Compile Include="Unsubscriber.cs" />
+    <Compile Include="Data\Unsubscriber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

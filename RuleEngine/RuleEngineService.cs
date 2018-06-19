@@ -9,11 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Crypto.Infra;
 using Crypto.Infra.Rabbit;
+using RabbitMQ.Client;
 
 namespace Crypto.RuleEngine
 {
     partial class RuleEngineService : ServiceBase
     {
+        private RabbitClient Rabbit;
+        private String Name;
+        private IModel Model;
         public RuleEngineService()
         {
             InitializeComponent();
@@ -22,20 +26,34 @@ namespace Crypto.RuleEngine
         protected override void OnStart(string[] args)
         {
             var logger = new Logger("RuleEngine");
-
+            Name = "RuleEngine";
             Config.LoadConfiguration(logger);
-            var rabbit = new RabbitClient(logger, "BNBClient", Config.RabbitExchanges);
-            
-            rabbit.Connect();
+            Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges);
+
+            Model = Rabbit.Connect();
 
             logger.Log("*********************************");
             logger.Log("Rule Engine Started Successfully");
             logger.Log("*********************************");
+
+            Rabbit.InitializeConsumer(Name, Model);
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            timer.Elapsed += Timer_Elapsed;
+
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            
         }
 
         protected override void OnStop()
         {
-
+            Rabbit.Dispose();
         }
     }
 }

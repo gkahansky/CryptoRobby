@@ -21,21 +21,21 @@ namespace Crypto.RuleEngine.Patterns
         private DateTime TickTime { get; set; }
         private Dictionary<string, bool> Rules { get; set; }
 
-        public SpringPattern(ILogger logger, JObject settings) : base(settings)
+        public SpringPattern(ILogger logger, PatternConfig settings) : base(settings)
         {
             Rules = new Dictionary<string, bool>();
-            Name = "Spring";
+            Name = settings.Name;
             ResetRules();
             Trend = false;
-            Threshold = decimal.Parse(settings["Threshold"].ToString());
+            Threshold = settings.Threshold;
             Low = 0;
             High = 0;
             Spring = 0;
             Pivot = 0;
             LastPrice = 0;
             _logger = logger;
-            DefaultStopLossThreshold = decimal.Parse(settings["DefaultSLThreshold"].ToString());
-            DynamicSLThreshold = decimal.Parse(settings["DynamicSLThreshold"].ToString());
+            DefaultStopLossThreshold = settings.DefaultStopLoss;
+            DynamicSLThreshold = settings.DynamicStopLoss;
         }
 
         public override bool CheckPattern(decimal avgPrice, long time)

@@ -24,6 +24,7 @@ namespace Crypto.Infra
         public static string RabbitUser { get; set; }
         public static string RabbitPass { get; set; }
         public static string DbHandlerQueue { get; set; }
+        public static Dictionary<string, PatternConfig> PatternsConfig { get; set; }
         public static decimal PatternSpringThreshold { get; set; }
         public static int PatternSpringToKeep { get; set; }
         public static string[] RabbitExchanges { get; set; }
@@ -50,6 +51,8 @@ namespace Crypto.Infra
             LoadRabbitMQConfiguration(json, _logger);
             _logger.Log("********Loading DBhandler Configuration********");
             LoadDbHandlerConfiguration(json, _logger);
+            _logger.Log("********Loading Patterns Configuration********");
+            LoadPatternsConfiguration(json, _logger);
             PairsOfInterest = new List<CoinPair>();
             PatternSpringThreshold = 0.03m;
             PatternSpringToKeep = 20;
@@ -81,6 +84,7 @@ namespace Crypto.Infra
             _logger.Log(String.Format("CMC Sample Interval: {0}", CmcSampleInterval));
             _logger.Log(String.Format("CMC Exchange: {0}", CmcExchange));
         }
+
         private static void BuildSqlConnectionString(JObject json, ILogger _logger)
         {
             try
@@ -136,6 +140,18 @@ namespace Crypto.Infra
             {
                 _logger.Log("Failed to load RabbitMQ Configuration.\n" + e.ToString());
                 throw;
+            }
+        }
+
+        private static void LoadPatternsConfiguration(JObject json, ILogger _logger)
+        {
+            var patterns = json["PatternsConfiguration"];
+            PatternsConfig = new Dictionary<string, PatternConfig>();
+            foreach (var token in patterns)
+            {
+                var obj = new PatternConfig();
+                obj = token.ToObject<PatternConfig>();
+                PatternsConfig.Add(obj.Name, obj);
             }
         }
     }
