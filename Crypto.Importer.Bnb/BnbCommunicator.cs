@@ -385,13 +385,14 @@ namespace Crypto.Importer.Bnb
             return responseFromServer;
         }
 
-        private void BnbSelectPairsOfInterest(List<CoinPair> tickers)
+        public void BnbSelectPairsOfInterest(List<CoinPair> tickers)
         {
             try
             {
                 foreach (var pair in tickers)
                 {
-                    if (pair.Symbol.Substring(pair.Symbol.Length - 3) == "BTC")
+                    if (Config.PairsToMonitor.ContainsKey(pair.Symbol))
+                    //if (pair.Symbol.Substring(pair.Symbol.Length - 3) == "BTC")
                         Config.PairsOfInterest.Add(pair);
                 }
                 StartupComplete = true;

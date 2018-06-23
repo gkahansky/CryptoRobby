@@ -10,6 +10,7 @@ namespace Crypto.Infra
     {
         Task LogAsync(string msg, int severity = 1);
         void Log(string msg, int severity = 1);
+        void Email(string subject, string body);
         //void Email(string subject, string body);
     }
 }

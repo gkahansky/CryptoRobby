@@ -28,8 +28,16 @@ namespace Crypto.RuleEngine.Patterns
             Name = settings.Name;
         }
 
+        public void UpdateSettings(PatternConfig config)
+        {
+            this.Name = config.Name;
+            this.Interval = config.Interval;
+            this.DefaultStopLossThreshold = config.DefaultStopLoss;
+            this.DynamicStopLoss = config.DynamicStopLoss;
+            this.Symbol = config.Symbol;
+        }
 
-        public abstract bool CheckPattern(decimal avgPrice, long time);
+        //public abstract bool CheckPattern(decimal avgPrice, long time);
 
         public abstract bool CheckPattern(Kline kline);
 

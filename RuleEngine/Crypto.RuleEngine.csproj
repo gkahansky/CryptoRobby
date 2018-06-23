@@ -115,7 +115,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\KlineReporter.cs" />
     <Compile Include="Data\Publisher.cs" />
     <Compile Include="NotInUse\CoinMonitor.cs" />
     <Compile Include="NotInUse\CoinPairTicker.cs" />
@@ -125,6 +124,7 @@
     <Compile Include="Patterns\PatternFactory.cs" />
     <Compile Include="Patterns\Pattern.cs" />
     <Compile Include="Patterns\PatternRepository.cs" />
+    <Compile Include="Patterns\PatternRunner.cs" />
     <Compile Include="Patterns\SpringPattern.cs" />
     <Compile Include="Patterns\StreakPattern.cs" />
     <Compile Include="Patterns\WPattern.cs" />
@@ -137,6 +137,7 @@
     <Compile Include="RuleEngineService.Designer.cs">
       <DependentUpon>RuleEngineService.cs</DependentUpon>
     </Compile>
+    <Compile Include="TradeEngine.cs" />
     <Compile Include="Transactions\StopLossDefinition.cs" />
     <Compile Include="Transactions\Transaction.cs" />
     <Compile Include="Data\Unsubscriber.cs" />

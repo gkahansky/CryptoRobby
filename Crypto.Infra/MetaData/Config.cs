@@ -10,6 +10,7 @@ namespace Crypto.Infra
     public static class Config
     {
         #region Members
+        public static string Path { get; set; }
         public static string BinanceApiKey { get; set; }
         public static string BinanceApiSecret { get; set; }
         public static int BinanceSampleInterval { get; set; }
@@ -28,17 +29,21 @@ namespace Crypto.Infra
         public static decimal PatternSpringThreshold { get; set; }
         public static int PatternSpringToKeep { get; set; }
         public static string[] RabbitExchanges { get; set; }
+        public static Dictionary<string, string> PairsToMonitor { get; set; }
+        private static ILogger _logger;
         #endregion
 
-        public static void LoadConfiguration(ILogger _logger)
+        public static void LoadConfiguration(ILogger logger)
         {
+            _logger = logger;
             Parser parser = new Parser(_logger);
             //Get Configuration File Path
-            var path = @"C:\Crypto\Configuration.json";
+            Path = @"C:\Crypto\Configuration.json";
 
             //Download config file and convert to json
-            var configString = File.ReadAllText(path);
+            var configString = File.ReadAllText(Path);
             var json = parser.ParseTextToJson(configString);
+            PairsToMonitor = new Dictionary<string, string>();
 
             //Populate Configuration params
             _logger.Log("********Loading CMC Configuration********");
@@ -53,17 +58,26 @@ namespace Crypto.Infra
             LoadDbHandlerConfiguration(json, _logger);
             _logger.Log("********Loading Patterns Configuration********");
             LoadPatternsConfiguration(json, _logger);
+
             PairsOfInterest = new List<CoinPair>();
             PatternSpringThreshold = 0.03m;
             PatternSpringToKeep = 20;
         }
 
+        public static void ReloadConfiguration()
+        {
+            Parser parser = new Parser(_logger);
+            var configString = File.ReadAllText(Path);
+            var json = parser.ParseTextToJson(configString);
+            _logger.Log("********Refreshin Patterns & Interesting Pair Configuration********");
+            LoadPatternsConfiguration(json, _logger);
+        }
         private static void GetBnbConfiguration(JObject json, ILogger _logger)
         {
             var bnbJson = json["BnbConfiguration"];
 
             BinanceApiKey = bnbJson["BinanceApiKey"].ToString();
-            BinanceApiSecret= bnbJson["BinanceApiSecret"].ToString();
+            BinanceApiSecret = bnbJson["BinanceApiSecret"].ToString();
             BinanceSampleInterval = int.Parse(bnbJson["SampleInterval"].ToString());
             BnbExchange = bnbJson["RabbitExchange"].ToString();
             BnbUseSql = bool.Parse(bnbJson["UseSql"].ToString());
@@ -110,7 +124,7 @@ namespace Crypto.Infra
                 RabbitPass = rabbitConf["Password"].ToString();
                 RabbitExchanges = ExtractRabbitExchanges(rabbitConf);
                 _logger.Log(String.Format("RabbitMQ host : {0}, User : {1}, Pass : {2}", RabbitHost, RabbitUser, RabbitPass));
-                foreach(var e in RabbitExchanges)
+                foreach (var e in RabbitExchanges)
                 {
                     _logger.Log("New Exchange: " + e);
                 }
@@ -145,14 +159,34 @@ namespace Crypto.Infra
 
         private static void LoadPatternsConfiguration(JObject json, ILogger _logger)
         {
-            var patterns = json["PatternsConfiguration"];
             PatternsConfig = new Dictionary<string, PatternConfig>();
+
+            var patterns = json["PatternsConfiguration"];
+            var pairs = json["PairsToMonitor"]["Pairs"];
+            var intervals = json["PairsToMonitor"]["Intervals"];
+
             foreach (var token in patterns)
             {
-                var obj = new PatternConfig();
-                obj = token.ToObject<PatternConfig>();
-                PatternsConfig.Add(obj.Name, obj);
+                foreach (var pair in pairs)
+                {
+                    foreach (var interval in intervals)
+                    {
+                        var p = new PatternConfig();
+                        p = token.ToObject<PatternConfig>();
+                        p.Symbol = pair.ToString();
+                        p.Interval = interval.ToString();
+                        var hash = p.Name + "_" + p.Symbol + "_" + p.Interval;
+                        PatternsConfig.Add(hash, p);
+                        AddPairsToMonitor(p);
+                    }
+                }
             }
+        }
+
+        private static void AddPairsToMonitor(PatternConfig p)
+        {
+            if (!PairsToMonitor.ContainsKey(p.Symbol))
+                PairsToMonitor.Add(p.Symbol, p.Interval);
         }
     }
 }

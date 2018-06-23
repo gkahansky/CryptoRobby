@@ -17,16 +17,24 @@ namespace Crypto.Infra.Rabbit
         private IModel Model { get; set; }
         private string QueueName { get; set; }
         private string[] Exchanges { get; set; }
+        private DataRepository Repository { get; set; }
         private IConnection Connection { get; set; }
         private EventingBasicConsumer Consumer { get; set; }
 
-        public RabbitClient(ILogger logger, string queueName, string[] exchanges)
+        public delegate void KlineReceivedEventHandler(object source, EventArgs args);
+        public event KlineReceivedEventHandler KlineReceived;
+
+
+
+        public RabbitClient(ILogger logger, string queueName, string[] exchanges, DataRepository repository)
         {
             _logger = logger;
             QueueName = queueName;
             Exchanges = exchanges;
             _logger.Log("Rabbit Client Initialized.");
         }
+
+
 
         public IModel Connect()
         {
@@ -73,7 +81,7 @@ namespace Crypto.Infra.Rabbit
             }
         }
 
-        public void InitializeConsumer(string queue, IModel model)
+        public void InitializeConsumer(string queue, IModel model, DataRepository repository)
         {
 
             Consumer = new EventingBasicConsumer(model);
@@ -83,11 +91,22 @@ namespace Crypto.Infra.Rabbit
                 // ... process the message
                 var jsonString = Encoding.Default.GetString(ea.Body);
                 var kline = JsonConvert.DeserializeObject<Kline>(jsonString);
-                _logger.Log(kline.Symbol + "_" + kline.Interval + "Received from Exchange");
+                repository.Klines.Enqueue(kline);
+                OnKlineReceived();
+                //_logger.Log(kline.Symbol + "_" + kline.Interval + " Received from Exchange");
                 //
                 model.BasicAck(ea.DeliveryTag, false);
             };
             String consumerTag = model.BasicConsume(queue, false, Consumer);
+            
+        }
+
+        protected virtual void OnKlineReceived()
+        {
+            if (KlineReceived != null)
+            {
+                KlineReceived(this, EventArgs.Empty);
+            }
         }
 
         public void Dispose()

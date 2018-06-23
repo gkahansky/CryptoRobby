@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Crypto.Infra;
 using Crypto.Infra.Rabbit;
+using Crypto.RuleEngine.Data;
+using Crypto.RuleEngine.Patterns;
 using RabbitMQ.Client;
 
 namespace Crypto.RuleEngine
@@ -18,6 +20,7 @@ namespace Crypto.RuleEngine
         private RabbitClient Rabbit;
         private String Name;
         private IModel Model;
+        private DataRepository Repository;
         public RuleEngineService()
         {
             InitializeComponent();
@@ -28,7 +31,13 @@ namespace Crypto.RuleEngine
             var logger = new Logger("RuleEngine");
             Name = "RuleEngine";
             Config.LoadConfiguration(logger);
-            Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges);
+            Repository = new DataRepository();
+            Repository.Klines = new Queue<Kline>();
+            Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, Repository);
+            var runner = new PatternRunner(logger, Repository);
+
+            Rabbit.KlineReceived += runner.OnKlineReceived;
+
 
             Model = Rabbit.Connect();
 
@@ -36,9 +45,9 @@ namespace Crypto.RuleEngine
             logger.Log("Rule Engine Started Successfully");
             logger.Log("*********************************");
 
-            Rabbit.InitializeConsumer(Name, Model);
+            Rabbit.InitializeConsumer(Name, Model, Repository);
 
-            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            System.Timers.Timer timer = new System.Timers.Timer(100);
             timer.AutoReset = true;
             timer.Enabled = true;
 

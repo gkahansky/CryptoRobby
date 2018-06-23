@@ -14,12 +14,14 @@ namespace Crypto.RuleEngine
         string Symbol { get; set; }
         string Interval { get; set; }
         string Name { get; set; }
+        decimal DefaultStopLoss { get; }
+        decimal DynamicStopLoss { get; }
 
 
-        bool CheckPattern(decimal price, long time);
+        //bool CheckPattern(decimal price, long time);
         bool CheckPattern(Kline kline);
         void SetHighPrice(decimal price);
         Pattern.PriceForCalc DefinePriceForCalculation(IPattern p);
-        
+        void UpdateSettings(PatternConfig config);
     }
 }

@@ -18,7 +18,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
 using RabbitMQ.Client;
-
+using Crypto.RuleEngine.Patterns;
 
 namespace RobbyConsole
 {
@@ -49,12 +49,15 @@ namespace RobbyConsole
 
             //ethTicker.UpdateTicker(3);
 
-
+            //var repository = new DataRepository();
 
             Config.LoadConfiguration(logger);
-            string[] exchanges = { "BNB", "CMC" };
-            var rabbitClient = new RabbitClient(logger, "TestQueue", exchanges);
-            rabbitClient.Connect();
+
+           // var runner = new PatternRunner(logger, repository);
+
+            //string[] exchanges = { "BNB", "CMC" };
+            //var rabbitClient = new RabbitClient(logger, "TestQueue", exchanges, repository);
+            //rabbitClient.Connect();
 
             //var pFactory = new PatternFactory(logger);
             //var data = new DataHandler(logger);

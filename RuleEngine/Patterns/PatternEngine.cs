@@ -24,7 +24,8 @@ namespace Crypto.RuleEngine
             _logger = logger;
             CoinPairDict = new Dictionary<string, CoinPair>();
             Factory = new PatternFactory(_logger);
-            Patterns = new PatternRepository();
+            Patterns = new PatternRepository(_logger);
+
             StopLossCollection = new Dictionary<string, StopLossDefinition>();
             Transactions = new Dictionary<string, Transaction>();
         }
@@ -77,7 +78,7 @@ namespace Crypto.RuleEngine
             if (profitText.Length > 5)
                 profitText = profit.ToString().Substring(0, 5);
             var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
-            _logger.Log(msg);
+            _logger.Email("Sell Notice "+ t.Symbol, msg);
             Transactions.Remove(symbol);
         }
 
@@ -126,7 +127,7 @@ namespace Crypto.RuleEngine
             {
                 case "Spring":
                     {
-                        buy = p.CheckPattern(CoinPairDict[kline.Symbol].AvgPrice, kline.CloseTime);
+                        buy = p.CheckPattern(kline);
                         break;
                     }
                 case "Streak":
@@ -177,7 +178,7 @@ namespace Crypto.RuleEngine
         private void GeneratePatterns(string[] patterns)
         {
 
-            Patterns = new PatternRepository();
+            Patterns = new PatternRepository(_logger);
             Factory = new PatternFactory(_logger);
 
             foreach (var p in patterns)

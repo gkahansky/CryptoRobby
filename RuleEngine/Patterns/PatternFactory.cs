@@ -5,6 +5,7 @@ using Crypto.Infra;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Crypto.RuleEngine.Patterns;
 
 namespace Crypto.RuleEngine
 {
@@ -30,6 +31,7 @@ namespace Crypto.RuleEngine
 
             return Activator.CreateInstance(t) as IPattern;
         }
+        
 
         private Type GetTypeToCreate(string name)
         {
@@ -45,16 +47,17 @@ namespace Crypto.RuleEngine
         {
             patternsTypes = new Dictionary<string, Type>();
 
-            Type[] typesInThisAssembly = Assembly.GetExecutingAssembly().GetTypes();
+            patternsTypes.Add("Spring", typeof(SpringPattern));
+            patternsTypes.Add("Streak", typeof(StreakPattern));
+            //foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            //{
 
-            foreach(Type type in typesInThisAssembly)
-            {
-                if(type.GetInterface(typeof(IPattern).ToString()) != null)
-                {
-                    patternsTypes.Add(type.Name.ToLower(), type);
-                    _logger.Log("New Pattern added to configuration: " + type.Name);
-                }
-            }
+            //    if (type.IsSubclassOf(typeof(Pattern)))
+            //    {
+            //        patternsTypes.Add(type.Name.ToLower(), type);
+            //        _logger.Log("New Pattern added to configuration: " + type.Name);
+            //    }
+            //}
         }
 
     }

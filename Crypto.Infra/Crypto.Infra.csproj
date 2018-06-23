@@ -85,24 +85,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Coin.cs" />
-    <Compile Include="CoinCmc.cs" />
-    <Compile Include="CoinPair.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="PatternConfig.cs" />
+    <Compile Include="MarketData\Coin.cs" />
+    <Compile Include="MarketData\CoinCmc.cs" />
+    <Compile Include="MarketData\CoinPair.cs" />
+    <Compile Include="MetaData\Config.cs" />
+    <Compile Include="DataRepository.cs" />
+    <Compile Include="MetaData\PatternConfig.cs" />
     <Compile Include="Rabbit\IRabbitHandler.cs" />
-    <Compile Include="MetaDataContainer.cs" />
-    <Compile Include="EnumCollection.cs" />
-    <Compile Include="GlobalMarketData.cs" />
+    <Compile Include="MetaData\MetaDataContainer.cs" />
+    <Compile Include="MetaData\EnumCollection.cs" />
+    <Compile Include="MarketData\GlobalMarketData.cs" />
     <Compile Include="ILogger.cs" />
-    <Compile Include="Kline.cs" />
+    <Compile Include="MarketData\Kline.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\RabbitClient.cs" />
     <Compile Include="Rabbit\RabbitHandler.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="Wallet.cs" />
+    <Compile Include="NotInUse\User.cs" />
+    <Compile Include="NotInUse\Wallet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -27,7 +27,7 @@ namespace Crypto.Importer.Bnb
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
             var rabbit = new RabbitHandler(logger, "BNB");
-
+            Config.LoadConfiguration(logger);
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
             BnbImporter = new BnbCommunicator(logger,dbHandler, rabbit);
@@ -54,6 +54,7 @@ namespace Crypto.Importer.Bnb
         
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            //Config.ReloadConfiguration();
             BnbImporter.UpdateTickerPrices();
             BnbImporter.SaveCandleStickData(); 
             //BnbImporter.UpdateKlines();
