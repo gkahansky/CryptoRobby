@@ -11,10 +11,27 @@ namespace Crypto.Infra
     {
         const string pathString = @"C:\Crypto\Log\";
         public string path { get; set; }
+        private string Source { get; set; }
 
         public Logger(string source)
         {
-            this.path = pathString + source + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + ".txt";
+            this.Source = source;
+            GenerateLogPath();
+        }
+
+        private void GenerateLogPath()
+        {
+            this.path = pathString + Source + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt";
+        }
+
+        private void CheckDateChange()
+        {
+            var logDate = path.Substring(path.IndexOf('_') + 7, 2);
+            var today = DateTime.Now.ToString("dd");
+            if (logDate != today)
+            {
+                GenerateLogPath();
+            }
         }
 
         public async Task LogAsync(string msg, int severity = 1)
@@ -38,7 +55,7 @@ namespace Crypto.Infra
 
         public void Log(string msg, int severity = 1)
         {
-
+            CheckDateChange();
             using (StreamWriter sw = File.AppendText(path))
             {
                 var now = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss\t");

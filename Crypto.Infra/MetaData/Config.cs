@@ -169,19 +169,24 @@ namespace Crypto.Infra
 
             foreach (var token in patterns)
             {
-                foreach (var pair in pairs)
+                var isActive = token["IsActive"].ToString();
+                if(isActive.ToLower() == "true")
                 {
-                    foreach (var interval in intervals)
+                    foreach (var pair in pairs)
                     {
-                        var p = new PatternConfig();
-                        p = token.ToObject<PatternConfig>();
-                        p.Symbol = pair.ToString();
-                        p.Interval = interval.ToString();
-                        var hash = p.Name + "_" + p.Symbol + "_" + p.Interval;
-                        PatternsConfig.Add(hash, p);
-                        AddPairsToMonitor(p);
+                        foreach (var interval in intervals)
+                        {
+                            var p = new PatternConfig();
+                            p = token.ToObject<PatternConfig>();
+                            p.Symbol = pair.ToString();
+                            p.Interval = interval.ToString();
+                            var hash = p.Name + "_" + p.Symbol + "_" + p.Interval;
+                            PatternsConfig.Add(hash, p);
+                            AddPairsToMonitor(p);
+                        }
                     }
                 }
+                
             }
         }
 
