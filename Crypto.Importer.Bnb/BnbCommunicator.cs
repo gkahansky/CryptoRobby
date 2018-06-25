@@ -224,7 +224,7 @@ namespace Crypto.Importer.Bnb
 
         private async Task<long> CheckPairLastUpdate(CoinPair pair, string interval, long now)
         {
-            long lastUpdate = 0;
+            
             var diff = metaData.Intervals[interval] + 1000;
             if (!Config.BnbUseSql)
             {

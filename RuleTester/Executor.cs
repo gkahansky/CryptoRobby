@@ -30,20 +30,11 @@ namespace RuleTester
 
         private PatternEngine InitializeEngine(ILogger logger, PatternConfig settings)
         {
-            //var name = settings["Name"].ToString();
-
-            //var obj = settings.ToObject<JObject>();
-            //obj.Remove("Path");
-            //var patternSetting = obj.ToObject<PatternConfig>();
-
             PatternConfig = new Dictionary<string, PatternConfig>();
             PatternConfiguration(settings);
-
             var pat = NewPattern(settings.Name, logger, settings);
-            //pat.DefaultStopLossThreshold = decimal.Parse(PatternConfig["DefaultSLThreshold"].ToString());
             PatternEngine engine = new PatternEngine(logger);
             engine.Patterns.Add(pat);
-
 
             return engine;
         }

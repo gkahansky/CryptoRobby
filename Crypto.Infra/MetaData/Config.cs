@@ -31,11 +31,13 @@ namespace Crypto.Infra
         public static string[] RabbitExchanges { get; set; }
         public static Dictionary<string, string> PairsToMonitor { get; set; }
         private static ILogger _logger;
+        public static bool TestMode { get; set; }
         #endregion
 
-        public static void LoadConfiguration(ILogger logger)
+        public static void LoadConfiguration(ILogger logger, bool testMode = false)
         {
             _logger = logger;
+            TestMode = testMode;
             Parser parser = new Parser(_logger);
             //Get Configuration File Path
             Path = @"C:\Crypto\Configuration.json";

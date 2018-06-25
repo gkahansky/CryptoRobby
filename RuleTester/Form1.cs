@@ -24,7 +24,7 @@ namespace RuleTester
             InitializeComponent();
             _logger = new Logger("CryptoTesterLog");
             PopulatePatternCombo();
-            Config.LoadConfiguration(_logger);
+            Config.LoadConfiguration(_logger, true);
             RunSettings = GenerateDefaultSettings();
 
         }
@@ -60,6 +60,7 @@ namespace RuleTester
                 
                 var settings = PopulateOutputObject();
                 LogConfiguration(settings);
+                
                 var executor = new Executor();
                 executor.RunTest(_logger, settings, Path);
             }

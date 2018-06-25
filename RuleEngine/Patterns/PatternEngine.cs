@@ -34,6 +34,8 @@ namespace Crypto.RuleEngine
         {
             if (klineList.Count > 0)
             {
+                var runner = InitializeRunner(_logger, patterns);
+                var trader = new TradeEngine(_logger);
                 foreach (var kline in klineList)
                 {
                     //var price = kline.Close;
@@ -53,14 +55,16 @@ namespace Crypto.RuleEngine
                             p.SetHighPrice(kline.High);
 
                             if (buy)
-                                BuyPair(kline, patternsConfig, p.Name);
+                                //BuyPair(kline, patternsConfig, p.Name);
+                                trader.BuyPair(kline, p, p.Name);
+
 
                             else
-                                if (Transactions.Count > 0)
-                                sell = CheckStopLoss(p, kline);
+                                if (trader.Transactions.Count > 0)
+                                sell = trader.CheckStopLoss(p, kline);
 
                             if (sell)
-                                Sell(kline.Symbol, kline.Close);
+                                trader.Sell(kline.Symbol, kline.Close);
 
                         }
                     }
@@ -68,6 +72,14 @@ namespace Crypto.RuleEngine
             }
             else
                 _logger.Log("No Relevant Data found for analysis. Please check your query parameters");
+        }
+
+        private object InitializeRunner(ILogger logger, Dictionary<string, IPattern> patterns)
+        {
+            var repo = new DataRepository();
+            var runner = new PatternRunner(_logger, repo);
+
+            return runner;
         }
 
         private void Sell(string symbol, decimal price)

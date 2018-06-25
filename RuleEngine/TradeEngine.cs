@@ -33,8 +33,8 @@ namespace Crypto.RuleEngine
                 t.StopLossConfig = GenerateStopLossObject(p);
                 t.CalculateStopLoss(kline.Close);
                 Transactions.Add(t.Symbol, t);
-                var msg = String.Format("Trade: Buying {0} at {1}", t.Symbol, t.BuyPrice);
-                _logger.Email("Buy Notice " + t.Symbol, msg);
+                var msg = String.Format("Trade: Buying {0} at {1}. Pattern: {2} Interval - {3}", t.Symbol, t.BuyPrice, p.Name, p.Interval);
+                _logger.Email(string.Format("{0} Detected! Buy {1}", p.Name, t.Symbol), msg);
             }
         }
 
@@ -46,7 +46,7 @@ namespace Crypto.RuleEngine
             if (profitText.Length > 5)
                 profitText = profit.ToString().Substring(0, 5);
             var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
-            _logger.Email("Sell Notice " + t.Symbol, msg);
+            _logger.Email(string.Format("SELL notice! selling {0} at {1}% from buy price", t.Symbol, profitText), msg);
             Transactions.Remove(symbol);
         }
 

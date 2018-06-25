@@ -10,10 +10,10 @@ namespace Crypto.RuleEngine.Patterns
     public class PatternRunner
     {
         private ILogger _logger;
-        private Dictionary<string, IPattern> PatternRepository;
+        public Dictionary<string, IPattern> PatternRepository;
         private Dictionary<string, CoinPair> CoinPairDict;
-        private DataRepository KlineRepository;
-        private TradeEngine Trade;
+        public  DataRepository KlineRepository;
+        public TradeEngine Trade;
 
         public PatternRunner(ILogger logger, DataRepository repository)
         {
