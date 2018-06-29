@@ -1,15 +1,15 @@
-﻿using Crypto.Infra;
-using Crypto.Importer;
+﻿using CryptoRobert.Infra;
+using CryptoRobert.Importer;
 using System.Threading;
 using System.Configuration;
 using System;
 using System.Collections.Generic;
-using Crypto.Infra.Data;
-using Crypto.Infra.Rabbit;
-using Crypto.Importer.Cmc;
-using Crypto.Importer.Bnb;
-using Crypto.Importer.Base;
-using Crypto.RuleEngine;
+using CryptoRobert.Infra.Data;
+using CryptoRobert.Infra.Rabbit;
+using CryptoRobert.Importer.Cmc;
+using CryptoRobert.Importer.Bnb;
+using CryptoRobert.Importer.Base;
+using CryptoRobert.RuleEngine;
 using M3C.Finance.BinanceSdk;
 using M3C.Finance.BinanceSdk.Methods;
 using System.Data.SqlClient;
@@ -18,13 +18,13 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
 using RabbitMQ.Client;
-using Crypto.RuleEngine.Patterns;
+using CryptoRobert.RuleEngine.Patterns;
 
 namespace RobbyConsole
 {
     class Program
     {
-        private readonly IDbHandler _dbHandler;
+        private  static IDbHandler _dbHandler;
         private readonly IDataHandler dataHandler;
 
         static IEnumerable<CoinPair> GetNext(CoinPair pair)
@@ -53,7 +53,7 @@ namespace RobbyConsole
 
             Config.LoadConfiguration(logger);
 
-           // var runner = new PatternRunner(logger, repository);
+            // var runner = new PatternRunner(logger, repository);
 
             //string[] exchanges = { "BNB", "CMC" };
             //var rabbitClient = new RabbitClient(logger, "TestQueue", exchanges, repository);
@@ -92,15 +92,15 @@ namespace RobbyConsole
 
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             var rabbit = new RabbitHandler(logger, "BNB");
-            var dbl = new DbHandler(logger);
+            var dbl= new DbHandler(logger);
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             //MetaData meta = new MetaData();
 
-
+            _dbHandler = dbl;
             //Config.LoadConfiguration(logger);
 
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-            var bnb = new BnbCommunicator(logger, dbl, rabbit);
+            var bnb = new BnbCommunicator(logger, _dbHandler, rabbit);
             bnb.UpdateTickerPrices();
             bnb.SaveCandleStickData();
             Console.ReadKey();

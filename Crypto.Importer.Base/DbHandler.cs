@@ -5,10 +5,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
-using Crypto.Infra;
-using Crypto.Infra.Data;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Data;
 
-namespace Crypto.Importer.Base
+namespace CryptoRobert.Importer.Base
 {
     public class DbHandler : IDbHandler
     {

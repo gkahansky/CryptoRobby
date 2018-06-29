@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public class Wallet
     {

@@ -1,4 +1,4 @@
-﻿namespace Crypto.RuleEngine
+﻿namespace CryptoRobert.RuleEngine
 {
     partial class RuleEngineService
     {

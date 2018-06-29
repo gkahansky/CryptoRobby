@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
-using Crypto.RuleEngine.Patterns;
+using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine.Patterns;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public interface IPattern
     {
@@ -16,6 +16,8 @@ namespace Crypto.RuleEngine
         string Name { get; set; }
         decimal DefaultStopLoss { get; }
         decimal DynamicStopLoss { get; }
+        decimal DefaultStopLossThreshold { get; }
+        decimal DynamicStopLossThreshold { get; }
 
 
         //bool CheckPattern(decimal price, long time);

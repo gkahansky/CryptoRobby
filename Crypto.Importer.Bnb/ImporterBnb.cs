@@ -7,11 +7,11 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.IO;
 using System.Threading.Tasks;
-using Crypto.Infra;
-using Crypto.Infra.Rabbit;
-using Crypto.Importer.Base;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Rabbit;
+using CryptoRobert.Importer.Base;
 
-namespace Crypto.Importer.Bnb
+namespace CryptoRobert.Importer.Bnb
 {
     public partial class ImporterBnb : ServiceBase
     {

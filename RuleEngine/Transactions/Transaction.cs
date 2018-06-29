@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine.Transactions
+namespace CryptoRobert.RuleEngine.Transactions
 {
     public class Transaction
     {
@@ -34,7 +34,13 @@ namespace Crypto.RuleEngine.Transactions
         private void CalculateDynamicStopLoss(decimal price)
         {
             if (StopLossConfig.DynamicSLThreshold > 0)
-                StopLossConfig.DynamicStopLoss = HighPrice - (HighPrice * StopLossConfig.DynamicSLThreshold);
+            {
+                if (HighPrice > (BuyPrice + BuyPrice * StopLossConfig.DynamicSLThreshold))
+                    StopLossConfig.DynamicStopLoss = HighPrice - (HighPrice * StopLossConfig.DynamicSLThreshold);
+                else
+                    StopLossConfig.DynamicStopLoss = StopLossConfig.DefaultStopLoss;
+            }
+                
             else
                 StopLossConfig.DynamicStopLoss = HighPrice - (HighPrice * 0.05m);
         }

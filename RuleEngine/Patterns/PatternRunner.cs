@@ -1,11 +1,11 @@
-﻿using Crypto.Infra;
+﻿using CryptoRobert.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine.Patterns
+namespace CryptoRobert.RuleEngine.Patterns
 {
     public class PatternRunner
     {
@@ -37,26 +37,28 @@ namespace Crypto.RuleEngine.Patterns
             {
                 var patternRepo = new Dictionary<string, IPattern>();
                 var factory = new PatternFactory(_logger);
-
-                foreach (var c in Config.PatternsConfig)
+                if (!Config.TestMode)
                 {
-                    var type = c.Key.Substring(0, c.Key.IndexOf('_'));
-
-                    switch (type)
+                    foreach (var c in Config.PatternsConfig)
                     {
-                        case "Spring":
-                            {
-                                patternRepo.Add(c.Key, new SpringPattern(_logger, c.Value));
-                                break;
-                            }
-                        case "Streak":
-                            {
-                                patternRepo.Add(c.Key, new StreakPattern(_logger, c.Value));
-                                break;
-                            }
+                        var type = c.Key.Substring(0, c.Key.IndexOf('_'));
+
+                        switch (type)
+                        {
+                            case "Spring":
+                                {
+                                    patternRepo.Add(c.Key, new SpringPattern(_logger, c.Value));
+                                    break;
+                                }
+                            case "Streak":
+                                {
+                                    patternRepo.Add(c.Key, new StreakPattern(_logger, c.Value));
+                                    break;
+                                }
+                        }
                     }
                 }
-
+                
                 return patternRepo;
             }
             catch (Exception e)

@@ -4,10 +4,10 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
-using Crypto.RuleEngine;
+using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine;
 
-namespace Crypto.Importer.Bnb
+namespace CryptoRobert.Importer.Bnb
 {
     static class Program
     {

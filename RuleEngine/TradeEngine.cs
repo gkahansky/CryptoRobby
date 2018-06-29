@@ -1,12 +1,14 @@
-﻿using Crypto.Infra;
-using Crypto.RuleEngine.Transactions;
+﻿using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine.Transactions;
+using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public class TradeEngine
     {
@@ -53,8 +55,8 @@ namespace Crypto.RuleEngine
         public StopLossDefinition GenerateStopLossObject(IPattern p)//PatternConfig settings)
         {
             var sl = new StopLossDefinition();
-            sl.DefaultStopLossThreshold = p.DefaultStopLoss;
-            sl.DynamicSLThreshold = p.DynamicStopLoss;
+            sl.DefaultStopLossThreshold = p.DefaultStopLossThreshold;
+            sl.DynamicSLThreshold = p.DynamicStopLossThreshold;
             return sl;
         }
 

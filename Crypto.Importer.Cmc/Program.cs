@@ -4,9 +4,9 @@ using System.IO;
 using System.ServiceProcess;
 using System.Timers;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.Importer.Cmc
+namespace CryptoRobert.Importer.Cmc
 {
     static class Program
     {

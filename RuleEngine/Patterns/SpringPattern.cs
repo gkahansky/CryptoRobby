@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using Newtonsoft.Json.Linq;
 
-namespace Crypto.RuleEngine.Patterns
+namespace CryptoRobert.RuleEngine.Patterns
 {
     public class SpringPattern : Pattern
     {
@@ -39,7 +39,7 @@ namespace Crypto.RuleEngine.Patterns
             LastPrice = 0;
             _logger = logger;
             DefaultStopLossThreshold = settings.DefaultStopLoss;
-            DynamicSLThreshold = settings.DynamicStopLoss;
+            DynamicStopLossThreshold = settings.DynamicStopLoss;
         }
 
         public override bool CheckPattern(Kline kline)

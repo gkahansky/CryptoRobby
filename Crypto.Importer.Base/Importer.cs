@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using RabbitMQ.Client;
 
-namespace Crypto.Importer.Base
+namespace CryptoRobert.Importer.Base
 {
     public abstract class Importer
     {

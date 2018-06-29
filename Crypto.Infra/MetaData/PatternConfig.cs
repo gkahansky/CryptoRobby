@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public class PatternConfig
     {
@@ -16,5 +16,21 @@ namespace Crypto.Infra
         public bool IsActive { get; set; }
         public string Symbol { get; set; }
         public string Interval { get; set; }
+
+        public PatternConfig()
+        {
+        }
+
+        public PatternConfig(string name, string symbol, string interval, bool IsActive = false, decimal threshold = 0.03m, int retention=10, decimal defaultSl=0.05m, decimal dynamicSl=0.05m )
+        {
+            Name = name;
+            Symbol = symbol;
+            Interval = interval;
+            IsActive = IsActive;
+            Threshold = threshold;
+            Retention = retention;
+            DefaultStopLoss = defaultSl;
+            DynamicStopLoss = dynamicSl;
+        }
     }
 }

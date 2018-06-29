@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using System.Data.SqlClient;
-namespace Crypto.Importer.Cmc
+namespace CryptoRobert.Importer.Cmc
 {
     public class CoinContext : DbContext
     {

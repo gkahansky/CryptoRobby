@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public class Kline
     {

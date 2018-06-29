@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public class Parser
     {

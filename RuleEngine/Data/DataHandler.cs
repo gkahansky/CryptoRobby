@@ -1,10 +1,10 @@
 ﻿using System;
-using Crypto.Infra;
-using Crypto.Infra.Data;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Data;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public class DataHandler : IDataHandler
     {

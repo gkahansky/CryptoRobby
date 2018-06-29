@@ -88,7 +88,7 @@
     <Compile Include="MarketData\Coin.cs" />
     <Compile Include="MarketData\CoinCmc.cs" />
     <Compile Include="MarketData\CoinPair.cs" />
-    <Compile Include="MetaData\Config.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="DataRepository.cs" />
     <Compile Include="MetaData\PatternConfig.cs" />
     <Compile Include="Rabbit\IRabbitHandler.cs" />

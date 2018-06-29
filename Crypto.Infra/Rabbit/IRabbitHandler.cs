@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using RabbitMQ.Client;
 
-namespace Crypto.Infra.Rabbit
+namespace CryptoRobert.Infra.Rabbit
 {
     public interface IRabbitHandler
     {

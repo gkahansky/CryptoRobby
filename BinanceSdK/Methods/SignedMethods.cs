@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using M3C.Finance.BinanceSdk.ResponseObjects;
 using M3C.Finance.BinanceSdk.Enumerations;
 

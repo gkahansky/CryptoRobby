@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
-using Crypto.RuleEngine.Transactions;
-using Crypto.RuleEngine.Patterns;
+using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine.Transactions;
+using CryptoRobert.RuleEngine.Patterns;
 using Newtonsoft.Json.Linq;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public class PatternEngine
     {
@@ -35,6 +35,7 @@ namespace Crypto.RuleEngine
             if (klineList.Count > 0)
             {
                 var runner = InitializeRunner(_logger, patterns);
+                
                 var trader = new TradeEngine(_logger);
                 foreach (var kline in klineList)
                 {
@@ -55,7 +56,6 @@ namespace Crypto.RuleEngine
                             p.SetHighPrice(kline.High);
 
                             if (buy)
-                                //BuyPair(kline, patternsConfig, p.Name);
                                 trader.BuyPair(kline, p, p.Name);
 
 

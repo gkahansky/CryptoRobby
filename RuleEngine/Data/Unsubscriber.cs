@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.RuleEngine.Data
+namespace CryptoRobert.RuleEngine.Data
 {
     internal class Unsubscriber : IDisposable
     {

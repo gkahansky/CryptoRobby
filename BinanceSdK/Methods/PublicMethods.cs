@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using M3C.Finance.BinanceSdk.Enumerations;
 using M3C.Finance.BinanceSdk.ResponseObjects;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
 
 namespace M3C.Finance.BinanceSdk.Methods

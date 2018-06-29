@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.Infra.Rabbit
+namespace CryptoRobert.Infra.Rabbit
 {
     public class RabbitHandler : IRabbitHandler
     {

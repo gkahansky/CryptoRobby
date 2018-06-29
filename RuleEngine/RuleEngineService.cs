@@ -7,13 +7,13 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
-using Crypto.Infra.Rabbit;
-using Crypto.RuleEngine.Data;
-using Crypto.RuleEngine.Patterns;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Rabbit;
+using CryptoRobert.RuleEngine.Data;
+using CryptoRobert.RuleEngine.Patterns;
 using RabbitMQ.Client;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     partial class RuleEngineService : ServiceBase
     {

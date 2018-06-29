@@ -8,12 +8,12 @@ using System.ServiceProcess;
 using System.Timers;
 using System.Threading.Tasks;
 using System.Threading;
-using Crypto.Infra;
-using Crypto.Importer.Base;
-using Crypto.RuleEngine;
+using CryptoRobert.Infra;
+using CryptoRobert.Importer.Base;
+using CryptoRobert.RuleEngine;
 using System.Reflection;
 
-namespace Crypto.Importer.Cmc
+namespace CryptoRobert.Importer.Cmc
 {
     public partial class ImporterCmc : ServiceBase
     {

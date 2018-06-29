@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public static class Config
     {

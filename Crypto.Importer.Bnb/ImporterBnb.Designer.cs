@@ -1,4 +1,4 @@
-﻿namespace Crypto.Importer.Bnb
+﻿namespace CryptoRobert.Importer.Bnb
 {
     partial class ImporterBnb
     {

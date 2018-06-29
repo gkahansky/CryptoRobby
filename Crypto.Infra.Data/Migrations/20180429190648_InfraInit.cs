@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace Crypto.Infra.Data.Migrations
+namespace CryptoRobert.Infra.Data.Migrations
 {
     public partial class InfraInit : Migration
     {

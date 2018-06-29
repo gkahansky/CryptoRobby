@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using M3C.Finance.BinanceSdk;
 using M3C.Finance.BinanceSdk.Methods;
 using M3C.Finance.BinanceSdk.ResponseObjects;
-using Crypto.Infra;
-using Crypto.Infra.Rabbit;
-using Crypto.Importer.Base;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Rabbit;
+using CryptoRobert.Importer.Base;
 using System.Configuration;
 using RabbitMQ.Client;
 
-namespace Crypto.Importer.Bnb
+namespace CryptoRobert.Importer.Bnb
 {
     public class BnbCommunicator : Base.Importer
     {

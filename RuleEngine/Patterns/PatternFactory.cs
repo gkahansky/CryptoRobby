@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.RuleEngine.Patterns;
+using CryptoRobert.RuleEngine.Patterns;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public class PatternFactory 
     {

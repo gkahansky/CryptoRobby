@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.RuleEngine
+namespace CryptoRobert.RuleEngine
 {
     public class CoinMonitor 
     {

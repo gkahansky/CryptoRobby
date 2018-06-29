@@ -1,4 +1,4 @@
-﻿namespace Crypto.Importer.Cmc
+﻿namespace CryptoRobert.Importer.Cmc
 {
     partial class ImporterCmc
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra;
+using CryptoRobert.Infra;
 
-namespace Crypto.Importer.Bnb
+namespace CryptoRobert.Importer.Bnb
 {
     static class Program
     {

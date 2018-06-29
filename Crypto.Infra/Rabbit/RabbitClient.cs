@@ -8,7 +8,7 @@ using RabbitMQ.Client.Events;
 using Newtonsoft.Json;
 using System.Threading;
 
-namespace Crypto.Infra.Rabbit
+namespace CryptoRobert.Infra.Rabbit
 {
     public class RabbitClient
     {

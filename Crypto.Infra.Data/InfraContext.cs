@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Crypto.Infra.Data
+namespace CryptoRobert.Infra.Data
 {
     public class InfraContext : DbContext
     {

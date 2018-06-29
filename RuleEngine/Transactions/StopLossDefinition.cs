@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine.Transactions
+namespace CryptoRobert.RuleEngine.Transactions
 {
     public class StopLossDefinition
     {

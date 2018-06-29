@@ -4,10 +4,10 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Crypto.Importer.Base;
-using Crypto.Infra;
+using CryptoRobert.Importer.Base;
+using CryptoRobert.Infra;
 
-namespace Crypto.Importer.Cmc
+namespace CryptoRobert.Importer.Cmc
 {
     public class CmcCommunicator : Base.Importer
     {

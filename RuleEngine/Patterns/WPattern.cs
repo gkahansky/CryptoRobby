@@ -3,10 +3,10 @@
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
-//using Crypto.Infra;
+//using CryptoRobert.Infra;
 //using Newtonsoft.Json.Linq;
 
-//namespace Crypto.RuleEngine.Patterns
+//namespace CryptoRobert.RuleEngine.Patterns
 //{
 //    public class WPattern : IPattern
 //    {

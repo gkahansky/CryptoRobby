@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Crypto.Infra
+namespace CryptoRobert.Infra
 {
     public class Logger : ILogger
     {
@@ -74,32 +74,30 @@ namespace Crypto.Infra
 
         public void Email(string subject, string body)
         {
-            if (!Config.TestMode)
+            try
             {
-                try
-                {
-                    System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
-                    client.Host = "smtp.gmail.com";
-                    client.UseDefaultCredentials = false;
-                    client.EnableSsl = true;
-                    client.Credentials = new System.Net.NetworkCredential("Shlomansky", "gl23TN45!");
-                    client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-                    System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage("Shlomansky@gmail.com", "Shlomansky@gmail.com");
-                    message.Subject = subject;
-                    message.Body = body;
+                System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
+                client.Host = "smtp.gmail.com";
+                client.UseDefaultCredentials = false;
+                client.EnableSsl = true;
+                client.Credentials = new System.Net.NetworkCredential("Shlomansky", "gl23TN45!");
+                client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage("Shlomansky@gmail.com", "Shlomansky@gmail.com");
+                message.Subject = subject;
+                message.Body = body;
 
-                    message.BodyEncoding = System.Text.Encoding.UTF8;
-                    message.IsBodyHtml = true;
+                message.BodyEncoding = System.Text.Encoding.UTF8;
+                message.IsBodyHtml = true;
 
-
+                if (!Config.TestMode)
                     client.Send(message);
-                    Log(body);
-                }
-                catch (Exception e)
-                {
-                    Log(e.ToString());
-                }
+                Log(body);
             }
+            catch (Exception e)
+            {
+                Log(e.ToString());
+            }
+
         }
 
     }
