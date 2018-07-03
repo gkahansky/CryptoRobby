@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CryptoRobert.Infra;
 using Newtonsoft.Json.Linq;
 
-namespace CryptoRobert.RuleEngine.Patterns
+namespace CryptoRobert.Infra.Patterns
 {
     public class StreakPattern : Pattern
     {

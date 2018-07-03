@@ -120,14 +120,8 @@
     <Compile Include="NotInUse\CoinPairTicker.cs" />
     <Compile Include="Data\DataHandler.cs" />
     <Compile Include="Data\IDbHandler.cs" />
-    <Compile Include="Patterns\IPattern.cs" />
     <Compile Include="Patterns\PatternFactory.cs" />
-    <Compile Include="Patterns\Pattern.cs" />
-    <Compile Include="Patterns\PatternRepository.cs" />
     <Compile Include="Patterns\PatternRunner.cs" />
-    <Compile Include="Patterns\SpringPattern.cs" />
-    <Compile Include="Patterns\StreakPattern.cs" />
-    <Compile Include="Patterns\WPattern.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Patterns\PatternEngine.cs" />

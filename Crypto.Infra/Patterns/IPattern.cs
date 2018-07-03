@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
-using CryptoRobert.RuleEngine.Patterns;
 
-namespace CryptoRobert.RuleEngine
+
+namespace CryptoRobert.Infra.Patterns
 {
     public interface IPattern
     {

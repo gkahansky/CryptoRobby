@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CryptoRobert.RuleEngine.Patterns
+namespace CryptoRobert.Infra.Patterns
 {
     public class PatternRepository 
     {

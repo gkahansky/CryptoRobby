@@ -1,7 +1,6 @@
 ﻿using CryptoRobert.Infra;
 using CryptoRobert.RuleEngine.Transactions;
-using CryptoRobert.Infra;
-using CryptoRobert.RuleEngine.Transactions;
+using CryptoRobert.Infra.Patterns;
 using System;
 using System.Collections.Generic;
 using System.Linq;

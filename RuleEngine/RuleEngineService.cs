@@ -35,7 +35,8 @@ namespace CryptoRobert.RuleEngine
             Repository.Klines = new Queue<Kline>();
             Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, Repository);
             var runner = new PatternRunner(logger, Repository);
-
+            var dbHandler = new DataHandler(logger);
+            dbHandler.SavePatterns(runner.PatternRepository);
             Rabbit.KlineReceived += runner.OnKlineReceived;
 
 

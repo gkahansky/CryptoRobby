@@ -5,7 +5,7 @@ using CryptoRobert.Infra;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoRobert.RuleEngine.Patterns;
+using CryptoRobert.Infra.Patterns;
 
 namespace CryptoRobert.RuleEngine
 {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
+using CryptoRobert.Infra.Patterns;
 using CryptoRobert.RuleEngine.Transactions;
 using CryptoRobert.RuleEngine.Patterns;
 using Newtonsoft.Json.Linq;

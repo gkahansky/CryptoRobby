@@ -19,12 +19,13 @@ using System.IO;
 using System.Reflection;
 using RabbitMQ.Client;
 using CryptoRobert.RuleEngine.Patterns;
+using CryptoRobert.Infra.Patterns;
 
 namespace RobbyConsole
 {
     class Program
     {
-        private  static IDbHandler _dbHandler;
+        private static IDbHandler _dbHandler;
         private readonly IDataHandler dataHandler;
 
         static IEnumerable<CoinPair> GetNext(CoinPair pair)
@@ -38,6 +39,10 @@ namespace RobbyConsole
 
 
             var logger = new Logger("Robby");
+
+ 
+
+
             //var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
 
             //var ethMonitor = new CoinMonitor(logger);
@@ -52,8 +57,22 @@ namespace RobbyConsole
             //var repository = new DataRepository();
 
             Config.LoadConfiguration(logger);
+            //var repo = new DataRepository();
 
-            // var runner = new PatternRunner(logger, repository);
+            //var runner = new PatternRunner(logger,repo);
+
+            //SqlConnection con = new SqlConnection(Config.SqlConnectionString);
+
+            //con.Open();
+            //foreach (var item in runner.PatternRepository)
+            //{
+            //    var p = new PatternView(item.Value);
+            //    var commandString = string.Format(@"EXECUTE [dbo].[SavePatterns] '{0}', '{1}', '{2}', {3}, {4}", p.Name, p.Symbol, p.Interval, p.DefaultStopLossThreshold, p.DynamicStopLossThreshold);
+            //    SqlCommand command = new SqlCommand(commandString, con);
+            //    logger.Log(command.ToString());
+            //    command.ExecuteNonQuery();
+            //}
+            //con.Close();
 
             //string[] exchanges = { "BNB", "CMC" };
             //var rabbitClient = new RabbitClient(logger, "TestQueue", exchanges, repository);
@@ -92,7 +111,7 @@ namespace RobbyConsole
 
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             var rabbit = new RabbitHandler(logger, "BNB");
-            var dbl= new DbHandler(logger);
+            var dbl = new DbHandler(logger);
             //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
             //MetaData meta = new MetaData();
 

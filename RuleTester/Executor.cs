@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using CryptoRobert.Infra;
 using CryptoRobert.RuleEngine;
-using CryptoRobert.RuleEngine.Patterns;
+using CryptoRobert.Infra.Patterns;
 using CryptoRobert.RuleEngine.Transactions;
 using Newtonsoft.Json.Linq;
 
