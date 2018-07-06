@@ -26,7 +26,7 @@ namespace CryptoRobert.RuleEngine
         {
             if (Transactions.ContainsKey(kline.Symbol))
             {
-                _logger.Log("Not Buying since we already baught it");
+                _logger.Info("Not Buying since we already baught it");
             }
             else
             {

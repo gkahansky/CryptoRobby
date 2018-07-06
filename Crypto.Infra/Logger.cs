@@ -36,39 +36,60 @@ namespace CryptoRobert.Infra
 
         public async Task LogAsync(string msg, int severity = 1)
         {
-
-            using (StreamWriter sw = File.AppendText(path))
-            {
-                var now = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss\t");
-                sw.WriteLine(now + msg);
-                switch (severity)
-                {
-                    case 0:
-                        break;
-                    default:
-                        Console.WriteLine(now + msg);
-                        break;
-                }
-
-            }
+            Log(msg, severity);
         }
 
-        public void Log(string msg, int severity = 1)
+        public void Debug(string msg)
+        {
+            Log(msg, 0);
+        }
+
+        public void Info(string msg)
+        {
+            Log(msg, 1);
+        }
+
+        public void Warning(string msg)
+        {
+            Log(msg, 2);
+        }
+
+        public void Error(string msg)
+        {
+            Log(msg, 3);
+        }
+
+        private void Log(string msg, int severity = 1)
         {
             CheckDateChange();
             using (StreamWriter sw = File.AppendText(path))
             {
                 var now = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss\t");
-                sw.WriteLine(now + msg);
+
+                var logPrefix = now + "\tINFO\t";
                 switch (severity)
                 {
                     case 0:
+                        logPrefix = now + "\tDEBUG\t";
+                        break;
+                    case 1:
+                        logPrefix = now + "\tINFO\t";
+                        Console.WriteLine(now + msg);
+                        break;
+                    case 2:
+                        logPrefix = now + "\tWARNING\t";
+                        Console.WriteLine(now + msg);
+                        break;
+                    case 3:
+                        logPrefix = now + "\tERROR\t";
+                        Console.WriteLine(now + msg);
                         break;
                     default:
                         Console.WriteLine(now + msg);
                         break;
                 }
-
+                if(severity >= Config.LogSeverity)
+                    sw.WriteLine(logPrefix + msg);
             }
         }
 
@@ -95,7 +116,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                Log(e.ToString());
+                Error(e.ToString());
             }
 
         }

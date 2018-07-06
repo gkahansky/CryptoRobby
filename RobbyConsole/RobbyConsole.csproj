@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Crypto.Importer.Cmc\Crypto.Importer.Cmc.csproj" />
     <ProjectReference Include="..\Crypto.Infra.Data\Crypto.Infra.Data.csproj" />
     <ProjectReference Include="..\Crypto.Infra\Crypto.Infra.csproj" />
+    <ProjectReference Include="..\DBLoader\Crypto.DBLoader.csproj" />
     <ProjectReference Include="..\RuleEngine\Crypto.RuleEngine.csproj" />
   </ItemGroup>
 

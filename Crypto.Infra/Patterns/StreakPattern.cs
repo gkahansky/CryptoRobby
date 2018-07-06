@@ -66,13 +66,13 @@ namespace CryptoRobert.Infra.Patterns
                 {
                     Streak += 1;
                     var msg = String.Format("Streak Forming {5} {6}! Average Price: {0}, Current Price: {1}, Last Price: {2} Streak: {3}, Time: {4}", avgPrice, price, LastPrice, Streak, TickTime, this.Symbol, this.Interval);
-                    _logger.Log(msg);
+                    _logger.Info(msg);
                 }
                 else
                 {
                     Streak = 0;
                     var msg = String.Format("Streak Ended {5} {6}! Average Price: {0}, Current Price: {1}, Last Price: {2} Streak: {3}, Time: {4}", avgPrice, price, LastPrice, Streak, TickTime, this.Symbol, this.Interval);
-                    _logger.Log(msg);
+                    _logger.Info(msg);
                 }
             }
 
@@ -80,7 +80,7 @@ namespace CryptoRobert.Infra.Patterns
             {
                 result = true;
                 var msg = String.Format("Streak Achieved {5} {6}! Average Price: {0}, Current Price: {1}, Last Price: {2} Streak: {3}, Time: {4}", avgPrice, price, LastPrice, Streak, TickTime, this.Symbol, this.Interval);
-                _logger.Log(msg);
+                _logger.Info(msg);
             }
 
             LastPrice = kline.Close;

@@ -72,7 +72,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to Parse MarketData Statistics.\n" + e.ToString());
+                _logger.Error("Failed to Parse MarketData Statistics.\n" + e.ToString());
                 return null;
             }
         }
@@ -86,7 +86,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to parse text to json.\n" + e.ToString());
+                _logger.Error("Failed to parse text to json.\n" + e.ToString());
                 return null;
             }
         }
@@ -123,7 +123,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to parse klines from text to kline list.\n" + e.ToString());
+                _logger.Error("Failed to parse klines from text to kline list.\n" + e.ToString());
                 return null;
             }
         }
@@ -146,13 +146,13 @@ namespace CryptoRobert.Infra
                     pairList.Add(pair);
                 }
 
-                _logger.Log(String.Format("{0} pairs received from Binance", pairList.Count));
+                _logger.Info(String.Format("{0} pairs received from Binance", pairList.Count));
 
                 return pairList;
             }
             catch (Exception e)
             {
-                _logger.Log("Parser failed to parse coin pairs from text to CoinPair list.\n" + e.ToString());
+                _logger.Error("Parser failed to parse coin pairs from text to CoinPair list.\n" + e.ToString());
                 return null;
             }
         }
@@ -200,7 +200,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to Parse klines to Jsons.\n" + e.ToString());
+                _logger.Error("Failed to Parse klines to Jsons.\n" + e.ToString());
                 return null;
             }
         }
@@ -233,7 +233,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to Parse JObject to CandleSticks.\n" + e.ToString());
+                _logger.Error("Failed to Parse JObject to CandleSticks.\n" + e.ToString());
                 return null;
             }
         }

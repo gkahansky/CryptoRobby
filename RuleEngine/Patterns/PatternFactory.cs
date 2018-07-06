@@ -55,7 +55,7 @@ namespace CryptoRobert.RuleEngine
             //    if (type.IsSubclassOf(typeof(Pattern)))
             //    {
             //        patternsTypes.Add(type.Name.ToLower(), type);
-            //        _logger.Log("New Pattern added to configuration: " + type.Name);
+            //        _logger.Info("New Pattern added to configuration: " + type.Name);
             //    }
             //}
         }

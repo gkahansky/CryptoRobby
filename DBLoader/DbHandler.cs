@@ -7,32 +7,61 @@ using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
 using CryptoRobert.Infra;
 using CryptoRobert.Infra.Data;
+using System.Timers;
+using CryptoRobert.Infra.Rabbit;
 
-namespace CryptoRobert.Importer.Base
+namespace CryptoRobert.DBLoader
 {
+
     public class DbHandler : IDbHandler
     {
         private readonly ILogger _logger;
+        public DataRepository KlineRepository;
+        private List<Kline> klineList { get; set; }
+        //private InfraContext context;
 
-        public DbHandler(ILogger logger)
+        public DbHandler(ILogger logger, DataRepository repository)
         {
             _logger = logger;
-            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            klineList = new List<Kline>();
+            KlineRepository = repository;
+            //context = new InfraContext();
+            Timer timer = new Timer(1000);
             timer.AutoReset = true;
             timer.Enabled = true;
 
             timer.Elapsed += Timer_Elapsed;
         }
 
-        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-                while (MetaDataContainer.KlineQueue.Count > 0)
-                {
-                    var list = MetaDataContainer.KlineQueue.Dequeue();
-                    //SaveKlines(list);
-                }
-
+            if (klineList.Count() > 0)
+            {
+                _logger.Debug(string.Format("Saving {0} klines", klineList.Count()));
+                SaveKlines(klineList);
+            }
         }
+
+
+        public void OnKlineReceived(object source, EventArgs e)
+        {
+            var kline = (KlineRepository.Klines.Peek());
+            SaveKline(kline);
+            _logger.Debug(string.Format("Kline Received: {0}, {1}, {2}, {3}", kline.Symbol, kline.Interval, kline.OpenTime, kline.Close));
+            KlineRepository.Klines.Dequeue();
+        }
+
+        private void SaveKline(Kline kline)
+        {
+            klineList.Add(kline);
+            if (klineList.Count() > 1000)
+            {
+                SaveKlines(klineList);
+                klineList = new List<Kline>();
+            }
+        }
+
+
         #region CMC Methods
         public void SaveCoin(string symbol, string name)
         {
@@ -87,41 +116,30 @@ namespace CryptoRobert.Importer.Base
             _logger.Info(String.Format("{0} Coin Pairs updated in database", numOfRows * -1));
         }
 
-        //public void SaveKlines(List<Kline> klines)
-        //{
-        //    if (klines.Count > 0)
-        //    {
-        //        int numOfRows = 0;
-        //        int state = 0;
-        //        try
-        //        {
-                    
-        //            using (var context = new InfraContext())
-        //            {
-        //                foreach (var kline in klines)
-        //                {
-        //                    context.Klines.Add(kline);
-        //                    numOfRows += 1;
-        //                }
-        //                state = context.SaveChanges();
-        //            }
-        //            _logger.Info(String.Format("{0} klines updated in database for {1} {2}", numOfRows, klines[0].Symbol, klines[0].Interval));
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            _logger.Error(String.Format("Failed to save klines to database.\nSymbol: {0}, Interval: {1},\nOpen/Close Time: {2}/{3}\nOpen/Close: {4}/{5},\nHigh/Low: {6}/{7}\nVolume: {8}\n{9}",
-        //                klines[numOfRows].Symbol, klines[numOfRows].Interval
-        //                , klines[numOfRows].OpenTime, klines[numOfRows].CloseTime
-        //                , klines[numOfRows].Open, klines[numOfRows].Close
-        //                , klines[numOfRows].High, klines[numOfRows].Low
-        //                , klines[numOfRows].Volume
-        //                , e.ToString()));
-        //        }
-        //    }
-        //    else
-        //        _logger.Info("No new data received for current interval");
-        //}
+        public void SaveKlines(List<Kline> klines)
+        {
+            var numOfKlines = klines.Count();
+            if(numOfKlines > 0)
+            {
+                try
+                {
+                    using (var context = new InfraContext())
+                    {
+                        context.Klines.AddRange(klines);
+                        klines.RemoveRange(0, numOfKlines);
+                        context.SaveChanges();
+                    }
+                    _logger.Info(String.Format("{0} klines updated in database for {1} {2}", klines.Count(), klines[0].Symbol, klines[0].Interval));
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(String.Format("Failed to save klines to database. Symbol: {0}, Interval: {1}.\n{3}", klines[0].Symbol, klines[0].Interval, e.ToString()));
+                }
+                
+            }
 
+        }
+        
         #endregion
 
         #region Generic Methods
@@ -160,6 +178,9 @@ namespace CryptoRobert.Importer.Base
                     {
                         lastupdate = 0;
                     }
+
+
+                    //var last = context.Klines.FromSql("GetLastUpdateBySymbolAndInterval @Symbol = {0}, @Interval = {1}", symbol, interval);
                     return lastupdate;
                 }
 
@@ -187,6 +208,22 @@ namespace CryptoRobert.Importer.Base
 
         }
 
+        //public void SaveWalletsToDatabase(List<Wallet> wallets)
+        //{
+        //    if (wallets.Count() > 0)
+        //    {
+
+        //        using (var context = new InfraContext())
+        //        {
+        //            foreach (var w in wallets)
+        //            {
+        //                context.Database.ExecuteSqlCommand
+        //                ("SaveWallet @Symbol={0}, @UserId={1}, @ExchangeId={2], @Free={3}, @Locked={4}",
+        //                w.Symbol, w.UserId, w.Exchange, w.QuantityFree, w.QuantityLocked);
+        //            }
+        //        }
+        //    }
+        //}
         #endregion
 
 

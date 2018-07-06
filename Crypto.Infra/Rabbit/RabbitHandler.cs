@@ -20,7 +20,7 @@ namespace CryptoRobert.Infra.Rabbit
         {
             _logger = logger;
             Exchange = exchange;
-            _logger.Log("RabbitHandler Initiating");
+            _logger.Info("RabbitHandler Initiating");
         }
 
 
@@ -37,11 +37,11 @@ namespace CryptoRobert.Infra.Rabbit
 
                 Model.ExchangeDeclare(this.Exchange, ExchangeType.Topic);
 
-                _logger.Log("RabbitMQ Connection Established.");
+                _logger.Info("RabbitMQ Connection Established.");
             }
             catch (Exception e)
             {
-                _logger.Log("Connection to RabbitMQ Failed.\n" + e.ToString());
+                _logger.Info("Connection to RabbitMQ Failed.\n" + e.ToString());
                 throw;
             }
         }
@@ -64,7 +64,7 @@ namespace CryptoRobert.Infra.Rabbit
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to publish klines to RabbitMQ.\n" + e.ToString());
+                _logger.Info("Failed to publish klines to RabbitMQ.\n" + e.ToString());
             }
 
         }

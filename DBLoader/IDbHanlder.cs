@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
 
-namespace CryptoRobert.Importer.Base
+namespace CryptoRobert.DBLoader
 {
     public interface IDbHandler
     {
@@ -17,7 +17,7 @@ namespace CryptoRobert.Importer.Base
 
         void SaveCoinPairs(List<CoinPair> list);
 
-        //void SaveKlines(List<Kline> list);
+        void SaveKlines(List<Kline> list);
 
         long FindKlineLastUpdate(string symbol, string interval);
     }

@@ -41,7 +41,7 @@ namespace CryptoRobert.RuleEngine
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to save Patterns.\n" + e.ToString());
+                _logger.Info("Failed to save Patterns.\n" + e.ToString());
                 throw;
             }
         }
@@ -64,7 +64,7 @@ namespace CryptoRobert.RuleEngine
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to retreive list of klines from csv file.\n" + e.ToString());
+                _logger.Info("Failed to retreive list of klines from csv file.\n" + e.ToString());
                 return null;
             }
         }

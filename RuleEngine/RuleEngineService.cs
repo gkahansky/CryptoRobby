@@ -42,9 +42,9 @@ namespace CryptoRobert.RuleEngine
 
             Model = Rabbit.Connect();
 
-            logger.Log("*********************************");
-            logger.Log("Rule Engine Started Successfully");
-            logger.Log("*********************************");
+            logger.Info("*********************************");
+            logger.Info("Rule Engine Started Successfully");
+            logger.Info("*********************************");
 
             Rabbit.InitializeConsumer(Name, Model, Repository);
 

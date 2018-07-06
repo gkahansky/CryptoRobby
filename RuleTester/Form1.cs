@@ -87,7 +87,7 @@ namespace RuleTester
 
 
             var msg = String.Format("Running analysis for {0}_{1} for {2}, MA Aggregation: {3}, Accuracy: {4}, Default Stop Loss Threshold: {5}, Dynamic Stop Loss Threshold: {6}", symbol, interval, file, retention, threshold, defaultSl, DynamicSl);
-            _logger.Log(msg);
+            _logger.Info(msg);
         }
 
         private PatternConfig PopulateOutputObject()

@@ -37,17 +37,17 @@ namespace CryptoRobert.Importer.Bnb
             _rabbit = rabbit;
             StartupComplete = false;
 
-            _logger.Log("    Starting Binance Importer...");
-            _logger.Log("=====================================");
-            _logger.Log("Binance Importer Started Successfully");
-            _logger.Log("=====================================\n");
+            _logger.Info("    Starting Binance Importer...");
+            _logger.Info("=====================================");
+            _logger.Info("Binance Importer Started Successfully");
+            _logger.Info("=====================================\n");
 
-            _logger.Log("Loading configuration...");
+            _logger.Info("Loading configuration...");
             Config.LoadConfiguration(_logger);
             parser = new Parser(logger);
-            _logger.Log("Parser Initialized Successfully");
+            _logger.Info("Parser Initialized Successfully");
             metaData = new MetaData();
-            _logger.Log("Metadata Lists Initialized Successfully");
+            _logger.Info("Metadata Lists Initialized Successfully");
             CoinPairs = new Dictionary<string, CoinPair>();
             _rabbit.Connect();
         }
@@ -59,7 +59,7 @@ namespace CryptoRobert.Importer.Bnb
         {
             restClient = InitRestClient(Config.BinanceApiKey, Config.BinanceApiSecret);
             var time = restClient.TimeSync();
-            _logger.Log("Binance Connection Successfull. Server Time: " + time.ServerTime.ToString());
+            _logger.Info("Binance Connection Successfull. Server Time: " + time.ServerTime.ToString());
             return restClient;
         }
 
@@ -78,26 +78,26 @@ namespace CryptoRobert.Importer.Bnb
             try
             {
                 //var restClient = Connect();
-                _logger.Log("Working in No DB Mode - Fetching Coin Pairs from BNB...");
+                _logger.Info("Working in No DB Mode - Fetching Coin Pairs from BNB...");
                 var tickers = new List<CoinPair>();
 
-                if (Config.BnbUseSql)
-                    tickers = UpdateTickerPricesToDb();
-                else
-                    tickers = UpdateTickerPricesToDictionary();
+                //if (Config.BnbUseSql)
+                //    tickers = UpdateTickerPricesToDb();
+                //else
+                tickers = UpdateTickerPricesToDictionary();
 
                 var newTickers = SavePairsToMetadata(tickers);
-                _logger.Log(newTickers + " new Coin Pairs were loaded");
+                _logger.Info(newTickers + " new Coin Pairs were loaded");
 
                 if (!StartupComplete)
                 {
                     BnbSelectPairsOfInterest(tickers);
-                    _logger.Log("Number of \"Pairs of interest\" found: " + Config.PairsOfInterest.Count);
+                    _logger.Info("Number of \"Pairs of interest\" found: " + Config.PairsOfInterest.Count);
                 }
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to update coin pairs.\n" + e.ToString());
+                _logger.Info("Failed to update coin pairs.\n" + e.ToString());
             }
 
 
@@ -112,45 +112,45 @@ namespace CryptoRobert.Importer.Bnb
             {
 
                 //var restClient = Connect();
-                _logger.Log("Working in No DB Mode - Fetching Coin Pairs from BNB...");
+                _logger.Info("Working in No DB Mode - Fetching Coin Pairs from BNB...");
                 tickers = GetCoinPairsFromBinance();
                 return tickers;
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to update coin pairs.\n" + e.ToString());
+                _logger.Info("Failed to update coin pairs.\n" + e.ToString());
                 return tickers;
             }
         }
 
-        private List<CoinPair> UpdateTickerPricesToDb()
-        {
-            var tickers = new List<CoinPair>();
-            try
-            {
-                //var restClient = Connect();
-                _logger.Log("Fetching Coin Pairs from BNB...");
-                tickers = GetAllTickers(restClient);
-                _dbHandler.SaveCoinPairs(tickers);
-                return tickers;
-            }
-            catch (Exception e)
-            {
-                _logger.Log("Failed to update coin pairs.\n" + e.ToString());
-                return tickers;
-            }
-        }
+        //private List<CoinPair> UpdateTickerPricesToDb()
+        //{
+        //    var tickers = new List<CoinPair>();
+        //    try
+        //    {
+        //        //var restClient = Connect();
+        //        _logger.Info("Fetching Coin Pairs from BNB...");
+        //        tickers = GetAllTickers(restClient);
+        //        _dbHandler.SaveCoinPairs(tickers);
+        //        return tickers;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.Info("Failed to update coin pairs.\n" + e.ToString());
+        //        return tickers;
+        //    }
+        //}
 
         public async Task SaveCandleStickData()
         {
-            _logger.Log("Retreiving latest CandleStick data");
+            _logger.Info("Retreiving latest CandleStick data");
             //Load List of pairs & intervals required
             List<string> intervals = new List<string> { /*"1m", "3m",*/ "5m", "15m", "30m", "1h",/* "2h",*/ "4h",/* "6h", "8h", "12h",*/ "1d"/*, "3d", "1w", "1M"*/ };
 
             //for each pair-interval combo, find the most recent update
             foreach (var pair in Config.PairsOfInterest)
             {
-                _logger.Log("Getting Candlestick data for " + pair.Symbol);
+                _logger.Info("Getting Candlestick data for " + pair.Symbol);
                 await GetKlines(pair, intervals);
             }
         }
@@ -165,7 +165,7 @@ namespace CryptoRobert.Importer.Bnb
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to load last update date for kline.\n" + e.ToString());
+                _logger.Info("Failed to load last update date for kline.\n" + e.ToString());
                 return -1;
             }
         }
@@ -193,10 +193,10 @@ namespace CryptoRobert.Importer.Bnb
                     var lastTask = CheckPairLastUpdate(pair, interval, now);
                     var last = lastTask.Result;
 
-                    //_logger.Log(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
+                    //_logger.Info(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
                     //Request Data & save to Db for each pair-interval combo
 
-                    //_logger.Log("Current Time (Epoch): " + now);
+                    //_logger.Info("Current Time (Epoch): " + now);
 
                     var IsUpdateRequired = Calculator.CheckIfUpdateRequired(now, last, metaData.Intervals[interval]);
                     if (IsUpdateRequired)
@@ -209,7 +209,7 @@ namespace CryptoRobert.Importer.Bnb
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
                         _rabbit.PublishKlineList(klineList);
                         pair.LastUpdate[interval] = now;
-                        _logger.Log(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
+                        _logger.Info(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
                     else
                         await _logger.LogAsync(String.Format("{0} {1} is up to date, moving to next interval", pair.Symbol, interval));
@@ -217,16 +217,16 @@ namespace CryptoRobert.Importer.Bnb
                 }
                 catch (Exception e)
                 {
-                    await _logger.LogAsync(String.Format("Failed to get kline data.\n{0}", e.ToString()));
+                    await _logger.LogAsync(String.Format("Failed to get kline data.\n{0}", e.ToString()),4);
                 }
             }
         }
 
         private async Task<long> CheckPairLastUpdate(CoinPair pair, string interval, long now)
         {
-            
+
             var diff = metaData.Intervals[interval] + 1000;
-            if (!Config.BnbUseSql)
+            if (Config.BnbGetHistoricalData)
             {
                 if (!pair.LastUpdate.ContainsKey(interval))
                     pair.LastUpdate.Add(interval, now - diff);
@@ -242,7 +242,7 @@ namespace CryptoRobert.Importer.Bnb
                     pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
                 }
             }
-            _logger.Log(string.Format("{0} {1} last update: {2}", pair.Symbol, interval, pair.LastUpdate[interval]));
+            _logger.Info(string.Format("{0} {1} last update: {2}", pair.Symbol, interval, pair.LastUpdate[interval]));
             return pair.LastUpdate[interval];
         }
 
@@ -279,7 +279,7 @@ namespace CryptoRobert.Importer.Bnb
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to update coin pair list.\n" + pairList[count].Symbol + e.ToString());
+                _logger.Error("Failed to update coin pair list.\n" + pairList[count].Symbol + e.ToString());
                 return 0;
             }
 
@@ -355,7 +355,7 @@ namespace CryptoRobert.Importer.Bnb
             if (startTime <= 0)
                 //startTime = 1514764800000; //2018-01-01 00:00:00.000
                 startTime = 1496275200000; //2017-06-01 00:00:00.000
-            
+
             string url = String.Format(@"https://www.binance.com/api/v1/klines?symbol={0}&interval={1}&startTime={2}&endTime={3}",
                 symbol, interval, startTime, endTime);
             //Logger.Log("Requesting klines... \nUrl: " + url);
@@ -392,14 +392,13 @@ namespace CryptoRobert.Importer.Bnb
                 foreach (var pair in tickers)
                 {
                     if (Config.PairsToMonitor.ContainsKey(pair.Symbol))
-                    //if (pair.Symbol.Substring(pair.Symbol.Length - 3) == "BTC")
                         Config.PairsOfInterest.Add(pair);
                 }
                 StartupComplete = true;
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to update Pairs of interest, importer startup failed.\n" + e.ToString());
+                _logger.Error("Failed to update Pairs of interest, importer startup failed.\n" + e.ToString());
                 throw;
             }
         }
@@ -435,7 +434,7 @@ namespace CryptoRobert.Importer.Bnb
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to initialize restclient for user" + e.ToString());
+                _logger.Info("Failed to initialize restclient for user" + e.ToString());
                 return null;
             }
         }
@@ -444,9 +443,9 @@ namespace CryptoRobert.Importer.Bnb
 
         public void Leave()
         {
-            _logger.Log("=================================");
-            _logger.Log("   Binance Importer Stopped");
-            _logger.Log("=================================");
+            _logger.Info("=================================");
+            _logger.Info("   Binance Importer Stopped");
+            _logger.Info("=================================");
         }
     }
 }

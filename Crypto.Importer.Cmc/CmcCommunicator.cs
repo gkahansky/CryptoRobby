@@ -19,12 +19,12 @@ namespace CryptoRobert.Importer.Cmc
         {
             _logger = logger;
             _dbHandler = dbHandler;
-            _logger.Log("    Starting CMC Importer...");
-            _logger.Log("=================================");
-            _logger.Log("CMC Importer Started Successfully");
-            _logger.Log("=================================\n");
+            _logger.Info("    Starting CMC Importer...");
+            _logger.Info("=================================");
+            _logger.Info("CMC Importer Started Successfully");
+            _logger.Info("=================================\n");
 
-            _logger.Log("Loading configuration...");
+            _logger.Info("Loading configuration...");
             Config.LoadConfiguration(_logger);
             parser = new Parser(logger);
         }
@@ -43,7 +43,7 @@ namespace CryptoRobert.Importer.Cmc
             }
             catch (Exception e)
             {
-                _logger.Log("Failed acquiring tickers from CoinMarketCap.\n" + e.ToString());
+                _logger.Error("Failed acquiring tickers from CoinMarketCap.\n" + e.ToString());
             }
         }
 
@@ -51,16 +51,16 @@ namespace CryptoRobert.Importer.Cmc
         {
             try
             {
-                _logger.Log("Requesting Global MarketCap Data");
+                _logger.Info("Requesting Global MarketCap Data");
                 string url = @"https://api.coinmarketcap.com/v1/global/";
                 var mdString = RequestTickers(url);
                 var mdObject = parser.ParseCmcMarketData(mdString);
                 _dbHandler.SaveMarketData(mdObject);
-                _logger.Log(String.Format("Global Market Data Updated. Current Value in USD: {0}$.", mdObject.MarketDataUsd));
+                _logger.Info(String.Format("Global Market Data Updated. Current Value in USD: {0}$.", mdObject.MarketDataUsd));
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to download Global Market Data statistics from CMC.\n" + e.ToString());
+                _logger.Error("Failed to download Global Market Data statistics from CMC.\n" + e.ToString());
             }
         }
 
@@ -95,7 +95,7 @@ namespace CryptoRobert.Importer.Cmc
                 {
                     if (gap >= limit)
                     {
-                        _logger.Log(String.Format("Requesting CMC tickers range {0}-{1}", start, limit));
+                        _logger.Info(String.Format("Requesting CMC tickers range {0}-{1}", start, limit));
                         var CmcResponse = RequestTickers("https://api.coinmarketcap.com/v1/ticker/?start=" + start + "&limit" + limit);
                         start += limit;
                         gap = maxRank - start;
@@ -104,7 +104,7 @@ namespace CryptoRobert.Importer.Cmc
                     else
                     {
                         limit = gap;
-                        _logger.Log(String.Format("Requesting CMC tickers range {0}-{1}", start, limit));
+                        _logger.Info(String.Format("Requesting CMC tickers range {0}-{1}", start, limit));
                         var CmcResponse = RequestTickers("https://api.coinmarketcap.com/v1/ticker/?start=" + start + "&limit" + limit);
                         start += limit;
                         tickers.Add(CmcResponse);
@@ -115,7 +115,7 @@ namespace CryptoRobert.Importer.Cmc
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to download tickers from CoinMarketCap.\n" + e.ToString());
+                _logger.Error("Failed to download tickers from CoinMarketCap.\n" + e.ToString());
                 throw;
             }
         }
@@ -139,7 +139,7 @@ namespace CryptoRobert.Importer.Cmc
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to receive rates from CoinMarketCap.\n" + e.ToString());
+                _logger.Error("Failed to receive rates from CoinMarketCap.\n" + e.ToString());
                 return null;
             }
         }
@@ -163,7 +163,7 @@ namespace CryptoRobert.Importer.Cmc
             }
             catch (Exception e)
             {
-                _logger.Log(e.ToString());
+                _logger.Error(e.ToString());
                 throw;
             }
 
@@ -174,9 +174,9 @@ namespace CryptoRobert.Importer.Cmc
 
         public void Leave()
         {
-            _logger.Log("=================================");
-            _logger.Log("     CMC Importer Stopped");
-            _logger.Log("=================================");
+            _logger.Info("=================================");
+            _logger.Info("     CMC Importer Stopped");
+            _logger.Info("=================================");
         }
     }
 }

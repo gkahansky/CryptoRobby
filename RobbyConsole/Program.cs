@@ -25,7 +25,7 @@ namespace RobbyConsole
 {
     class Program
     {
-        private static IDbHandler _dbHandler;
+        private static CryptoRobert.Importer.Base.IDbHandler _dbHandler;
         private readonly IDataHandler dataHandler;
 
         static IEnumerable<CoinPair> GetNext(CoinPair pair)
@@ -42,21 +42,9 @@ namespace RobbyConsole
 
  
 
-
-            //var pair = new CoinPair() { Symbol = "ETHBTC", AvgPrice = 1 };
-
-            //var ethMonitor = new CoinMonitor(logger);
-            //var ethTicker = new CoinPairTicker(logger);
-            //ethTicker.Pair = pair;
-
-            //ethTicker.PriceChange += ethMonitor.OnPriceChange;
-
-
-            //ethTicker.UpdateTicker(3);
-
-            //var repository = new DataRepository();
-
             Config.LoadConfiguration(logger);
+
+
             //var repo = new DataRepository();
 
             //var runner = new PatternRunner(logger,repo);

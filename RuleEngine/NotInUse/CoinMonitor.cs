@@ -19,7 +19,7 @@ namespace CryptoRobert.RuleEngine
 
         public void OnPriceChange(object source, EventArgs e)
         {
-            _logger.Log("price changed");
+            _logger.Info("price changed");
         }
         
 

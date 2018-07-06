@@ -35,14 +35,14 @@ namespace CryptoRobert.Infra.Patterns
                             }
                             IPattern pattern = new SpringPattern(_logger, settings);
                             Items.Add(pattern.Name, pattern);
-                            _logger.Log("Spring Pattern Added to Repository");
+                            _logger.Info("Spring Pattern Added to Repository");
                             break;
                         }
                     case "Streak":
                         {
                             IPattern pattern = new StreakPattern(_logger, settings);
                             Items.Add(pattern.Name, pattern);
-                            _logger.Log("Streak Pattern Added to Repository");
+                            _logger.Info("Streak Pattern Added to Repository");
                             break;
                         }
                     default:

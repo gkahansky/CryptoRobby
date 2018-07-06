@@ -15,7 +15,7 @@ namespace CryptoRobert.Infra
         public static string BinanceApiSecret { get; set; }
         public static int BinanceSampleInterval { get; set; }
         public static string BnbExchange { get; set; }
-        public static bool BnbUseSql { get; set; }
+        public static bool BnbGetHistoricalData { get; set; }
         public static string CmcExchange { get; set; }
         public static bool CmcUseSql { get; set; }
         public static List<CoinPair> PairsOfInterest { get; set; }
@@ -32,6 +32,7 @@ namespace CryptoRobert.Infra
         public static Dictionary<string, string> PairsToMonitor { get; set; }
         private static ILogger _logger;
         public static bool TestMode { get; set; }
+        public static int LogSeverity { get; internal set; }
         #endregion
 
         public static void LoadConfiguration(ILogger logger, bool testMode = false)
@@ -46,24 +47,48 @@ namespace CryptoRobert.Infra
             var configString = File.ReadAllText(Path);
             var json = parser.ParseTextToJson(configString);
             PairsToMonitor = new Dictionary<string, string>();
+            SetLogSeverity(json);
 
             //Populate Configuration params
-            _logger.Log("********Loading CMC Configuration********");
+            _logger.Info("********Loading CMC Configuration********");
             GetCmcConfiguration(json, _logger);
-            _logger.Log("********Loading BNB Configuration********");
+            _logger.Info("********Loading BNB Configuration********");
             GetBnbConfiguration(json, _logger);
-            _logger.Log("********Loading SQL Configuration********");
+            _logger.Info("********Loading SQL Configuration********");
             BuildSqlConnectionString(json, _logger);
-            _logger.Log("********Loading RabbitMQ Configuration********");
+            _logger.Info("********Loading RabbitMQ Configuration********");
             LoadRabbitMQConfiguration(json, _logger);
-            _logger.Log("********Loading DBhandler Configuration********");
+            _logger.Info("********Loading DBhandler Configuration********");
             LoadDbHandlerConfiguration(json, _logger);
-            _logger.Log("********Loading Patterns Configuration********");
+            _logger.Info("********Loading Patterns Configuration********");
             LoadPatternsConfiguration(json, _logger);
-
+            
             PairsOfInterest = new List<CoinPair>();
             PatternSpringThreshold = 0.03m;
             PatternSpringToKeep = 20;
+        }
+
+        private static void SetLogSeverity(JObject json)
+        {
+            var sev = json["LogSeverity"].ToString().ToLower();
+            switch (sev)
+            {
+                case "debug":
+                    LogSeverity = 0;
+                    break;
+                case "info":
+                    LogSeverity = 1;
+                    break;
+                case "warning":
+                    LogSeverity = 2;
+                    break;
+                case "error":
+                    LogSeverity = 3;
+                    break;
+                default:
+                    LogSeverity = 1;
+                    break;
+            }
         }
 
         public static void ReloadConfiguration()
@@ -71,7 +96,7 @@ namespace CryptoRobert.Infra
             Parser parser = new Parser(_logger);
             var configString = File.ReadAllText(Path);
             var json = parser.ParseTextToJson(configString);
-            _logger.Log("********Refreshin Patterns & Interesting Pair Configuration********");
+            _logger.Info("********Refreshin Patterns & Interesting Pair Configuration********");
             LoadPatternsConfiguration(json, _logger);
         }
         private static void GetBnbConfiguration(JObject json, ILogger _logger)
@@ -82,13 +107,13 @@ namespace CryptoRobert.Infra
             BinanceApiSecret = bnbJson["BinanceApiSecret"].ToString();
             BinanceSampleInterval = int.Parse(bnbJson["SampleInterval"].ToString());
             BnbExchange = bnbJson["RabbitExchange"].ToString();
-            BnbUseSql = bool.Parse(bnbJson["UseSql"].ToString());
+            BnbGetHistoricalData = bool.Parse(bnbJson["BnbGetHistoricalData"].ToString());
 
-            _logger.Log(String.Format("Binance API Key: {0}", BinanceApiKey));
-            _logger.Log(String.Format("Binance API Secret: {0}", BinanceApiSecret));
-            _logger.Log(String.Format("Binance Sample Interval: {0}", BinanceSampleInterval));
-            _logger.Log(String.Format("BnbImporter Exchange: {0}", BnbExchange));
-            _logger.Log(String.Format("BnbImporter Use Sql: {0}", BnbUseSql));
+            _logger.Info(String.Format("Binance API Key: {0}", BinanceApiKey));
+            _logger.Info(String.Format("Binance API Secret: {0}", BinanceApiSecret));
+            _logger.Info(String.Format("Binance Sample Interval: {0}", BinanceSampleInterval));
+            _logger.Info(String.Format("BnbImporter Exchange: {0}", BnbExchange));
+            _logger.Info(String.Format("BnbImporter Get History Mode: {0}", BnbGetHistoricalData));
         }
 
         private static void GetCmcConfiguration(JObject json, ILogger _logger)
@@ -97,8 +122,8 @@ namespace CryptoRobert.Infra
             CmcSampleInterval = int.Parse(cmcJson["SampleInterval"].ToString());
             CmcExchange = cmcJson["RabbitExchange"].ToString();
             CmcUseSql = bool.Parse(cmcJson["UseSql"].ToString());
-            _logger.Log(String.Format("CMC Sample Interval: {0}", CmcSampleInterval));
-            _logger.Log(String.Format("CMC Exchange: {0}", CmcExchange));
+            _logger.Info(String.Format("CMC Sample Interval: {0}", CmcSampleInterval));
+            _logger.Info(String.Format("CMC Exchange: {0}", CmcExchange));
         }
 
         private static void BuildSqlConnectionString(JObject json, ILogger _logger)
@@ -106,11 +131,11 @@ namespace CryptoRobert.Infra
             try
             {
                 SqlConnectionString = json["SqlConnectionString"].ToString();
-                _logger.Log(String.Format("SQL Connection String: {0}", SqlConnectionString));
+                _logger.Info(String.Format("SQL Connection String: {0}", SqlConnectionString));
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to generate SQL Connection string.\n" + e.ToString());
+                _logger.Info("Failed to generate SQL Connection string.\n" + e.ToString());
                 throw;
             }
 
@@ -125,15 +150,15 @@ namespace CryptoRobert.Infra
                 RabbitUser = rabbitConf["UserName"].ToString();
                 RabbitPass = rabbitConf["Password"].ToString();
                 RabbitExchanges = ExtractRabbitExchanges(rabbitConf);
-                _logger.Log(String.Format("RabbitMQ host : {0}, User : {1}, Pass : {2}", RabbitHost, RabbitUser, RabbitPass));
+                _logger.Info(String.Format("RabbitMQ host : {0}, User : {1}, Pass : {2}", RabbitHost, RabbitUser, RabbitPass));
                 foreach (var e in RabbitExchanges)
                 {
-                    _logger.Log("New Exchange: " + e);
+                    _logger.Info("New Exchange: " + e);
                 }
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to load RabbitMQ Configuration.\n" + e.ToString());
+                _logger.Info("Failed to load RabbitMQ Configuration.\n" + e.ToString());
                 throw;
             }
         }
@@ -150,11 +175,11 @@ namespace CryptoRobert.Infra
             {
                 var DbConf = json["DbHandlerConfiguration"];
                 DbHandlerQueue = DbConf["QueueName"].ToString();
-                _logger.Log(String.Format("DbHandler Queue : {0}", DbHandlerQueue));
+                _logger.Info(String.Format("DbHandler Queue : {0}", DbHandlerQueue));
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to load RabbitMQ Configuration.\n" + e.ToString());
+                _logger.Info("Failed to load RabbitMQ Configuration.\n" + e.ToString());
                 throw;
             }
         }

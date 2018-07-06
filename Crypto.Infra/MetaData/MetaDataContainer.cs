@@ -14,7 +14,10 @@ namespace CryptoRobert.Infra
         public static void KlinePush()
         {
             if (klinePush != null)
+            {
                 klinePush(KlineQueue, EventArgs.Empty);
+            }
+                
         }
     }
 }

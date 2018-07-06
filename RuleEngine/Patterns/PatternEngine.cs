@@ -72,7 +72,7 @@ namespace CryptoRobert.RuleEngine
                 }
             }
             else
-                _logger.Log("No Relevant Data found for analysis. Please check your query parameters");
+                _logger.Info("No Relevant Data found for analysis. Please check your query parameters");
         }
 
         private object InitializeRunner(ILogger logger, Dictionary<string, IPattern> patterns)
@@ -113,7 +113,7 @@ namespace CryptoRobert.RuleEngine
         {
             if (Transactions.ContainsKey(kline.Symbol))
             {
-                _logger.Log("Not Buying since we already baught it");
+                _logger.Info("Not Buying since we already baught it");
             }
             else
             {
@@ -121,7 +121,7 @@ namespace CryptoRobert.RuleEngine
                 t.StopLossConfig = GenerateStopLossObject(patternsConfig[name]);
                 t.CalculateStopLoss(kline.Close);
                 Transactions.Add(t.Symbol, t);
-                _logger.Log(String.Format("Trade: Buying {0} at {1}", t.Symbol, t.BuyPrice));
+                _logger.Info(String.Format("Trade: Buying {0} at {1}", t.Symbol, t.BuyPrice));
             }
         }
 

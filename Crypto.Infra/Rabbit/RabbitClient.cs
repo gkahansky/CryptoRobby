@@ -31,7 +31,7 @@ namespace CryptoRobert.Infra.Rabbit
             _logger = logger;
             QueueName = queueName;
             Exchanges = exchanges;
-            _logger.Log("Rabbit Client Initialized.");
+            _logger.Info("Rabbit Client Initialized.");
         }
 
 
@@ -49,12 +49,12 @@ namespace CryptoRobert.Infra.Rabbit
 
                 InitializeQueues(Exchanges);
 
-                _logger.Log("RabbitMQ Connection Established.");
+                _logger.Info("RabbitMQ Connection Established.");
                 return Model;
             }
             catch (Exception e)
             {
-                _logger.Log("Connection to RabbitMQ Failed.\n" + e.ToString());
+                _logger.Info("Connection to RabbitMQ Failed.\n" + e.ToString());
                 throw;
             }
         }
@@ -70,14 +70,14 @@ namespace CryptoRobert.Infra.Rabbit
                     {
                         Model.ExchangeDeclare(e, ExchangeType.Topic);
                         Model.QueueBind(QueueName, e, "#");
-                        _logger.Log("Successfully Binded " + QueueName + " to exchange: " + e);
+                        _logger.Info("Successfully Binded " + QueueName + " to exchange: " + e);
 
                     }
                 }
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to Generate Queues.\n" + e.ToString());
+                _logger.Info("Failed to Generate Queues.\n" + e.ToString());
             }
         }
 
@@ -93,7 +93,7 @@ namespace CryptoRobert.Infra.Rabbit
                 var kline = JsonConvert.DeserializeObject<Kline>(jsonString);
                 repository.Klines.Enqueue(kline);
                 OnKlineReceived();
-                //_logger.Log(kline.Symbol + "_" + kline.Interval + " Received from Exchange");
+                //_logger.Info(kline.Symbol + "_" + kline.Interval + " Received from Exchange");
                 //
                 model.BasicAck(ea.DeliveryTag, false);
             };

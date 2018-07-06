@@ -64,7 +64,7 @@ namespace CryptoRobert.RuleEngine.Patterns
             }
             catch (Exception e)
             {
-                _logger.Log("Failed to initialize Pattern Repository.\n" + e.ToString());
+                _logger.Info("Failed to initialize Pattern Repository.\n" + e.ToString());
                 throw;
             }
         }
@@ -77,7 +77,7 @@ namespace CryptoRobert.RuleEngine.Patterns
             var sell = false;
             if (partialDict.Count() > 0)
             {
-                _logger.Log(string.Format("Checking Patterns for {0} {1}", kline.Symbol, kline.Interval));
+                _logger.Info(string.Format("Checking Patterns for {0} {1}", kline.Symbol, kline.Interval));
                 foreach (var p in partialDict)
                 {
                     var buy = p.CheckPattern(kline);
