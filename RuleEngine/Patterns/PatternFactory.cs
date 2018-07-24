@@ -49,15 +49,7 @@ namespace CryptoRobert.RuleEngine
 
             patternsTypes.Add("Spring", typeof(SpringPattern));
             patternsTypes.Add("Streak", typeof(StreakPattern));
-            //foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-            //{
-
-            //    if (type.IsSubclassOf(typeof(Pattern)))
-            //    {
-            //        patternsTypes.Add(type.Name.ToLower(), type);
-            //        _logger.Info("New Pattern added to configuration: " + type.Name);
-            //    }
-            //}
+            patternsTypes.Add("TrendShift", typeof(TrendShiftPattern));
         }
 
     }

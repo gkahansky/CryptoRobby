@@ -18,11 +18,13 @@ namespace CryptoRobert.RuleEngine
         PatternFactory Factory { get; set; }
         public PatternRepository Patterns { get; set; }
         public Dictionary<string, StopLossDefinition> StopLossCollection { get; set; }
+        public List<decimal> TradeResults { get; set; }
         ILogger _logger;
 
         public PatternEngine(ILogger logger)
         {
             _logger = logger;
+            TradeResults = new List<decimal>();
             CoinPairDict = new Dictionary<string, CoinPair>();
             Factory = new PatternFactory(_logger);
             Patterns = new PatternRepository(_logger);
@@ -53,23 +55,27 @@ namespace CryptoRobert.RuleEngine
                         {
                             var p = pattern.Value;
                             var patternPrice = SetPriceForPattern(p, kline);
-                            var buy = CheckPatterns(p, kline);
+                            var buySell = CheckPatterns(p, kline);
                             p.SetHighPrice(kline.High);
 
-                            if (buy)
+                            if (buySell == 1)
                                 trader.BuyPair(kline, p, p.Name);
-
-
-                            else
-                                if (trader.Transactions.Count > 0)
+                            else if (buySell == -1)
+                                sell = true;
+                            else if (trader.Transactions.Count > 0)
                                 sell = trader.CheckStopLoss(p, kline);
 
                             if (sell)
-                                trader.Sell(kline.Symbol, kline.Close);
+                            {
+                                decimal profit;
+                                trader.Sell(kline.Symbol, kline.Close, out profit);
+                                TradeResults.Add(profit);
+                            }
 
                         }
                     }
                 }
+                _logger.Info("TOTAL PROFIT OF ALL TRADES: " + TradeResults.Sum() + "%");
             }
             else
                 _logger.Info("No Relevant Data found for analysis. Please check your query parameters");
@@ -133,9 +139,9 @@ namespace CryptoRobert.RuleEngine
             return sl;
         }
 
-        private bool CheckPatterns(IPattern p, Kline kline )
+        private int CheckPatterns(IPattern p, Kline kline )
         {
-            var buy = false;
+            var buy = 0;
             switch (p.Name)
             {
                 case "Spring":
@@ -148,8 +154,13 @@ namespace CryptoRobert.RuleEngine
                         buy = p.CheckPattern(kline);
                         break;
                     }
+                case "TrendShift":
+                    {
+                        buy = p.CheckPattern(kline);
+                        break;
+                    }
                 default:
-                    buy = false;
+                    buy = 0;
                     break;
             }
             return buy;

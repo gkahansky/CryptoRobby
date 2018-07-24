@@ -17,7 +17,6 @@ namespace CryptoRobert.Infra
         public static string BnbExchange { get; set; }
         public static bool BnbGetHistoricalData { get; set; }
         public static string CmcExchange { get; set; }
-        public static bool CmcUseSql { get; set; }
         public static List<CoinPair> PairsOfInterest { get; set; }
         public static int CmcSampleInterval { get; set; }
         public static string SqlConnectionString { get; set; }
@@ -33,6 +32,8 @@ namespace CryptoRobert.Infra
         private static ILogger _logger;
         public static bool TestMode { get; set; }
         public static int LogSeverity { get; internal set; }
+        public static long BnbMinimumUpdateDate { get; set; }
+        public static bool UseSql { get; set; }
         #endregion
 
         public static void LoadConfiguration(ILogger logger, bool testMode = false)
@@ -47,6 +48,7 @@ namespace CryptoRobert.Infra
             var configString = File.ReadAllText(Path);
             var json = parser.ParseTextToJson(configString);
             PairsToMonitor = new Dictionary<string, string>();
+            UseSql = bool.Parse(json["UseSql"].ToString());
             SetLogSeverity(json);
 
             //Populate Configuration params
@@ -99,6 +101,7 @@ namespace CryptoRobert.Infra
             _logger.Info("********Refreshin Patterns & Interesting Pair Configuration********");
             LoadPatternsConfiguration(json, _logger);
         }
+
         private static void GetBnbConfiguration(JObject json, ILogger _logger)
         {
             var bnbJson = json["BnbConfiguration"];
@@ -108,12 +111,31 @@ namespace CryptoRobert.Infra
             BinanceSampleInterval = int.Parse(bnbJson["SampleInterval"].ToString());
             BnbExchange = bnbJson["RabbitExchange"].ToString();
             BnbGetHistoricalData = bool.Parse(bnbJson["BnbGetHistoricalData"].ToString());
-
+            BnbMinimumUpdateDate = ConvertTimeStringToMs(bnbJson["BnbMinimumUpdateDate"].ToString());
+            
             _logger.Info(String.Format("Binance API Key: {0}", BinanceApiKey));
             _logger.Info(String.Format("Binance API Secret: {0}", BinanceApiSecret));
             _logger.Info(String.Format("Binance Sample Interval: {0}", BinanceSampleInterval));
             _logger.Info(String.Format("BnbImporter Exchange: {0}", BnbExchange));
             _logger.Info(String.Format("BnbImporter Get History Mode: {0}", BnbGetHistoricalData));
+            _logger.Info(String.Format("BnbImporter Minimum Time For Historical Data: {0}", BnbMinimumUpdateDate));
+        }
+
+        private static long ConvertTimeStringToMs(string dateTimeString)
+        {
+            long timeLong = Parser.ConvertTimeDateTimeToMs(DateTime.Now);
+            try
+            {
+                var time = DateTime.Parse(dateTimeString);
+                timeLong = Parser.ConvertTimeDateTimeToMs(time);
+                return timeLong;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to parse Minimum Time for historical data. proceeding with live data");
+                return timeLong;
+            }
+
         }
 
         private static void GetCmcConfiguration(JObject json, ILogger _logger)
@@ -121,7 +143,6 @@ namespace CryptoRobert.Infra
             var cmcJson = json["CmcConfiguration"];
             CmcSampleInterval = int.Parse(cmcJson["SampleInterval"].ToString());
             CmcExchange = cmcJson["RabbitExchange"].ToString();
-            CmcUseSql = bool.Parse(cmcJson["UseSql"].ToString());
             _logger.Info(String.Format("CMC Sample Interval: {0}", CmcSampleInterval));
             _logger.Info(String.Format("CMC Exchange: {0}", CmcExchange));
         }

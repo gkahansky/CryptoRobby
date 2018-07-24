@@ -45,11 +45,6 @@ namespace CryptoRobert.DBLoader
             Model = Rabbit.Connect();
             Rabbit.InitializeConsumer(Name, Model, Repository);
 
-            _logger.Debug("Debug is ON");
-            _logger.Info("Info is ON");
-            _logger.Warning("Warning is ON");
-            _logger.Error("Error is ON");
-
             _logger.Info("*********************************");
             _logger.Info("DBLoader Started Successfully");
             _logger.Info("*********************************");

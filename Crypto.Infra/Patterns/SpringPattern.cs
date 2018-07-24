@@ -42,7 +42,7 @@ namespace CryptoRobert.Infra.Patterns
             DynamicStopLossThreshold = settings.DynamicStopLoss;
         }
 
-        public override bool CheckPattern(Kline kline)
+        public override int CheckPattern(Kline kline)
         {
             var avgPrice = SaveKlineToPriceQueue(kline);
             var time = kline.CloseTime;
@@ -53,7 +53,7 @@ namespace CryptoRobert.Infra.Patterns
             {
                 ResetData(avgPrice);
                 LastPrice = avgPrice;
-                return false;
+                return 0;
             }
 
             //RunRules
@@ -73,12 +73,12 @@ namespace CryptoRobert.Infra.Patterns
             else if (Rules["Complete"])
             {
                 ResetData(Spring);
-                return true;
+                return 1;
             }
 
             _logger.Info(String.Format("{6} {7}: Low: {0}, High: {1}, Spring: {2}, Last Price: {3}, Highest Price: {4}, time: {5}", Low, High, Spring, LastPrice, HighPrice, TickTime, this.Symbol, this.Interval));
             LastPrice = avgPrice;
-            return false;
+            return 0;
         }
 
         private decimal SaveKlineToPriceQueue(Kline kline)

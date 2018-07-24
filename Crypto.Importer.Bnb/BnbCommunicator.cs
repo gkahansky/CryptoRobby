@@ -226,7 +226,7 @@ namespace CryptoRobert.Importer.Bnb
         {
 
             var diff = metaData.Intervals[interval] + 1000;
-            if (Config.BnbGetHistoricalData)
+            if (!Config.BnbGetHistoricalData)
             {
                 if (!pair.LastUpdate.ContainsKey(interval))
                     pair.LastUpdate.Add(interval, now - diff);
@@ -234,12 +234,13 @@ namespace CryptoRobert.Importer.Bnb
             else
             {
                 if (pair.LastUpdate.ContainsKey(interval))
-                    pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+                    pair.LastUpdate[interval] = Config.BnbMinimumUpdateDate;
+                //pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
 
                 else
                 {
                     pair.LastUpdate.Add(interval, 0);
-                    pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+                    pair.LastUpdate[interval] = Config.BnbMinimumUpdateDate;
                 }
             }
             _logger.Info(string.Format("{0} {1} last update: {2}", pair.Symbol, interval, pair.LastUpdate[interval]));

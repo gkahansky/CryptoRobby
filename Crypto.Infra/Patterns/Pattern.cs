@@ -39,7 +39,7 @@ namespace CryptoRobert.Infra.Patterns
 
         //public abstract bool CheckPattern(decimal avgPrice, long time);
 
-        public abstract bool CheckPattern(Kline kline);
+        public abstract int CheckPattern(Kline kline);
 
         public abstract void SetHighPrice(decimal price);
 

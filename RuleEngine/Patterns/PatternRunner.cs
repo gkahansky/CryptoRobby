@@ -13,12 +13,14 @@ namespace CryptoRobert.RuleEngine.Patterns
         private ILogger _logger;
         public Dictionary<string, IPattern> PatternRepository;
         private Dictionary<string, CoinPair> CoinPairDict;
-        public  DataRepository KlineRepository;
+        public DataRepository KlineRepository;
         public TradeEngine Trade;
+        public List<decimal> TradeResults { get; set; }
 
         public PatternRunner(ILogger logger, DataRepository repository)
         {
             _logger = logger;
+            TradeResults = new List<decimal>();
             PatternRepository = InitializePatternRepository();
             CoinPairDict = new Dictionary<string, CoinPair>();
             KlineRepository = repository;
@@ -56,10 +58,15 @@ namespace CryptoRobert.RuleEngine.Patterns
                                     patternRepo.Add(c.Key, new StreakPattern(_logger, c.Value));
                                     break;
                                 }
+                            case "TrendShift":
+                                {
+                                    patternRepo.Add(c.Key, new TrendShiftPattern(_logger, c.Value));
+                                    break;
+                                }
                         }
                     }
                 }
-                
+
                 return patternRepo;
             }
             catch (Exception e)
@@ -71,7 +78,7 @@ namespace CryptoRobert.RuleEngine.Patterns
 
         public void RunPatterns(Kline kline)
         {
-           
+
             var partialKey = kline.Symbol + "_" + kline.Interval;
             var partialDict = PartialMatch(PatternRepository, partialKey);
             var sell = false;
@@ -81,16 +88,23 @@ namespace CryptoRobert.RuleEngine.Patterns
                 foreach (var p in partialDict)
                 {
                     var buy = p.CheckPattern(kline);
+                    p.SetHighPrice(kline.High);
 
-                    if (buy)
+                    if (buy == 1)
                         Trade.BuyPair(kline, p, p.Name);
 
-                    else
-                               if (Trade.Transactions.Count > 0)
+                    else if (buy == -1)
+                        sell = true;
+
+                    else if (Trade.Transactions.Count > 0)
                         sell = Trade.CheckStopLoss(p, kline);
 
                     if (sell)
-                        Trade.Sell(kline.Symbol, kline.Close);
+                    {
+                        decimal profit;
+                        Trade.Sell(kline.Symbol, kline.Close, out profit);
+                        TradeResults.Add(profit);
+                    }
                 }
             }
         }

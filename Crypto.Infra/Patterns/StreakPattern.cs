@@ -33,7 +33,7 @@ namespace CryptoRobert.Infra.Patterns
             Name = "Streak";
         }
 
-        public override bool CheckPattern(Kline kline)
+        public override int CheckPattern(Kline kline)
         {
             var price = kline.Close;
             var volume = kline.Volume;
@@ -47,7 +47,7 @@ namespace CryptoRobert.Infra.Patterns
                 LastOpen = kline.Open;
                 PriceQueue.Enqueue(price);
                 VolumeQueue.Enqueue(volume);
-                return false;
+                return 0;
             }
 
             var avgPrice = PriceQueue.Average();
@@ -85,8 +85,10 @@ namespace CryptoRobert.Infra.Patterns
 
             LastPrice = kline.Close;
             LastOpen = kline.Open;
-
-            return result;
+            if (result)
+                return 1;
+            else
+                return 0;
 
         }
 

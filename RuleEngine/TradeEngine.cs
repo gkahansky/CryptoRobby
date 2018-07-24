@@ -39,10 +39,10 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public void Sell(string symbol, decimal price)
+        public void Sell(string symbol, decimal price, out decimal profit)
         {
             var t = Transactions[symbol];
-            var profit = ((price / t.BuyPrice) - 1) * 100;
+            profit = ((price / t.BuyPrice) - 1) * 100;
             var profitText = profit.ToString();
             if (profitText.Length > 5)
                 profitText = profit.ToString().Substring(0, 5);

@@ -45,6 +45,13 @@ namespace CryptoRobert.Infra.Patterns
                             _logger.Info("Streak Pattern Added to Repository");
                             break;
                         }
+                    case "TrendShift":
+                        {
+                            IPattern pattern = new TrendShiftPattern(_logger, settings);
+                            Items.Add(pattern.Name, pattern);
+                            _logger.Info("TrendShift Pattern Added to Repository");
+                            break;
+                        }
                     default:
                         break;
                 }

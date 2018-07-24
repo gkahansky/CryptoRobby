@@ -25,7 +25,15 @@ namespace CryptoRobert.Infra
         public static long ConvertTimeDateTimeToMs(DateTime date)
         {
             TimeSpan span = (date - new DateTime(1970, 1, 1));
-            var ms = long.Parse(span.TotalMilliseconds.ToString());
+            long ms = 0;
+            var msString = span.TotalMilliseconds.ToString();
+            if (msString.Contains("."))
+            {
+                var msClean = msString.Substring(0, msString.IndexOf('.'));
+                ms = long.Parse(msClean);
+            }
+            else
+                ms = long.Parse(msString);
             return ms;
         }
 

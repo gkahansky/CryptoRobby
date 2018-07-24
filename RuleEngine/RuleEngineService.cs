@@ -36,7 +36,8 @@ namespace CryptoRobert.RuleEngine
             Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, Repository);
             var runner = new PatternRunner(logger, Repository);
             var dbHandler = new DataHandler(logger);
-            dbHandler.SavePatterns(runner.PatternRepository);
+            if (Config.UseSql)
+                dbHandler.SavePatterns(runner.PatternRepository);
             Rabbit.KlineReceived += runner.OnKlineReceived;
 
 
@@ -58,7 +59,7 @@ namespace CryptoRobert.RuleEngine
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            
+
         }
 
         protected override void OnStop()

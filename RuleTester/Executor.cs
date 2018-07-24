@@ -67,6 +67,11 @@ namespace RuleTester
                         p = new StreakPattern(logger, settings);
                         break;
                     }
+                case "TrendShift":
+                    {
+                        p = new TrendShiftPattern(logger, settings);
+                        break;
+                    }
             }
 
             return (Pattern)p;

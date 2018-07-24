@@ -109,35 +109,14 @@ namespace RuleTester
             else
                 settings.DynamicStopLoss = 0;
 
-            //RunSettings["Retention"] = retentionText.Text;
-            //RunSettings["Threshold"] = thresholdText.Text;
-            //if (!string.IsNullOrWhiteSpace(symbolText.Text))
-            //    RunSettings["Symbol"] = symbolText.Text;
-            //else
-            //    RunSettings["Symbol"] = null;
-            //if (!string.IsNullOrWhiteSpace(intervalText.Text))
-            //    RunSettings["Interval"] = intervalText.Text;
-            //else
-            //    RunSettings["Interval"] = null;
             Path = filePathTextBox.Text;
-
-            //if (!string.IsNullOrWhiteSpace(DefaultSLText.Text))
-            //    RunSettings["DefaultSLThreshold"] = DefaultSLText.Text;
-            //else
-            //    RunSettings["DefaultSLThreshold"] = 0;
-
-            //if (!string.IsNullOrWhiteSpace(DynamicSLText.Text))
-            //    RunSettings["DynamicSLThreshold"] = DynamicSLText.Text;
-            //else
-            //    RunSettings["DynamicSLThreshold"] = 0;
-
-            //RunSettings["Name"] = patternCombo.Text;
 
             return settings;
         }
 
         private void PopulatePatternCombo()
         {
+            patternCombo.Items.Add("TrendShift");
             patternCombo.Items.Add("Spring");
             patternCombo.Items.Add("Streak");
         }

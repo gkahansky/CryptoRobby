@@ -21,7 +21,7 @@ namespace CryptoRobert.Infra.Patterns
 
 
         //bool CheckPattern(decimal price, long time);
-        bool CheckPattern(Kline kline);
+        int CheckPattern(Kline kline);
         void SetHighPrice(decimal price);
         Pattern.PriceForCalc DefinePriceForCalculation(IPattern p);
         void UpdateSettings(PatternConfig config);
