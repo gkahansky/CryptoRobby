@@ -52,6 +52,15 @@ namespace CryptoRobert.Infra.Patterns
                             _logger.Info("TrendShift Pattern Added to Repository");
                             break;
                         }
+                    case "TrendInclinePattern":
+                        {
+                            IPattern pattern = new TrendInclinePattern(_logger, settings);
+                            Items.Add(pattern.Name, pattern);
+                            _logger.Info("TrendInclinePattern Pattern Added to Repository");
+                            break;
+                        }
+
+                        
                     default:
                         break;
                 }

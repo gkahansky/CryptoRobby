@@ -42,15 +42,14 @@ namespace RobbyConsole
 
             var repository = new DataRepository();
             repository.Klines = new Queue<Kline>();
-            var rabbit = new RabbitClient(logger, "TestQueue", Config.RabbitExchanges, repository);
-            var runner = new PatternRunner(logger, repository);
-            var dbHandler = new DataHandler(logger);
-            if (Config.UseSql)
-                dbHandler.SavePatterns(runner.PatternRepository);
-            rabbit.KlineReceived += runner.OnKlineReceived;
+            var _rabbit = new RabbitHandler(logger, "BNB");
+            
+            var _dbHandler = new CryptoRobert.Importer.Base.DbHandler(logger);
+            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+            var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit);
 
-
-
+            bnb.UpdateTickerPrices();
+            bnb.SaveCandleStickData();
 
         }
 

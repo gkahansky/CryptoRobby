@@ -208,22 +208,6 @@ namespace CryptoRobert.DBLoader
 
         }
 
-        //public void SaveWalletsToDatabase(List<Wallet> wallets)
-        //{
-        //    if (wallets.Count() > 0)
-        //    {
-
-        //        using (var context = new InfraContext())
-        //        {
-        //            foreach (var w in wallets)
-        //            {
-        //                context.Database.ExecuteSqlCommand
-        //                ("SaveWallet @Symbol={0}, @UserId={1}, @ExchangeId={2], @Free={3}, @Locked={4}",
-        //                w.Symbol, w.UserId, w.Exchange, w.QuantityFree, w.QuantityLocked);
-        //            }
-        //        }
-        //    }
-        //}
         #endregion
 
 

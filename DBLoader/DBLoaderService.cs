@@ -35,7 +35,7 @@ namespace CryptoRobert.DBLoader
             Repository = new DataRepository();
             Repository.Klines = new Queue<Kline>();
 
-            Name = "DBLoader";
+            Name = Config.DbHandlerQueue;
             var dbHandler = new DbHandler(_logger, Repository);
 
             Rabbit = new RabbitClient(_logger, Name, Config.RabbitExchanges, Repository);

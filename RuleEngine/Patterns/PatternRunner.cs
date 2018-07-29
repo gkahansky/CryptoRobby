@@ -63,6 +63,12 @@ namespace CryptoRobert.RuleEngine.Patterns
                                     patternRepo.Add(c.Key, new TrendShiftPattern(_logger, c.Value));
                                     break;
                                 }
+                            case "TrendInclinePattern":
+                                {
+                                    patternRepo.Add(c.Key, new TrendInclinePattern(_logger, c.Value));
+                                    break;
+                                }
+                                
                         }
                     }
                 }

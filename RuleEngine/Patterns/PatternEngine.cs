@@ -38,7 +38,7 @@ namespace CryptoRobert.RuleEngine
             if (klineList.Count > 0)
             {
                 var runner = InitializeRunner(_logger, patterns);
-                
+                var sold = false;
                 var trader = new TradeEngine(_logger);
                 foreach (var kline in klineList)
                 {
@@ -51,6 +51,7 @@ namespace CryptoRobert.RuleEngine
                     //Check prerequisites and run pattern calculation if relevant.
                     if (CoinPairDict[kline.Symbol].AvgPrice > 0)
                     {
+
                         foreach (var pattern in patterns)
                         {
                             var p = pattern.Value;
@@ -65,11 +66,11 @@ namespace CryptoRobert.RuleEngine
                             else if (trader.Transactions.Count > 0)
                                 sell = trader.CheckStopLoss(p, kline);
 
-                            if (sell)
+                            if (sell && trader.Transactions.Count > 0)
                             {
-                                decimal profit;
-                                trader.Sell(kline.Symbol, kline.Close, out profit);
-                                TradeResults.Add(profit);
+                                    decimal profit;
+                                    trader.Sell(kline.Symbol, kline.Close, out profit);
+                                    TradeResults.Add(profit);
                             }
 
                         }
@@ -159,6 +160,12 @@ namespace CryptoRobert.RuleEngine
                         buy = p.CheckPattern(kline);
                         break;
                     }
+                case "TrendIncline":
+                    {
+                        buy = p.CheckPattern(kline);
+                        break;
+                    }
+                    
                 default:
                     buy = 0;
                     break;

@@ -95,7 +95,8 @@
     <Compile Include="Patterns\Pattern.cs" />
     <Compile Include="Patterns\PatternRepository.cs" />
     <Compile Include="Patterns\PatternView.cs" />
-    <Compile Include="Patterns\TrendShiftPattern.cs" />
+    <Compile Include="Patterns\TrendShiftPattern - Copy.cs" />
+    <Compile Include="Patterns\TrendInclinePattern.cs" />
     <Compile Include="Patterns\SpringPattern.cs" />
     <Compile Include="Patterns\StreakPattern.cs" />
     <Compile Include="Rabbit\IRabbitHandler.cs" />

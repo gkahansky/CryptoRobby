@@ -116,6 +116,7 @@ namespace RuleTester
 
         private void PopulatePatternCombo()
         {
+            patternCombo.Items.Add("TrendIncline");
             patternCombo.Items.Add("TrendShift");
             patternCombo.Items.Add("Spring");
             patternCombo.Items.Add("Streak");

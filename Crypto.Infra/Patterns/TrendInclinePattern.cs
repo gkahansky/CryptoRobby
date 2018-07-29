@@ -8,31 +8,36 @@ using Newtonsoft.Json.Linq;
 
 namespace CryptoRobert.Infra.Patterns
 {
-    public class TrendShiftPattern : Pattern
+    public class TrendInclinePattern : Pattern
     {
         private ILogger _logger;
         public decimal Trend { get; set; }
         public int Retention { get; set; }
         public decimal Threshold { get; set; }
         public decimal avgPrice { get; set; }
-        public decimal avgPriceDelta { get; set; }
+        public decimal TrendIncline { get; set; }
+        public decimal LastTrendIncline { get; set; }
         public decimal avgPriceChange { get; set; }
         public decimal lastAvgPrice { get; set; }
+        public decimal avgChangePct { get; set; }
+        public Queue<decimal> avgPriceList { get; set; }
         public decimal Pivot { get; set; }
         private DateTime TickTime { get; set; }
         private Dictionary<string, bool> Rules { get; set; }
-        private Queue<decimal> PriceQueue { get; set; } 
+        private Queue<decimal> PriceQueue { get; set; }
 
-        public TrendShiftPattern(ILogger logger, PatternConfig settings) : base(settings)
+        public TrendInclinePattern(ILogger logger, PatternConfig settings) : base(settings)
         {
             Rules = new Dictionary<string, bool>();
             PriceQueue = new Queue<decimal>();
+            avgPriceList = new Queue<decimal>();
             Retention = settings.Retention;
             Name = settings.Name;
-            Trend = 0;
+            //Trend = 0;
             Threshold = settings.Threshold;
             avgPrice = 0;
-            avgPriceDelta = 0;
+            TrendIncline = 0;
+            LastTrendIncline = 0;
             avgPriceChange = 0;
             lastAvgPrice = 0;
             _logger = logger;
@@ -49,28 +54,51 @@ namespace CryptoRobert.Infra.Patterns
 
 
             //RunRules
-            decimal newTrend = 0;
+            var buySell = 0;
             //1. Check Trend
             if (avgPrice > 0)
-                newTrend = CalculateTrend(avgPrice, lastAvgPrice);
+                buySell = CalculateIncline(avgPrice, lastAvgPrice, kline.Close);
 
-            //2. Compare to previous trend
-            var buySell = CheckTrendShift(Trend, newTrend, time);
 
+            SetHighPrice(kline.Close);
             lastAvgPrice = avgPrice;
-            Trend = newTrend;
+            LastTrendIncline = TrendIncline;
 
             return buySell;
         }
 
-        private decimal CalculateTrend(decimal avgPrice, decimal lastAvgPrice)
+        private int CalculateIncline(decimal avgPrice, decimal lastAvgPrice, decimal price)
         {
             if (lastAvgPrice > 0)
             {
-                avgPriceDelta = avgPrice - lastAvgPrice;
+                var avgPriceDelta = avgPrice - lastAvgPrice;
                 avgPriceChange = (avgPriceDelta / avgPrice);
+                TrendIncline = CalculateTrendIncline(avgPriceChange);
             }
-            return avgPriceChange;
+
+            if (TrendIncline > Threshold && price > avgPrice)
+            {
+                _logger.Warning(string.Format("BUY ALERT! Incline on the rise for {0} {1}!!! Current Trend: {2}, Last Trend {3}, Current Price: {4}, Time: {5}", Symbol, Interval, TrendIncline, LastTrendIncline, PriceQueue.Last(), TickTime));
+                return 1;
+            }
+            else
+                return -1;
+        }
+
+        private decimal CalculateTrendIncline(decimal avgPriceChange)
+        {
+            if (avgPriceList.Count() < 3)
+            {
+                avgPriceList.Enqueue(avgPriceChange);
+                return 0;
+            }
+            else
+            {
+                avgPriceList.Dequeue();
+                avgPriceList.Enqueue(avgPriceChange);
+                var incline = avgPriceList.Average();
+                return incline;
+            }
         }
 
         private decimal SaveKlineToPriceQueue(Kline kline)
@@ -87,26 +115,6 @@ namespace CryptoRobert.Infra.Patterns
                 var avg = PriceQueue.Average();
                 return avg;
             }
-        }
-
-       
-        private int CheckTrendShift(decimal lastTrend, decimal newTrend, long time)
-        {
-            //Trend was UP & newTrend DOWN
-            if (lastTrend > 0 && newTrend <= 0)
-            {
-                _logger.Warning(string.Format("SELL ALERT! Trend Shift Detected for {0} {1}!!! Current Trend: {2}, Last Trend {3}, Current Price: {4}, Time: {5}", Symbol, Interval, newTrend, lastTrend, PriceQueue.Last(), TickTime));
-                return -1;
-            }
-                
-            //Trend was DOWN & newTrend UP
-            if (lastTrend <= 0 && newTrend > 0)
-            {
-                _logger.Warning(string.Format("BUY ALERT! Trend Shift Detected for {0} {1}!!! Current Trend: {2}, Last Trend {3}, Current Price: {4}, Time: {5}", Symbol, Interval, newTrend, lastTrend, PriceQueue.Last(), TickTime));
-                return 1;
-            }
-            else
-                return 0;
         }
 
         public override PriceForCalc DefinePriceForCalculation(IPattern p)

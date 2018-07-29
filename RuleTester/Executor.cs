@@ -72,6 +72,12 @@ namespace RuleTester
                         p = new TrendShiftPattern(logger, settings);
                         break;
                     }
+                case "TrendIncline":
+                    {
+                        p = new TrendInclinePattern(logger, settings);
+                        break;
+                    }
+                    
             }
 
             return (Pattern)p;

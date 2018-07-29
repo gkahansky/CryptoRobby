@@ -145,8 +145,8 @@ namespace CryptoRobert.Importer.Bnb
         {
             _logger.Info("Retreiving latest CandleStick data");
             //Load List of pairs & intervals required
-            List<string> intervals = new List<string> { /*"1m", "3m",*/ "5m", "15m", "30m", "1h",/* "2h",*/ "4h",/* "6h", "8h", "12h",*/ "1d"/*, "3d", "1w", "1M"*/ };
-
+            List<string> intervals = new List<string> { /*"1m", "3m",*/ "5m", "15m", "30m", "1h",/* "2h","4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"*/ };
+            
             //for each pair-interval combo, find the most recent update
             foreach (var pair in Config.PairsOfInterest)
             {
@@ -206,9 +206,10 @@ namespace CryptoRobert.Importer.Bnb
                         //Convert raw data to list of Klines
                         var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
                         //Save klines to KlinesQueue.
+                        var maxClose = GetMaxCloseTimeFromList(klineList);
                         MetaDataContainer.KlineQueue.Enqueue(klineList);
                         _rabbit.PublishKlineList(klineList);
-                        pair.LastUpdate[interval] = now;
+                        pair.LastUpdate[interval] = maxClose;
                         _logger.Info(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
                     else
@@ -222,9 +223,21 @@ namespace CryptoRobert.Importer.Bnb
             }
         }
 
+        private long GetMaxCloseTimeFromList(List<Kline> klineList)
+        {
+            long maxClose = klineList[0].CloseTime;
+
+            foreach(var kline in klineList)
+            {
+                if (kline.CloseTime > maxClose)
+                    maxClose = kline.CloseTime;
+            }
+            return maxClose;
+        }
+
         private async Task<long> CheckPairLastUpdate(CoinPair pair, string interval, long now)
         {
-
+            var last = _dbHandler.FindKlineLastUpdate(pair.Symbol, interval);
             var diff = metaData.Intervals[interval] + 1000;
             if (!Config.BnbGetHistoricalData)
             {
@@ -234,13 +247,22 @@ namespace CryptoRobert.Importer.Bnb
             else
             {
                 if (pair.LastUpdate.ContainsKey(interval))
-                    pair.LastUpdate[interval] = Config.BnbMinimumUpdateDate;
-                //pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+                {
+
+                    pair.LastUpdate[interval] = await LoadKlineLastUpdate(pair.Symbol, interval);
+                    if (last > Config.BnbMinimumUpdateDate)
+                        pair.LastUpdate[interval] = last;
+                    else
+                        pair.LastUpdate[interval] = Config.BnbMinimumUpdateDate;
+                }
+                    
+                
 
                 else
                 {
-                    pair.LastUpdate.Add(interval, 0);
-                    pair.LastUpdate[interval] = Config.BnbMinimumUpdateDate;
+                    pair.LastUpdate.Add(interval, Config.BnbMinimumUpdateDate);
+                    if (last > Config.BnbMinimumUpdateDate)
+                        pair.LastUpdate[interval] = last;
                 }
             }
             _logger.Info(string.Format("{0} {1} last update: {2}", pair.Symbol, interval, pair.LastUpdate[interval]));
