@@ -24,17 +24,19 @@ namespace CryptoRobert.Importer.Bnb
         private readonly ILogger _logger;
         private readonly IDbHandler _dbHandler;
         private readonly IRabbitHandler _rabbit;
+        private readonly IFileHandler _fileHandler;
         private bool StartupComplete { get; set; }
 
 
         //string Source { get; set; }
         #endregion
 
-        public BnbCommunicator(ILogger logger, IDbHandler dbHandler, IRabbitHandler rabbit) : base(logger, dbHandler)
+        public BnbCommunicator(ILogger logger, IDbHandler dbHandler, IRabbitHandler rabbit, IFileHandler fileHandler) : base(logger, dbHandler)
         {
             _logger = logger;
             _dbHandler = dbHandler;
             _rabbit = rabbit;
+            _fileHandler = fileHandler;
             StartupComplete = false;
 
             _logger.Info("    Starting Binance Importer...");
@@ -207,8 +209,13 @@ namespace CryptoRobert.Importer.Bnb
                         var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
                         //Save klines to KlinesQueue.
                         var maxClose = GetMaxCloseTimeFromList(klineList);
-                        MetaDataContainer.KlineQueue.Enqueue(klineList);
-                        _rabbit.PublishKlineList(klineList);
+                        if (Config.RecordTicksToFile)
+                            _fileHandler.SaveKlineToFile(klineList);
+                        else
+                        {
+                            MetaDataContainer.KlineQueue.Enqueue(klineList);
+                            _rabbit.PublishKlineList(klineList);
+                        }
                         pair.LastUpdate[interval] = maxClose;
                         _logger.Info(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }

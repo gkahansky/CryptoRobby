@@ -34,6 +34,7 @@ namespace CryptoRobert.Infra
         public static int LogSeverity { get; internal set; }
         public static long BnbMinimumUpdateDate { get; set; }
         public static bool UseSql { get; set; }
+        public static bool RecordTicksToFile { get; set; }
         #endregion
 
         public static void LoadConfiguration(ILogger logger, bool testMode = false)
@@ -111,6 +112,7 @@ namespace CryptoRobert.Infra
             BinanceSampleInterval = int.Parse(bnbJson["SampleInterval"].ToString());
             BnbExchange = bnbJson["RabbitExchange"].ToString();
             BnbGetHistoricalData = bool.Parse(bnbJson["BnbGetHistoricalData"].ToString());
+            RecordTicksToFile = bool.Parse(bnbJson["RecordTicksToFile"].ToString());
             BnbMinimumUpdateDate = ConvertTimeStringToMs(bnbJson["BnbMinimumUpdateDate"].ToString());
             
             _logger.Info(String.Format("Binance API Key: {0}", BinanceApiKey));

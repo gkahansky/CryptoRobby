@@ -113,7 +113,9 @@
   <ItemGroup>
     <Compile Include="DbHandler.cs" />
     <Compile Include="CoinContext.cs" />
+    <Compile Include="FileHandler.cs" />
     <Compile Include="IDbHanlder.cs" />
+    <Compile Include="IFileHandler.cs" />
     <Compile Include="Importer.cs" />
     <Compile Include="Migrations\20180428204536_init.cs" />
     <Compile Include="Migrations\20180428204536_init.Designer.cs">

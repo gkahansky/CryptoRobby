@@ -27,10 +27,11 @@ namespace CryptoRobert.Importer.Bnb
             var logger = new Logger("BnbImporter");
             var dbHandler = new DbHandler(logger);
             var rabbit = new RabbitHandler(logger, "BNB");
+            var fileHandler = new FileHandler(logger);
             Config.LoadConfiguration(logger);
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
-            BnbImporter = new BnbCommunicator(logger,dbHandler, rabbit);
+            BnbImporter = new BnbCommunicator(logger,dbHandler, rabbit, fileHandler);
 
             //BnbImporter.CoinPairs = new Dictionary<string, CoinPair>();
 

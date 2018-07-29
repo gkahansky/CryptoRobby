@@ -43,10 +43,11 @@ namespace RobbyConsole
             var repository = new DataRepository();
             repository.Klines = new Queue<Kline>();
             var _rabbit = new RabbitHandler(logger, "BNB");
-            
+            var fileHandler = new FileHandler(logger);
+
             var _dbHandler = new CryptoRobert.Importer.Base.DbHandler(logger);
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-            var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit);
+            var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit, fileHandler);
 
             bnb.UpdateTickerPrices();
             bnb.SaveCandleStickData();
