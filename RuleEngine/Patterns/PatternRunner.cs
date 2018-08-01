@@ -40,7 +40,7 @@ namespace CryptoRobert.RuleEngine.Patterns
             {
                 var patternRepo = new Dictionary<string, IPattern>();
                 var factory = new PatternFactory(_logger);
-                if (!Config.TestMode)
+                if (Config.TestMode)
                 {
                     foreach (var c in Config.PatternsConfig)
                     {
@@ -63,7 +63,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                                     patternRepo.Add(c.Key, new TrendShiftPattern(_logger, c.Value));
                                     break;
                                 }
-                            case "TrendInclinePattern":
+                            case "TrendIncline":
                                 {
                                     patternRepo.Add(c.Key, new TrendInclinePattern(_logger, c.Value));
                                     break;
@@ -109,6 +109,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                     {
                         decimal profit;
                         Trade.Sell(kline.Symbol, kline.Close, out profit);
+                        if(profit>decimal.MinValue)
                         TradeResults.Add(profit);
                     }
                 }

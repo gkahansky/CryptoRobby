@@ -41,14 +41,19 @@ namespace CryptoRobert.RuleEngine
 
         public void Sell(string symbol, decimal price, out decimal profit)
         {
-            var t = Transactions[symbol];
-            profit = ((price / t.BuyPrice) - 1) * 100;
-            var profitText = profit.ToString();
-            if (profitText.Length > 5)
-                profitText = profit.ToString().Substring(0, 5);
-            var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
-            _logger.Email(string.Format("SELL notice! selling {0} at {1}% from buy price", t.Symbol, profitText), msg);
-            Transactions.Remove(symbol);
+            profit = decimal.MinValue;
+            if (Transactions.Count > 0 && Transactions.ContainsKey(symbol))
+            {
+                var t = Transactions[symbol];
+                profit = ((price / t.BuyPrice) - 1) * 100;
+                var profitText = profit.ToString();
+                if (profitText.Length > 5)
+                    profitText = profit.ToString().Substring(0, 5);
+                var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
+                _logger.Email(string.Format("SELL notice! selling {0} at {1}% from buy price", t.Symbol, profitText), msg);
+                Transactions.Remove(symbol);
+            }
+
         }
 
         public StopLossDefinition GenerateStopLossObject(IPattern p)//PatternConfig settings)

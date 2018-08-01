@@ -61,7 +61,7 @@ namespace RuleTester
                 var settings = PopulateOutputObject();
                 LogConfiguration(settings);
                 
-                var executor = new Executor();
+                var executor = new Executor(_logger);
                 executor.RunTest(_logger, settings, Path);
             }
             else

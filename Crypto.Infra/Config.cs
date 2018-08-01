@@ -35,6 +35,7 @@ namespace CryptoRobert.Infra
         public static long BnbMinimumUpdateDate { get; set; }
         public static bool UseSql { get; set; }
         public static bool RecordTicksToFile { get; set; }
+        public static List<string> intervalsToMonitor { get; set; }
         #endregion
 
         public static void LoadConfiguration(ILogger logger, bool testMode = false)
@@ -114,13 +115,30 @@ namespace CryptoRobert.Infra
             BnbGetHistoricalData = bool.Parse(bnbJson["BnbGetHistoricalData"].ToString());
             RecordTicksToFile = bool.Parse(bnbJson["RecordTicksToFile"].ToString());
             BnbMinimumUpdateDate = ConvertTimeStringToMs(bnbJson["BnbMinimumUpdateDate"].ToString());
-            
+            GetIntervalsToMonitor(json);
+
+
             _logger.Info(String.Format("Binance API Key: {0}", BinanceApiKey));
             _logger.Info(String.Format("Binance API Secret: {0}", BinanceApiSecret));
             _logger.Info(String.Format("Binance Sample Interval: {0}", BinanceSampleInterval));
             _logger.Info(String.Format("BnbImporter Exchange: {0}", BnbExchange));
             _logger.Info(String.Format("BnbImporter Get History Mode: {0}", BnbGetHistoricalData));
             _logger.Info(String.Format("BnbImporter Minimum Time For Historical Data: {0}", BnbMinimumUpdateDate));
+        }
+
+        private static void GetIntervalsToMonitor(JObject json)
+        {
+            intervalsToMonitor = new List<string>();
+            var intervals = json["PairsToMonitor"]["Intervals"].ToString().Split(',');
+            foreach(var interval in intervals)
+            {
+                var start = interval.IndexOf('"')+1;
+                var end = interval.LastIndexOf('"');
+                var intervalClean = interval.Substring(start, end-start);
+                intervalsToMonitor.Add(intervalClean);
+                
+                _logger.Info("Interval Added: " + intervalClean);
+            }
         }
 
         private static long ConvertTimeStringToMs(string dateTimeString)
@@ -214,7 +232,6 @@ namespace CryptoRobert.Infra
             var patterns = json["PatternsConfiguration"];
             var pairs = json["PairsToMonitor"]["Pairs"];
             var intervals = json["PairsToMonitor"]["Intervals"];
-
             foreach (var token in patterns)
             {
                 var isActive = token["IsActive"].ToString();
@@ -236,6 +253,8 @@ namespace CryptoRobert.Infra
                 }
                 
             }
+
+            
         }
 
         private static void AddPairsToMonitor(PatternConfig p)
