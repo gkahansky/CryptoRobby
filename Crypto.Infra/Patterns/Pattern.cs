@@ -1,4 +1,6 @@
-﻿using CryptoRobert.Infra;
+﻿using Crypto.Infra.Trading;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Trading;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -20,12 +22,16 @@ namespace CryptoRobert.Infra.Patterns
         public decimal DynamicStopLossThreshold { get; set; }
         public decimal DynamicStopLoss { get; set; }
         public enum PriceForCalc { AvgClose, Close, High, Low, Open, AvgOC, avgHL }
+        public ITradeEngine Engine { get; set; }
+        private ILogger logger;
 
-        public Pattern(PatternConfig settings)
+        public Pattern(PatternConfig settings, ILogger _logger, string engineName="Generic")
         {
+            logger = _logger;
             Symbol = settings.Symbol;
             Interval = settings.Interval;
             Name = settings.Name;
+            Engine = new TradeEngine(logger,engineName);
         }
 
         public void UpdateSettings(PatternConfig config)

@@ -25,7 +25,7 @@ namespace CryptoRobert.Infra.Patterns
         private Dictionary<string, bool> Rules { get; set; }
         private Queue<decimal> PriceQueue { get; set; } 
 
-        public TrendShiftPattern(ILogger logger, PatternConfig settings) : base(settings)
+        public TrendShiftPattern(ILogger logger, PatternConfig settings, string engineName = "Generic") : base(settings,logger, engineName)
         {
             Rules = new Dictionary<string, bool>();
             PriceQueue = new Queue<decimal>();

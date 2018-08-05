@@ -48,21 +48,21 @@ namespace RuleTester
         private void PopulateFields()
         {
             //Retention
-            retentionMinText.Text = "10";
-            retentionMaxText.Text = "10";
+            retentionMinText.Text = "5";
+            retentionMaxText.Text = "15";
             retentionIncText.Text = "1";
             //Threshold
-            thresholdMinText.Text = "0.3";
-            thresholdMaxText.Text = "0.3";
-            thresholdIncText.Text = "0.1";
+            thresholdMinText.Text = "0.03";
+            thresholdMaxText.Text = "0.03";
+            thresholdIncText.Text = "0.005";
             //DefaultST
-            DefaultSLMinText.Text = "5";
-            DefaultSLMaxText.Text = "5";
-            DefaultSLIncText.Text = "0.5";
+            DefaultSLMinText.Text = "0.05";
+            DefaultSLMaxText.Text = "0.05";
+            DefaultSLIncText.Text = "0.005";
             //DynamicST
-            DynamicSLMinText.Text = "2";
-            DynamicSLMaxText.Text = "2";
-            DynamicSLIncText.Text = "0.5";
+            DynamicSLMinText.Text = "0.02";
+            DynamicSLMaxText.Text = "0.02";
+            DynamicSLIncText.Text = "0.005";
         }
 
         private void PopulatePatternCombo()
@@ -207,7 +207,10 @@ namespace RuleTester
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
-            _logger = new Logger("CryptoTesterLog");
+            _logger = new Logger("PatternTester");
+            fileAnalyzer = new FileAnalyzer(_logger);
+            settingsBuilder = new SettingsBuilder(_logger);
+            Config.LoadConfiguration(_logger, true);
 
             Output = UpdateOutputObject(Output);
             Path = filePathTextBox.Text;

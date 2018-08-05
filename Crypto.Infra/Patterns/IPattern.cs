@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Crypto.Infra.Trading;
 using CryptoRobert.Infra;
+using CryptoRobert.Infra.Trading;
 
 
 namespace CryptoRobert.Infra.Patterns
@@ -18,6 +20,7 @@ namespace CryptoRobert.Infra.Patterns
         decimal DynamicStopLoss { get; }
         decimal DefaultStopLossThreshold { get; }
         decimal DynamicStopLossThreshold { get; }
+        ITradeEngine Engine { get; set; }
 
 
         //bool CheckPattern(decimal price, long time);

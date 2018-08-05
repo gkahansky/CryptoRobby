@@ -38,11 +38,11 @@ namespace RuleTester
                             {
                                 for (var def = output.defaultSLThreshold.Min; def <= output.defaultSLThreshold.Max; def += output.defaultSLThreshold.Increment)
                                 {
-                                    for (var dyn = output.defaultSLThreshold.Min; dyn <= output.defaultSLThreshold.Max; dyn += output.defaultSLThreshold.Increment)
+                                    for (var dyn = output.dynamicSLThreshold.Min; dyn <= output.dynamicSLThreshold.Max; dyn += output.dynamicSLThreshold.Increment)
                                     {
                                         var patternConfig = new PatternConfig(p, symbol, interval, true, t, (int)r, def, dyn);
-                                        var pattern = NewPattern(p, patternConfig);
                                         var hash = p + "_" + symbol + "_" + interval + "_"+ r + "_" + t + "_" + def + "_" + dyn;
+                                        var pattern = NewPattern(p, patternConfig, hash);
                                         patternsRepository.Add(hash, pattern);
                                     }
                                 }
@@ -54,7 +54,7 @@ namespace RuleTester
             return patternsRepository;
         }
 
-        private Pattern NewPattern(string name, PatternConfig settings)
+        private Pattern NewPattern(string name, PatternConfig settings, string engineName)
         {
             var p = new Object();
 
@@ -62,22 +62,22 @@ namespace RuleTester
             {
                 case "Spring":
                     {
-                        p = new SpringPattern(logger, settings);
+                        p = new SpringPattern(logger, settings, engineName);
                         break;
                     }
                 case "Streak":
                     {
-                        p = new StreakPattern(logger, settings);
+                        p = new StreakPattern(logger, settings, engineName);
                         break;
                     }
                 case "TrendShift":
                     {
-                        p = new TrendShiftPattern(logger, settings);
+                        p = new TrendShiftPattern(logger, settings, engineName);
                         break;
                     }
                 case "TrendIncline":
                     {
-                        p = new TrendInclinePattern(logger, settings);
+                        p = new TrendInclinePattern(logger, settings, engineName);
                         break;
                     }
 

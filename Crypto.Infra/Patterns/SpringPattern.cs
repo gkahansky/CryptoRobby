@@ -23,7 +23,7 @@ namespace CryptoRobert.Infra.Patterns
         private Dictionary<string, bool> Rules { get; set; }
         private Queue<decimal> PriceQueue { get; set; } 
 
-        public SpringPattern(ILogger logger, PatternConfig settings) : base(settings)
+        public SpringPattern(ILogger logger, PatternConfig settings, string engineName = "Generic") : base(settings, logger, engineName)
         {
             Rules = new Dictionary<string, bool>();
             PriceQueue = new Queue<decimal>();
@@ -76,7 +76,7 @@ namespace CryptoRobert.Infra.Patterns
                 return 1;
             }
 
-            _logger.Info(String.Format("{6} {7}: Low: {0}, High: {1}, Spring: {2}, Last Price: {3}, Highest Price: {4}, time: {5}", Low, High, Spring, LastPrice, HighPrice, TickTime, this.Symbol, this.Interval));
+            _logger.Debug(String.Format("{6} {7}: Low: {0}, High: {1}, Spring: {2}, Last Price: {3}, Highest Price: {4}, time: {5}", Low, High, Spring, LastPrice, HighPrice, TickTime, this.Symbol, this.Interval));
             LastPrice = avgPrice;
             return 0;
         }
@@ -111,7 +111,7 @@ namespace CryptoRobert.Infra.Patterns
             if (avgPrice < low)
             {
                 low = avgPrice;
-                _logger.Info(string.Format("LOW Price update {3} {4}: {0}, Top Range: {1}, Bottom Range: {2}", low, lowTop, lowBottom, this.Symbol, this.Interval));
+                _logger.Debug(string.Format("LOW Price update {3} {4}: {0}, Top Range: {1}, Bottom Range: {2}", low, lowTop, lowBottom, this.Symbol, this.Interval));
                 if (avgPrice < lowBottom)
                 {
                     Trend = false;
@@ -124,7 +124,7 @@ namespace CryptoRobert.Infra.Patterns
                 Trend = true;
                 Rules["Low"] = true;
                 High = avgPrice;
-                _logger.Info(String.Format("LOW RULE ACHIEVED {0} {1}!!! Moving to HIGH Rule", this.Symbol, this.Interval));
+                _logger.Debug(String.Format("LOW RULE ACHIEVED {0} {1}!!! Moving to HIGH Rule", this.Symbol, this.Interval));
             }
             return low;
         }
@@ -137,7 +137,7 @@ namespace CryptoRobert.Infra.Patterns
             if (avgPrice > high)
             {
                 high = avgPrice;
-                _logger.Info(string.Format("HIGH Price update {3} {4}: {0}, Top Range: {1}, Bottom Range: {2}", high, highTop, highBottom, this.Symbol, this.Interval));
+                _logger.Debug(string.Format("HIGH Price update {3} {4}: {0}, Top Range: {1}, Bottom Range: {2}", high, highTop, highBottom, this.Symbol, this.Interval));
                 if (avgPrice > highTop)
                     Trend = true;
             }
@@ -147,7 +147,7 @@ namespace CryptoRobert.Infra.Patterns
                 //Spring = price;
                 Spring = High;
                 Rules["High"] = true;
-                _logger.Info(String.Format("HIGH RULE ACHIEVED {0} {1}!!! Moving to SPRING Rule", this.Symbol, this.Interval));
+                _logger.Debug(String.Format("HIGH RULE ACHIEVED {0} {1}!!! Moving to SPRING Rule", this.Symbol, this.Interval));
             }
             return high;
 
@@ -166,14 +166,14 @@ namespace CryptoRobert.Infra.Patterns
                 Rules["Spring"] = true;
                 Trend = true;
                 Pivot = avgPrice;
-                _logger.Info(String.Format("SPRING RULE ACHIEVED {0} {1}!!! Moving to COMPLETION Rule", this.Symbol, this.Interval));
+                _logger.Debug(String.Format("SPRING RULE ACHIEVED {0} {1}!!! Moving to COMPLETION Rule", this.Symbol, this.Interval));
             }
             else if (avgPrice < Spring)
             {
                 if (avgPrice > springFloor)
                 {
                     Spring = avgPrice;
-                    _logger.Info(string.Format("SPRING Price update {4} {5}: {0}, Top Range: {1}, Bottom Range: {2}, Limit for pattern break: {3}", Spring, springTop, springBottom, springFloor, this.Symbol, this.Interval));
+                    _logger.Debug(string.Format("SPRING Price update {4} {5}: {0}, Top Range: {1}, Bottom Range: {2}, Limit for pattern break: {3}", Spring, springTop, springBottom, springFloor, this.Symbol, this.Interval));
                 }
                     
                 else if (avgPrice < springFloor)

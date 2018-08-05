@@ -131,9 +131,6 @@
     <Compile Include="RuleEngineService.Designer.cs">
       <DependentUpon>RuleEngineService.cs</DependentUpon>
     </Compile>
-    <Compile Include="TradeEngine.cs" />
-    <Compile Include="Transactions\StopLossDefinition.cs" />
-    <Compile Include="Transactions\Transaction.cs" />
     <Compile Include="Data\Unsubscriber.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Rules\" />
+    <Folder Include="Transactions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

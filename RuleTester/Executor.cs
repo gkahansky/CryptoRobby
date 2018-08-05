@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using CryptoRobert.Infra;
 using CryptoRobert.RuleEngine;
 using CryptoRobert.Infra.Patterns;
-using CryptoRobert.RuleEngine.Transactions;
+using CryptoRobert.Infra.Trading;
 using Newtonsoft.Json.Linq;
 using CryptoRobert.RuleEngine.Patterns;
 
@@ -52,9 +52,13 @@ namespace RuleTester
         {
             foreach (var kline in klineList)
             {
-                runner.RunPatterns(kline);
+                runner.RunMultiplePatterns(kline);
             }
-            logger.Info("TOTAL PROFIT OF ALL TRADES: " + runner.TradeResults.Sum() + "%");
+            foreach(var pattern in runner.PatternRepository)
+            {
+                logger.Info(string.Format("TOTAL PROFIT OF ALL TRADES for {0} : {1}%", pattern.Value.Engine.Name, pattern.Value.Engine.TradeResults.Sum()));
+            }
+            
         }
 
 

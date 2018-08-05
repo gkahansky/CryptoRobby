@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CryptoRuleTester));
             this.filePathTextBox = new System.Windows.Forms.TextBox();
             this.browseButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -56,6 +58,7 @@
             this.DefaultSLIncText = new System.Windows.Forms.TextBox();
             this.thresholdIncText = new System.Windows.Forms.TextBox();
             this.retentionIncText = new System.Windows.Forms.TextBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // filePathTextBox
@@ -282,6 +285,12 @@
             this.retentionIncText.Size = new System.Drawing.Size(63, 22);
             this.retentionIncText.TabIndex = 109;
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            // 
             // CryptoRuleTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -315,6 +324,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.filePathTextBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CryptoRuleTester";
             this.Text = "`";
             this.ResumeLayout(false);
@@ -352,6 +362,7 @@
         private System.Windows.Forms.TextBox DefaultSLIncText;
         private System.Windows.Forms.TextBox thresholdIncText;
         private System.Windows.Forms.TextBox retentionIncText;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

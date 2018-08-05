@@ -1,5 +1,6 @@
 ﻿using CryptoRobert.Infra;
 using CryptoRobert.Infra.Patterns;
+using CryptoRobert.Infra.Trading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,11 @@ namespace CryptoRobert.RuleEngine.Patterns
         private Dictionary<string, CoinPair> CoinPairDict;
         public DataRepository KlineRepository;
         public TradeEngine Trade;
-        public List<decimal> TradeResults { get; set; }
+
 
         public PatternRunner(ILogger logger, DataRepository repository)
         {
             _logger = logger;
-            TradeResults = new List<decimal>();
             PatternRepository = InitializePatternRepository();
             CoinPairDict = new Dictionary<string, CoinPair>();
             KlineRepository = repository;
@@ -68,7 +68,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                                     patternRepo.Add(c.Key, new TrendInclinePattern(_logger, c.Value));
                                     break;
                                 }
-                                
+
                         }
                     }
                 }
@@ -82,6 +82,40 @@ namespace CryptoRobert.RuleEngine.Patterns
             }
         }
 
+        public void RunMultiplePatterns(Kline kline)
+        {
+            var partialKey = kline.Symbol + "_" + kline.Interval;
+            var partialDict = PartialMatch(PatternRepository, partialKey);
+            var results = new Dictionary<string, decimal>();
+            var sell = false;
+            if (partialDict.Count() > 0)
+            {
+                _logger.Debug(string.Format("Checking Patterns for {0} {1}", kline.Symbol, kline.Interval));
+                foreach (var p in partialDict)
+                {
+                    var buy = p.CheckPattern(kline);
+                    p.SetHighPrice(kline.High);
+
+                    if (buy == 1)
+                        p.Engine.BuyPair(kline, p, p.Name);
+
+                    else if (buy == -1)
+                        sell = true;
+
+                    else if (p.Engine.Transactions.Count > 0)
+                        sell = p.Engine.CheckStopLoss(p, kline);
+
+                    if (sell)
+                    {
+                        decimal profit;
+                        p.Engine.Sell(kline.Symbol, kline.Close, out profit);
+                        if (profit > decimal.MinValue)
+                            p.Engine.TradeResults.Add(profit);
+                    }
+                }
+            }
+        }
+
         public void RunPatterns(Kline kline)
         {
 
@@ -90,7 +124,7 @@ namespace CryptoRobert.RuleEngine.Patterns
             var sell = false;
             if (partialDict.Count() > 0)
             {
-                _logger.Info(string.Format("Checking Patterns for {0} {1}", kline.Symbol, kline.Interval));
+                _logger.Debug(string.Format("Checking Patterns for {0} {1}", kline.Symbol, kline.Interval));
                 foreach (var p in partialDict)
                 {
                     var buy = p.CheckPattern(kline);
@@ -109,8 +143,8 @@ namespace CryptoRobert.RuleEngine.Patterns
                     {
                         decimal profit;
                         Trade.Sell(kline.Symbol, kline.Close, out profit);
-                        if(profit>decimal.MinValue)
-                        TradeResults.Add(profit);
+                        if (profit > decimal.MinValue)
+                            p.Engine.TradeResults.Add(profit);
                     }
                 }
             }

@@ -112,6 +112,10 @@
     <Compile Include="Rabbit\RabbitHandler.cs" />
     <Compile Include="NotInUse\User.cs" />
     <Compile Include="NotInUse\Wallet.cs" />
+    <Compile Include="Trading\ITradeEngine.cs" />
+    <Compile Include="Trading\StopLossDefinition.cs" />
+    <Compile Include="Trading\TradeEngine.cs" />
+    <Compile Include="Trading\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -122,5 +126,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

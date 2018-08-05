@@ -1,25 +1,30 @@
 ﻿using CryptoRobert.Infra;
-using CryptoRobert.RuleEngine.Transactions;
+using CryptoRobert.Infra.Trading;
 using CryptoRobert.Infra.Patterns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Crypto.Infra.Trading;
 
-namespace CryptoRobert.RuleEngine
+namespace CryptoRobert.Infra.Trading
 {
-    public class TradeEngine
+    public class TradeEngine : ITradeEngine
     {
-        public Dictionary<string, StopLossDefinition> StopLossCollection;
-        public Dictionary<string, Transaction> Transactions;
+        public Dictionary<string, StopLossDefinition> StopLossCollection { get; }
+        public  Dictionary<string, Transaction> Transactions { get; }
         private ILogger _logger;
+        public string Name { get; set; }
+        public List<decimal> TradeResults { get; set; }
 
-        public TradeEngine(ILogger logger)
+        public TradeEngine(ILogger logger, string name = "Generic")
         {
             StopLossCollection = new Dictionary<string, StopLossDefinition>();
             Transactions = new Dictionary<string, Transaction>();
+            TradeResults = new List<decimal>();
             _logger = logger;
+            Name = name;
         }
 
         public void BuyPair(Kline kline, IPattern p, string name)/*Dictionary<string, PatternConfig> patternsConfig*/
@@ -77,5 +82,6 @@ namespace CryptoRobert.RuleEngine
 
             return sell;
         }
+
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CryptoRobert.RuleEngine.Transactions
+namespace CryptoRobert.Infra.Trading
 {
     public class Transaction
     {

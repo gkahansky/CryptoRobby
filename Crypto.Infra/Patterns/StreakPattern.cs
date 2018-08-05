@@ -19,7 +19,7 @@ namespace CryptoRobert.Infra.Patterns
         private int Retention { get; set; }
         private decimal StreakThreshold { get; set; }
 
-        public StreakPattern(ILogger logger, PatternConfig settings) : base(settings)
+        public StreakPattern(ILogger logger, PatternConfig settings, string engineName = "Generic") : base(settings, logger, engineName)
         {
             _logger = logger;
             Streak = 0;
@@ -66,13 +66,13 @@ namespace CryptoRobert.Infra.Patterns
                 {
                     Streak += 1;
                     var msg = String.Format("Streak Forming {5} {6}! Average Price: {0}, Current Price: {1}, Last Price: {2} Streak: {3}, Time: {4}", avgPrice, price, LastPrice, Streak, TickTime, this.Symbol, this.Interval);
-                    _logger.Info(msg);
+                    _logger.Debug(msg);
                 }
                 else
                 {
                     Streak = 0;
                     var msg = String.Format("Streak Ended {5} {6}! Average Price: {0}, Current Price: {1}, Last Price: {2} Streak: {3}, Time: {4}", avgPrice, price, LastPrice, Streak, TickTime, this.Symbol, this.Interval);
-                    _logger.Info(msg);
+                    _logger.Debug(msg);
                 }
             }
 
