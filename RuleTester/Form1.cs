@@ -9,6 +9,7 @@ using CryptoRobert.RuleEngine;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using RuleTester.Entities;
 
 namespace RuleTester
 {
@@ -16,30 +17,179 @@ namespace RuleTester
     public partial class CryptoRuleTester : Form
     {
         private ILogger _logger { get; set; }
-        private JObject RunSettings { get; set; }
         private string Path { get; set; }
+        private TesterOutput Output { get; set; }
+        private FileAnalyzer fileAnalyzer { get; set; }
+        private ISettingsBuilder settingsBuilder { get; set; }
 
+        #region CTOR
         public CryptoRuleTester()
         {
             InitializeComponent();
             _logger = new Logger("CryptoTesterLog");
-            PopulatePatternCombo();
+            fileAnalyzer = new FileAnalyzer(_logger);
+            settingsBuilder = new SettingsBuilder(_logger);
             Config.LoadConfiguration(_logger, true);
-            RunSettings = GenerateDefaultSettings();
-
+            Output = new TesterOutput();
+            Output = GenerateDefaultSettings(Output);
         }
+        #endregion
 
-        private JObject GenerateDefaultSettings()
+        #region Default Settings
+        private TesterOutput GenerateDefaultSettings(TesterOutput output)
         {
-            var settings = new JObject();
-            retentionText.Text = Config.PatternSpringToKeep.ToString();
-            thresholdText.Text = Config.PatternSpringThreshold.ToString();
-            symbolText.Text = null;
-            intervalText.Text = null;
-
-
-            return settings;
+            //Patterns
+            PopulatePatternCombo();
+            PopulateFields();
+            output = GenerateTesterOutput(output);
+            return output;
         }
+
+        private void PopulateFields()
+        {
+            //Retention
+            retentionMinText.Text = "10";
+            retentionMaxText.Text = "10";
+            retentionIncText.Text = "1";
+            //Threshold
+            thresholdMinText.Text = "0.3";
+            thresholdMaxText.Text = "0.3";
+            thresholdIncText.Text = "0.1";
+            //DefaultST
+            DefaultSLMinText.Text = "5";
+            DefaultSLMaxText.Text = "5";
+            DefaultSLIncText.Text = "0.5";
+            //DynamicST
+            DynamicSLMinText.Text = "2";
+            DynamicSLMaxText.Text = "2";
+            DynamicSLIncText.Text = "0.5";
+        }
+
+        private void PopulatePatternCombo()
+        {
+            PatternsListBox.Items.Add("TrendIncline");
+            PatternsListBox.Items.Add("TrendShift");
+            PatternsListBox.Items.Add("Spring");
+            PatternsListBox.Items.Add("Streak");
+        }
+
+        private TesterOutput GenerateTesterOutput(TesterOutput output)
+        {
+            try
+            {
+                //Output = new TesterOutput();
+                //Retention
+                output.retention.Min = decimal.Parse(retentionMinText.Text);
+                output.retention.Max = decimal.Parse(retentionMaxText.Text);
+                output.retention.Increment = decimal.Parse(retentionIncText.Text);
+                //Threshold
+                output.threshold.Min = decimal.Parse(thresholdMinText.Text);
+                output.threshold.Max = decimal.Parse(thresholdMaxText.Text);
+                output.threshold.Increment = decimal.Parse(thresholdIncText.Text);
+                //Default Stop Loss
+                output.defaultSLThreshold.Min = decimal.Parse(DefaultSLMinText.Text);
+                output.defaultSLThreshold.Max = decimal.Parse(DefaultSLMaxText.Text);
+                output.defaultSLThreshold.Increment = decimal.Parse(DefaultSLIncText.Text);
+                //Default Stop Loss
+                output.dynamicSLThreshold.Min = decimal.Parse(DynamicSLMinText.Text);
+                output.dynamicSLThreshold.Max = decimal.Parse(DynamicSLMaxText.Text);
+                output.dynamicSLThreshold.Increment = decimal.Parse(DynamicSLIncText.Text);                
+
+                return output;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("One of your settings in Invalid! please try again");
+                return output;
+            }
+        }
+
+        #endregion
+
+
+        #region UI Validations
+        private bool ValidateSettings(TesterOutput output)
+        {
+            var isValid = true;
+
+            isValid = CheckMinMaxValidityInt(output.retention.Min, output.retention.Max);
+            if (isValid)
+                isValid = CheckMinMaxValidityDecimal(output.threshold.Min, output.threshold.Max);
+            else
+            {
+                MessageBox.Show("Max value must be higher than Min value. Field: Retention");
+                return isValid;
+            }
+
+            if (isValid)
+                isValid = CheckMinMaxValidityDecimal(output.defaultSLThreshold.Min, output.defaultSLThreshold.Max);
+            else
+            {
+                MessageBox.Show("Max value must be higher than Min value. Field: Threshold");
+                return isValid;
+            }
+            if (isValid)
+                isValid = CheckMinMaxValidityDecimal(output.dynamicSLThreshold.Min, output.dynamicSLThreshold.Max);
+            else
+            {
+                MessageBox.Show("Max value must be higher than Min value. Field: Default Stop Loss");
+                return isValid;
+            }
+            if (!isValid)
+            {
+                MessageBox.Show("Max value must be higher than Min value. Field: Dynamic Stop Loss");
+                return isValid;
+            }
+
+            return isValid;
+        }
+
+        private bool CheckMinMaxValidityDecimal(decimal min, decimal max)
+        {
+            if (min <= max && min > 0 && max > 0)
+                return true;
+            else
+                return false;
+        }
+
+        private bool CheckMinMaxValidityInt(decimal minDec, decimal maxDec)
+        {
+            try
+            {
+                var min = int.Parse(minDec.ToString());
+                var max = int.Parse(maxDec.ToString());
+
+                if (min <= max && min > 0 && max > 0)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        private string GetUniqueSymbols(Dictionary<string, string> list)
+        {
+            string listString = "";
+            string stringToReturn = "";
+            if (list.Count() > 0)
+            {
+                foreach (var item in list)
+                {
+                    listString += item.Key + ",";
+                }
+            }
+
+            if (listString.EndsWith(","))
+                stringToReturn = listString.Remove(listString.LastIndexOf(","));
+            else
+                stringToReturn = listString;
+
+            return stringToReturn;
+        }
+        #endregion
 
         private void BrowseButton_OnClick(object sender, EventArgs e)
         {
@@ -48,25 +198,37 @@ namespace RuleTester
             if (result == DialogResult.OK) // Test result.
             {
                 filePathTextBox.Text = dialog.FileName;
+                var symbolIntervals = fileAnalyzer.AnalyzeFileData(filePathTextBox.Text);
+                SymbolList.Text = GetUniqueSymbols(symbolIntervals.Item1);
+                IntervalList.Text = GetUniqueSymbols(symbolIntervals.Item2);
+                var patterns = PatternsListBox.SelectedItems;          
             }
-
         }
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
             _logger = new Logger("CryptoTesterLog");
-            if (!string.IsNullOrEmpty(patternCombo.Text))
-            {
-                
-                var settings = PopulateOutputObject();
-                LogConfiguration(settings);
-                
-                var executor = new Executor(_logger);
-                executor.RunTest(_logger, settings, Path);
-            }
-            else
-                MessageBox.Show("Please Select a Pattern");
 
+            Output = UpdateOutputObject(Output);
+            Path = filePathTextBox.Text;
+            var isValid = ValidateSettings(Output);
+            var patterns = settingsBuilder.GenerateSettings(Output);
+            //    LogConfiguration(settings);
+
+            var executor = new Executor(_logger, fileAnalyzer,patterns);
+              executor.RunTest(_logger, patterns, Path);
+
+        }
+
+        private TesterOutput UpdateOutputObject(TesterOutput output)
+        {
+            output.Symbols = SymbolList.Text.Split(',');
+            output.Intervals = IntervalList.Text.Split(',');
+          
+            
+            output = GenerateTesterOutput(output);
+
+            return output;
         }
 
         private void LogConfiguration(PatternConfig settings)
@@ -90,36 +252,15 @@ namespace RuleTester
             _logger.Info(msg);
         }
 
-        private PatternConfig PopulateOutputObject()
+        private void PatternsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var settings = new PatternConfig();
+            var i = PatternsListBox.SelectedIndex;
+            var name = PatternsListBox.SelectedItem.ToString();
+            var isChecked = PatternsListBox.GetItemChecked(i);
 
-            settings.Name = patternCombo.Text;
-            settings.Symbol = symbolText.Text;
-            settings.Interval = intervalText.Text;
-            settings.Retention = int.Parse(retentionText.Text);
-            settings.Threshold = decimal.Parse(thresholdText.Text);
-            if (!string.IsNullOrWhiteSpace(DefaultSLText.Text))
-                settings.DefaultStopLoss = decimal.Parse(DefaultSLText.Text);
-            else
-                settings.DefaultStopLoss = 0;
+            PatternsListBox.SetItemChecked(i,!isChecked);
+            Output.Patterns[name] = !isChecked;
 
-            if (!string.IsNullOrWhiteSpace(DynamicSLText.Text))
-                settings.DynamicStopLoss = decimal.Parse(DynamicSLText.Text);
-            else
-                settings.DynamicStopLoss = 0;
-
-            Path = filePathTextBox.Text;
-
-            return settings;
-        }
-
-        private void PopulatePatternCombo()
-        {
-            patternCombo.Items.Add("TrendIncline");
-            patternCombo.Items.Add("TrendShift");
-            patternCombo.Items.Add("Spring");
-            patternCombo.Items.Add("Streak");
-        }
+       }
     }
 }

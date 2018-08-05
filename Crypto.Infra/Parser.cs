@@ -99,7 +99,7 @@ namespace CryptoRobert.Infra
             }
         }
 
-        public List<Kline> ParseKlinesFromCsvToList(List<string> list, string symbol = null, string interval = null)
+        public List<Kline> ParseKlinesFromCsvToList(List<string> list)
         {
             try
             {
@@ -110,20 +110,18 @@ namespace CryptoRobert.Infra
                     {
                         var split = line.Split(',');
                         var kline = new Kline();
-                        if ((string.IsNullOrEmpty(symbol) || symbol == split[0].ToString()) && (string.IsNullOrEmpty(interval) || interval == split[1]))
-                        {
-                            kline.Symbol = split[0];
-                            kline.Interval = split[1];
-                            kline.OpenTime = long.Parse(split[2]);
-                            kline.CloseTime = long.Parse(split[3]);
-                            kline.Open = decimal.Parse(split[4]);
-                            kline.Close = decimal.Parse(split[5]);
-                            kline.High = decimal.Parse(split[6]);
-                            kline.Low = decimal.Parse(split[7]);
-                            kline.Volume = decimal.Parse(split[8]);
-                            klineList.Add(kline);
-                        }
-                        //Symbol,Interval,OpenTime,CloseTime,Open,Close,High,Low,Volume
+
+                        kline.Symbol = split[0];
+                        kline.Interval = split[1];
+                        kline.OpenTime = long.Parse(split[2]);
+                        kline.CloseTime = long.Parse(split[3]);
+                        kline.Open = decimal.Parse(split[4]);
+                        kline.Close = decimal.Parse(split[5]);
+                        kline.High = decimal.Parse(split[6]);
+                        kline.Low = decimal.Parse(split[7]);
+                        kline.Volume = decimal.Parse(split[8]);
+                        klineList.Add(kline);
+
                     }
                 }
 

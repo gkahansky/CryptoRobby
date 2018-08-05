@@ -152,7 +152,7 @@ namespace CryptoRobert.Infra
             }
             catch (Exception e)
             {
-                _logger.Error("Failed to parse Minimum Time for historical data. proceeding with live data");
+                _logger.Error("Failed to parse Minimum Time for historical data. proceeding with live data.\n" + e.ToString());
                 return timeLong;
             }
 
