@@ -108,7 +108,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                     if (sell)
                     {
                         decimal profit;
-                        p.Engine.Sell(kline.Symbol, kline.Close, out profit);
+                        p.Engine.Sell(kline, out profit);
                         if (profit > decimal.MinValue)
                             p.Engine.TradeResults.Add(profit);
                     }
@@ -142,7 +142,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                     if (sell)
                     {
                         decimal profit;
-                        Trade.Sell(kline.Symbol, kline.Close, out profit);
+                        Trade.Sell(kline, out profit);
                         if (profit > decimal.MinValue)
                             p.Engine.TradeResults.Add(profit);
                     }
@@ -150,6 +150,13 @@ namespace CryptoRobert.RuleEngine.Patterns
             }
         }
 
+        public void PublishResults()
+        {
+            foreach(var p in PatternRepository)
+            {
+                p.Value.ReportPatternStats();
+            }
+        }
         public IEnumerable<T> PartialMatch<T>(Dictionary<string, T> dictionary, string partialKey)
         {
             // This, or use a RegEx or whatever.

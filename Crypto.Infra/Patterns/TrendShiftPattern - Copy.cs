@@ -12,8 +12,6 @@ namespace CryptoRobert.Infra.Patterns
     {
         private ILogger _logger;
         public decimal Trend { get; set; }
-        public int Retention { get; set; }
-        public decimal Threshold { get; set; }
         public decimal avgPrice { get; set; }
         public decimal avgPriceDelta { get; set; }
         public decimal avgPriceChange { get; set; }

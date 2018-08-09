@@ -59,6 +59,7 @@
             this.thresholdIncText = new System.Windows.Forms.TextBox();
             this.retentionIncText = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.stopButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // filePathTextBox
@@ -130,12 +131,15 @@
             // 
             // buttonGo
             // 
-            this.buttonGo.Location = new System.Drawing.Point(683, 88);
+            this.buttonGo.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.buttonGo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonGo.BackgroundImage")));
+            this.buttonGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonGo.Location = new System.Drawing.Point(567, 88);
             this.buttonGo.Name = "buttonGo";
-            this.buttonGo.Size = new System.Drawing.Size(96, 63);
+            this.buttonGo.Size = new System.Drawing.Size(96, 55);
             this.buttonGo.TabIndex = 16;
             this.buttonGo.Text = "GO";
-            this.buttonGo.UseVisualStyleBackColor = true;
+            this.buttonGo.UseVisualStyleBackColor = false;
             this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
             // 
             // label5
@@ -291,11 +295,26 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             // 
+            // stopButton
+            // 
+            this.stopButton.BackColor = System.Drawing.SystemColors.InfoText;
+            this.stopButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("stopButton.BackgroundImage")));
+            this.stopButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stopButton.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.stopButton.Location = new System.Drawing.Point(683, 89);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(96, 55);
+            this.stopButton.TabIndex = 113;
+            this.stopButton.Text = "Stop!";
+            this.stopButton.UseVisualStyleBackColor = false;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
             // CryptoRuleTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.stopButton);
             this.Controls.Add(this.DynamicSLIncText);
             this.Controls.Add(this.DefaultSLIncText);
             this.Controls.Add(this.thresholdIncText);
@@ -363,6 +382,7 @@
         private System.Windows.Forms.TextBox thresholdIncText;
         private System.Windows.Forms.TextBox retentionIncText;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Button stopButton;
     }
 }
 

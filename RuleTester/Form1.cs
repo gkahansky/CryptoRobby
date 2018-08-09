@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using RuleTester.Entities;
+using CryptoRobert.Infra.Patterns;
 
 namespace RuleTester
 {
@@ -21,6 +22,8 @@ namespace RuleTester
         private TesterOutput Output { get; set; }
         private FileAnalyzer fileAnalyzer { get; set; }
         private ISettingsBuilder settingsBuilder { get; set; }
+        private Executor executor { get; set; }
+        private Dictionary<string, IPattern> patterns { get; set; }
 
         #region CTOR
         public CryptoRuleTester()
@@ -32,6 +35,10 @@ namespace RuleTester
             Config.LoadConfiguration(_logger, true);
             Output = new TesterOutput();
             Output = GenerateDefaultSettings(Output);
+            patterns = new Dictionary<string, IPattern>();
+            executor = new Executor(_logger, fileAnalyzer, patterns);
+
+
         }
         #endregion
 
@@ -93,7 +100,7 @@ namespace RuleTester
                 //Default Stop Loss
                 output.dynamicSLThreshold.Min = decimal.Parse(DynamicSLMinText.Text);
                 output.dynamicSLThreshold.Max = decimal.Parse(DynamicSLMaxText.Text);
-                output.dynamicSLThreshold.Increment = decimal.Parse(DynamicSLIncText.Text);                
+                output.dynamicSLThreshold.Increment = decimal.Parse(DynamicSLIncText.Text);
 
                 return output;
             }
@@ -201,7 +208,7 @@ namespace RuleTester
                 var symbolIntervals = fileAnalyzer.AnalyzeFileData(filePathTextBox.Text);
                 SymbolList.Text = GetUniqueSymbols(symbolIntervals.Item1);
                 IntervalList.Text = GetUniqueSymbols(symbolIntervals.Item2);
-                var patterns = PatternsListBox.SelectedItems;          
+                var patterns = PatternsListBox.SelectedItems;
             }
         }
 
@@ -215,11 +222,8 @@ namespace RuleTester
             Output = UpdateOutputObject(Output);
             Path = filePathTextBox.Text;
             var isValid = ValidateSettings(Output);
-            var patterns = settingsBuilder.GenerateSettings(Output);
-            //    LogConfiguration(settings);
-
-            var executor = new Executor(_logger, fileAnalyzer,patterns);
-              executor.RunTest(_logger, patterns, Path);
+            patterns = settingsBuilder.GenerateSettings(Output);            
+            executor.RunTest(_logger, patterns, Path);
 
         }
 
@@ -227,8 +231,8 @@ namespace RuleTester
         {
             output.Symbols = SymbolList.Text.Split(',');
             output.Intervals = IntervalList.Text.Split(',');
-          
-            
+
+
             output = GenerateTesterOutput(output);
 
             return output;
@@ -261,9 +265,14 @@ namespace RuleTester
             var name = PatternsListBox.SelectedItem.ToString();
             var isChecked = PatternsListBox.GetItemChecked(i);
 
-            PatternsListBox.SetItemChecked(i,!isChecked);
+            PatternsListBox.SetItemChecked(i, !isChecked);
             Output.Patterns[name] = !isChecked;
 
-       }
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            executor.Stop = true;
+        }
     }
 }

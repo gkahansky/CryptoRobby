@@ -16,8 +16,6 @@ namespace CryptoRobert.Infra.Patterns
         public decimal LastOpen { get; set; }
         private Queue<decimal> PriceQueue { get; set; }
         private Queue<decimal> VolumeQueue { get; set; }
-        private int Retention { get; set; }
-        private decimal StreakThreshold { get; set; }
 
         public StreakPattern(ILogger logger, PatternConfig settings, string engineName = "Generic") : base(settings, logger, engineName)
         {
@@ -29,7 +27,7 @@ namespace CryptoRobert.Infra.Patterns
             VolumeQueue = new Queue<decimal>();
             Retention = settings.Retention;
             HighPrice = 0;
-            StreakThreshold = settings.Threshold;
+            Threshold = settings.Threshold;
             Name = "Streak";
         }
 
@@ -53,7 +51,7 @@ namespace CryptoRobert.Infra.Patterns
             var avgPrice = PriceQueue.Average();
             var sd = CalculateSd(VolumeQueue);
 
-            var priceToBeat = LastPrice + (LastPrice * StreakThreshold);
+            var priceToBeat = LastPrice + (LastPrice * Threshold);
 
             if (PriceQueue.Count >= Retention)
             {

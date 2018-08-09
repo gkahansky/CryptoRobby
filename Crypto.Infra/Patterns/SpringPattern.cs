@@ -12,8 +12,6 @@ namespace CryptoRobert.Infra.Patterns
     {
         private ILogger _logger;
         public bool Trend { get; set; }
-        public int Retention { get; set; }
-        public decimal Threshold { get; set; }
         public decimal Low { get; set; }
         public decimal High { get; set; }
         public decimal Spring { get; set; }

@@ -24,6 +24,9 @@ namespace CryptoRobert.Infra.Patterns
         public enum PriceForCalc { AvgClose, Close, High, Low, Open, AvgOC, avgHL }
         public ITradeEngine Engine { get; set; }
         private ILogger logger;
+        public  int Retention { get; set; }
+        public decimal Threshold { get; set; }
+
 
         public Pattern(PatternConfig settings, ILogger _logger, string engineName="Generic")
         {
@@ -51,5 +54,27 @@ namespace CryptoRobert.Infra.Patterns
 
         public abstract PriceForCalc DefinePriceForCalculation(IPattern p);
 
+        public void ReportPatternStats()
+        {
+
+            string[] stats = 
+                {
+                Symbol,
+                Name,
+                Interval,
+                Retention.ToString(),
+                Threshold.ToString(),
+                DefaultStopLossThreshold.ToString(),
+                DynamicStopLossThreshold.ToString(),
+                Engine.TradeResults.Sum().ToString(),
+                Engine.TradeResults.Count().ToString(),
+                Engine.MaxProfit.ToString(),
+                Engine.MinProfit.ToString(),
+                Engine.FirstTransactionTime.ToString(),
+                Engine.LastTransactionTime.ToString(),
+                };
+            string msg = string.Join(",", stats);
+            logger.Stats(msg);
+        }
     }
 }

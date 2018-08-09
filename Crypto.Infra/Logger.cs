@@ -11,6 +11,7 @@ namespace CryptoRobert.Infra
     {
         const string pathString = @"C:\Crypto\Log\";
         public string path { get; set; }
+        public string reportPath { get; set; }
         private string Source { get; set; }
 
         public Logger(string source)
@@ -22,6 +23,16 @@ namespace CryptoRobert.Infra
         private void GenerateLogPath()
         {
             this.path = pathString + Source + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt";
+        }
+
+        public void InitializeStatsReport()
+        {
+            this.reportPath = pathString + "TransactionStats_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+            using (StreamWriter sw = File.AppendText(reportPath))
+            {
+                var msg = "Pair,Pattern Name, Interval, Retention, Threshold, DefaultStopLoss,DynamicStopLoss,Total Profit,Number of Deals,Max Profit,Min Profit,First transaction,Last transaction";
+                sw.WriteLine(msg);
+            }
         }
 
         private void CheckDateChange()
@@ -121,5 +132,13 @@ namespace CryptoRobert.Infra
 
         }
 
+
+        public void Stats(string msg)
+        {
+            using (StreamWriter sw = File.AppendText(reportPath))
+            {
+                sw.WriteLine(msg);
+            }
+        }
     }
 }

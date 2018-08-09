@@ -21,6 +21,8 @@ namespace CryptoRobert.Infra.Patterns
         decimal DefaultStopLossThreshold { get; }
         decimal DynamicStopLossThreshold { get; }
         ITradeEngine Engine { get; set; }
+        int Retention { get; set; }
+        decimal Threshold { get; set; }
 
 
         //bool CheckPattern(decimal price, long time);
@@ -28,5 +30,6 @@ namespace CryptoRobert.Infra.Patterns
         void SetHighPrice(decimal price);
         Pattern.PriceForCalc DefinePriceForCalculation(IPattern p);
         void UpdateSettings(PatternConfig config);
+        void ReportPatternStats();
     }
 }

@@ -11,6 +11,7 @@ using CryptoRobert.Infra.Patterns;
 using CryptoRobert.Infra.Trading;
 using Newtonsoft.Json.Linq;
 using CryptoRobert.RuleEngine.Patterns;
+using System.Threading;
 
 namespace RuleTester
 {
@@ -22,6 +23,7 @@ namespace RuleTester
         private FileAnalyzer fileAnalyzer { get; set; }
         private Dictionary<string, IPattern> PatternRepository { get; set; }
         private ILogger logger { get; set; }
+        public bool Stop { get; set; }
 
 
         #region CTOR
@@ -42,8 +44,20 @@ namespace RuleTester
             //InitializePatternConfiguration(settings);
 
             var runner = new PatternRunner(logger, dataRepository);
+            logger.InitializeStatsReport();
             runner.PatternRepository = patterns;
-            PublishKlines(KlineList, runner);
+
+            new Thread(() =>
+            {
+                int i = 0;
+                while (!Stop && i < KlineList.Count())
+                {
+                    PublishKlines(KlineList, runner);
+                    i++;
+                }
+            }).Start();
+
+
 
         }
 
@@ -54,7 +68,8 @@ namespace RuleTester
             {
                 runner.RunMultiplePatterns(kline);
             }
-            foreach(var pattern in runner.PatternRepository)
+            runner.PublishResults();
+            foreach (var pattern in runner.PatternRepository)
             {
                 logger.Info(string.Format("TOTAL PROFIT OF ALL TRADES for {0} : {1}%", pattern.Value.Engine.Name, pattern.Value.Engine.TradeResults.Sum()));
             }

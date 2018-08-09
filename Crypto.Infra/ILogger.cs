@@ -15,6 +15,9 @@ namespace CryptoRobert.Infra
         void Warning(string msg);
         void Error(string msg);
 
+        void Stats(string msg);
+        void InitializeStatsReport();
+
         void Email(string subject, string body);
         //void Email(string subject, string body);
     }
