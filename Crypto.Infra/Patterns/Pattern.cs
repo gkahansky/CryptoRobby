@@ -56,7 +56,11 @@ namespace CryptoRobert.Infra.Patterns
 
         public void ReportPatternStats()
         {
-
+            if(Engine.Transactions.Count()==0)
+            {
+                Engine.MaxProfit = 0;
+                Engine.MinProfit = 0;
+            }
             string[] stats = 
                 {
                 Symbol,
@@ -66,7 +70,7 @@ namespace CryptoRobert.Infra.Patterns
                 Threshold.ToString(),
                 DefaultStopLossThreshold.ToString(),
                 DynamicStopLossThreshold.ToString(),
-                Engine.TradeResults.Sum().ToString(),
+                (Engine.TradeResults.Sum()).ToString(),
                 Engine.TradeResults.Count().ToString(),
                 Engine.MaxProfit.ToString(),
                 Engine.MinProfit.ToString(),

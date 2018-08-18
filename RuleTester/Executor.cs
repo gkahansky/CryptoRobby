@@ -50,7 +50,7 @@ namespace RuleTester
             new Thread(() =>
             {
                 int i = 0;
-                while (!Stop && i < KlineList.Count())
+            while (!Stop && i < 1)
                 {
                     PublishKlines(KlineList, runner);
                     i++;
@@ -68,7 +68,9 @@ namespace RuleTester
             {
                 runner.RunMultiplePatterns(kline);
             }
+
             runner.PublishResults();
+
             foreach (var pattern in runner.PatternRepository)
             {
                 logger.Info(string.Format("TOTAL PROFIT OF ALL TRADES for {0} : {1}%", pattern.Value.Engine.Name, pattern.Value.Engine.TradeResults.Sum()));

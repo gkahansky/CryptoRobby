@@ -65,7 +65,7 @@ namespace CryptoRobert.Infra.Trading
             {
                 var t = Transactions[symbol];
                 profit = ((price / t.BuyPrice) - 1);
-                var profitText = profit.ToString();
+                var profitText = (profit*100).ToString();
                 if (profitText.Length > 5)
                     profitText = profit.ToString().Substring(0, 5);
                 var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
