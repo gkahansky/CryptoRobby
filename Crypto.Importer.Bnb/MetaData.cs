@@ -10,14 +10,12 @@ namespace CryptoRobert.Infra
     {
         public Dictionary<string, Coin> CoinDict { get; set; }
         public Dictionary<string, CoinPair> CoinPairDict { get; set; }
-        public Dictionary<int, User> UserDict { get; set; }
         public Dictionary<string,long> Intervals { get; set; }
 
         public MetaData()
         {
             CoinDict = new Dictionary<string, Coin>();
             CoinPairDict = new Dictionary<string, CoinPair>();
-            UserDict = new Dictionary<int, User>();
             Intervals = new Dictionary<string, long>();
             PopulateIntervals();
         }
@@ -26,7 +24,7 @@ namespace CryptoRobert.Infra
         {
             Intervals.Add("1m", 60000);
             Intervals.Add("3m", 180000);
-            Intervals.Add("5m", 300000);
+            Intervals.Add("5m", 300000); 
             Intervals.Add("15m", 900000);
             Intervals.Add("30m", 1800000);
             Intervals.Add("1h", 3600000);

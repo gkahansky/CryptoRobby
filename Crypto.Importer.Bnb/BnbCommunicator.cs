@@ -11,6 +11,7 @@ using CryptoRobert.Infra.Rabbit;
 using CryptoRobert.Importer.Base;
 using System.Configuration;
 using RabbitMQ.Client;
+using Crypto.Infra.MarketData;
 
 namespace CryptoRobert.Importer.Bnb
 {
@@ -54,6 +55,27 @@ namespace CryptoRobert.Importer.Bnb
             _rabbit.Connect();
         }
 
+        public void FillGapsinDb()
+        {
+            _logger.Info("Working in 'Fill-Gaps' Mode. Looking for gaps in database...");
+            var gaps = _dbHandler.FindMissingTicks(this.metaData.Intervals);
+            GetKlinesForDbGaps(gaps);
+        }
+
+        private void GetKlinesForDbGaps(Dictionary<CoinInterval, List<TickGap>> gaps)
+        {
+            foreach (var item in gaps)
+            {
+                foreach (var gap in item.Value)
+                {
+                    var klineList = DownloadKlinesFromBnb(item.Key.Symbol, item.Key.Interval, gap.From, gap.To);
+                    var klines = klineList.Result;
+                    if (klines.Count > 0)
+                        saveKlines(klines);
+                }
+            }
+        }
+
         #region Connectivity
 
 
@@ -80,7 +102,7 @@ namespace CryptoRobert.Importer.Bnb
             try
             {
                 //var restClient = Connect();
-                _logger.Info("Working in No DB Mode - Fetching Coin Pairs from BNB...");
+                //_logger.Info("Working in No DB Mode - Fetching Coin Pairs from BNB...");
                 var tickers = new List<CoinPair>();
 
                 //if (Config.BnbUseSql)
@@ -124,8 +146,6 @@ namespace CryptoRobert.Importer.Bnb
                 return tickers;
             }
         }
-
-
 
         public async Task SaveCandleStickData()
         {
@@ -183,27 +203,14 @@ namespace CryptoRobert.Importer.Bnb
                     var lastTask = CheckPairLastUpdate(pair, interval, now);
                     var last = lastTask.Result;
 
-                    //_logger.Info(String.Format("Pair: {0}, Interval: {1}, LastUpdate: {2}", pair.Symbol, interval, last));
-                    //Request Data & save to Db for each pair-interval combo
-
-                    //_logger.Info("Current Time (Epoch): " + now);
-
                     var IsUpdateRequired = Calculator.CheckIfUpdateRequired(now, last, metaData.Intervals[interval]);
                     if (IsUpdateRequired)
                     {
-                        //Download Klines from BNB
-                        var klineRawData = await BnbRequestKlinesByTime(pair.Symbol, interval, last, now);
-                        //Convert raw data to list of Klines
-                        var klineList = parser.ConvertKlineStringToList(klineRawData, interval, pair.Symbol);
+                        var klineListTask = DownloadKlinesFromBnb(pair.Symbol, interval, last, now);
+                        var klineList = klineListTask.Result;
                         //Save klines to KlinesQueue.
                         var maxClose = GetMaxCloseTimeFromList(klineList);
-                        if (Config.RecordTicksToFile)
-                            _fileHandler.SaveKlineToFile(klineList);
-                        else
-                        {
-                            MetaDataContainer.KlineQueue.Enqueue(klineList);
-                            _rabbit.PublishKlineList(klineList);
-                        }
+                        saveKlines(klineList);
                         pair.LastUpdate[interval] = maxClose;
                         _logger.Info(String.Format("Kline data for {0} {1} saved successfully", pair.Symbol, interval));
                     }
@@ -216,6 +223,27 @@ namespace CryptoRobert.Importer.Bnb
                     await _logger.LogAsync(String.Format("Failed to get kline data.\n{0}", e.ToString()), 4);
                 }
             }
+        }
+
+        private void saveKlines(List<Kline> klineList)
+        {
+            if (Config.RecordTicksToFile)
+                _fileHandler.SaveKlineToFile(klineList);
+            else
+            {
+                MetaDataContainer.KlineQueue.Enqueue(klineList);
+                _rabbit.PublishKlineList(klineList);
+            }
+        }
+
+        private async Task<List<Kline>> DownloadKlinesFromBnb(string symbol, string interval, long timeFrom, long timeTo)
+        {
+            //Download Klines from BNB
+            var klineRawData = await BnbRequestKlinesByTime(symbol, interval, timeFrom, timeTo);
+            //Convert raw data to list of Klines
+            var klineList = parser.ConvertKlineStringToList(klineRawData, interval, symbol);
+
+            return klineList;
         }
 
         private long GetMaxCloseTimeFromList(List<Kline> klineList)
@@ -413,11 +441,21 @@ namespace CryptoRobert.Importer.Bnb
         {
             try
             {
-                foreach (var pair in tickers)
+                //foreach (var pair in tickers)
+                //{
+                //    if (Config.PairsToMonitor.ContainsKey(pair.Symbol))
+                //        Config.PairsOfInterest.Add(pair);
+                //}
+                //if (Config.PairsToMonitor.ContainsKey("ETHBTC"))
+                //    Config.PairsOfInterest.Add(new CoinPair { Symbol = "ETHBTC" });
+
+                foreach(var symbol in Config.PairsToMonitor)
                 {
-                    if (Config.PairsToMonitor.ContainsKey(pair.Symbol))
-                        Config.PairsOfInterest.Add(pair);
+                    var pair = new CoinPair { Symbol = symbol.Key };
+                    Config.PairsOfInterest.Add(pair);
                 }
+
+
                 StartupComplete = true;
             }
             catch (Exception e)
@@ -434,36 +472,6 @@ namespace CryptoRobert.Importer.Bnb
 
         #endregion
 
-        #region UserManagement
-        public void LoadUsersFromDatabse()
-        {
-            var users = _dbHandler.LoadUsers();
-            foreach (var u in users)
-            {
-                metaData.UserDict.Add(u.Id, u);
-            }
-        }
-
-        private BinanceClient InitClientByUserId(int id)
-        {
-            try
-            {
-                if (metaData.UserDict.ContainsKey(id))
-                {
-                    var user = metaData.UserDict[id];
-                    var restClient = InitRestClient(user.BinanceAPI, user.BinanceSecret);
-                    return restClient;
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-                _logger.Info("Failed to initialize restclient for user" + e.ToString());
-                return null;
-            }
-        }
-
-        #endregion
 
         public void Leave()
         {

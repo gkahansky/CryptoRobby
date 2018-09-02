@@ -11,7 +11,6 @@ namespace CryptoRobert.Infra.Data
         public DbSet<Coin> Coins { get; set; }
         public DbSet<CoinPair> CoinPairs { get; set; }
         public DbSet<CoinCmc> CoinCmcs { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<GlobalMarketData> MarketData { get; set; }
         public DbSet<Kline> Klines { get; set; }
         public DbSet<CoinCmc> CmcCoins { get; set; }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Crypto.Infra.MarketData;
 using CryptoRobert.Infra;
 
 namespace CryptoRobert.Importer.Base
 {
     public interface IDbHandler
     {
-        IQueryable<User> LoadUsers();
 
         void SaveMarketData(GlobalMarketData mdObject);
 
@@ -17,7 +17,7 @@ namespace CryptoRobert.Importer.Base
 
         void SaveCoinPairs(List<CoinPair> list);
 
-        //void SaveKlines(List<Kline> list);
+        Dictionary<CoinInterval, List<TickGap>> FindMissingTicks(Dictionary<string, long> intervals);
 
         long FindKlineLastUpdate(string symbol, string interval);
     }

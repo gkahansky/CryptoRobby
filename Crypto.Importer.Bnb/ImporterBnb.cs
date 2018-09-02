@@ -31,7 +31,7 @@ namespace CryptoRobert.Importer.Bnb
             Config.LoadConfiguration(logger);
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
 
-            BnbImporter = new BnbCommunicator(logger,dbHandler, rabbit, fileHandler);
+            BnbImporter = new BnbCommunicator(logger, dbHandler, rabbit, fileHandler);
 
             //BnbImporter.CoinPairs = new Dictionary<string, CoinPair>();
 
@@ -40,9 +40,10 @@ namespace CryptoRobert.Importer.Bnb
 
 
             float sampleInterval = Config.BinanceSampleInterval / 60000;
-            
-            BnbImporter.UpdateTickerPrices();
-            
+
+            if (!Config.BnbFillGapsMode)
+                BnbImporter.UpdateTickerPrices();
+
 
             System.Timers.Timer timer = new System.Timers.Timer(Config.BinanceSampleInterval);
             timer.AutoReset = true;
@@ -52,13 +53,17 @@ namespace CryptoRobert.Importer.Bnb
             BnbImporter.SaveCandleStickData();
         }
 
-        
+
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Config.ReloadConfiguration();
-            BnbImporter.UpdateTickerPrices();
-            BnbImporter.SaveCandleStickData(); 
-            //BnbImporter.UpdateKlines();
+            if (Config.BnbFillGapsMode)
+                BnbImporter.FillGapsinDb();
+            else
+            {
+                BnbImporter.UpdateTickerPrices();
+                BnbImporter.SaveCandleStickData();
+            }
         }
 
         protected override void OnStop()

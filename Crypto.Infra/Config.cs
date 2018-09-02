@@ -16,6 +16,7 @@ namespace CryptoRobert.Infra
         public static int BinanceSampleInterval { get; set; }
         public static string BnbExchange { get; set; }
         public static bool BnbGetHistoricalData { get; set; }
+        public static bool BnbFillGapsMode { get; set; }
         public static string CmcExchange { get; set; }
         public static List<CoinPair> PairsOfInterest { get; set; }
         public static int CmcSampleInterval { get; set; }
@@ -35,6 +36,7 @@ namespace CryptoRobert.Infra
         public static long BnbMinimumUpdateDate { get; set; }
         public static bool UseSql { get; set; }
         public static bool RecordTicksToFile { get; set; }
+        public static string[] BnbPairs { get; set; }
         public static List<string> intervalsToMonitor { get; set; }
         #endregion
 
@@ -66,11 +68,13 @@ namespace CryptoRobert.Infra
             LoadDbHandlerConfiguration(json, _logger);
             _logger.Info("********Loading Patterns Configuration********");
             LoadPatternsConfiguration(json, _logger);
-            
+
             PairsOfInterest = new List<CoinPair>();
             PatternSpringThreshold = 0.03m;
             PatternSpringToKeep = 20;
         }
+
+
 
         private static void SetLogSeverity(JObject json)
         {
@@ -100,7 +104,7 @@ namespace CryptoRobert.Infra
             Parser parser = new Parser(_logger);
             var configString = File.ReadAllText(Path);
             var json = parser.ParseTextToJson(configString);
-            _logger.Info("********Refreshin Patterns & Interesting Pair Configuration********");
+            _logger.Info("********RefreshinG Patterns & Interesting Pair Configuration********");
             LoadPatternsConfiguration(json, _logger);
         }
 
@@ -114,7 +118,10 @@ namespace CryptoRobert.Infra
             BnbExchange = bnbJson["RabbitExchange"].ToString();
             BnbGetHistoricalData = bool.Parse(bnbJson["BnbGetHistoricalData"].ToString());
             RecordTicksToFile = bool.Parse(bnbJson["RecordTicksToFile"].ToString());
+            BnbFillGapsMode = bool.Parse(bnbJson["FillGapsMode"].ToString());
+            BnbPairs = GetBnbPairs(bnbJson);
             BnbMinimumUpdateDate = ConvertTimeStringToMs(bnbJson["BnbMinimumUpdateDate"].ToString());
+
             GetIntervalsToMonitor(json);
 
 
@@ -124,6 +131,13 @@ namespace CryptoRobert.Infra
             _logger.Info(String.Format("BnbImporter Exchange: {0}", BnbExchange));
             _logger.Info(String.Format("BnbImporter Get History Mode: {0}", BnbGetHistoricalData));
             _logger.Info(String.Format("BnbImporter Minimum Time For Historical Data: {0}", BnbMinimumUpdateDate));
+        }
+
+        private static string[] GetBnbPairs(JToken bnbJson)
+        {
+            var pairsString = bnbJson["Pairs"].ToString();
+            var pairs = pairsString.Split(',');
+            return pairs;
         }
 
         private static void GetIntervalsToMonitor(JObject json)

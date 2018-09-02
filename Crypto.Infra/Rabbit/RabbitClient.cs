@@ -83,7 +83,7 @@ namespace CryptoRobert.Infra.Rabbit
 
         public void InitializeConsumer(string queue, IModel model, DataRepository repository)
         {
-
+            
             Consumer = new EventingBasicConsumer(model);
             Consumer.Received += (ch, ea) =>
             {

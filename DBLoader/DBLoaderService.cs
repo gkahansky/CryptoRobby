@@ -50,6 +50,17 @@ namespace CryptoRobert.DBLoader
             _logger.Info("*********************************");
 
 
+            System.Timers.Timer timer = new System.Timers.Timer(100);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            timer.Elapsed += Timer_Elapsed;
+
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+
         }
 
         private void Dispose()

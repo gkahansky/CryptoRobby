@@ -43,11 +43,11 @@ namespace CryptoRobert.RuleEngine
 
             Model = Rabbit.Connect();
 
+            Rabbit.InitializeConsumer(Name, Model, Repository);
+
             logger.Info("*********************************");
             logger.Info("Rule Engine Started Successfully");
             logger.Info("*********************************");
-
-            Rabbit.InitializeConsumer(Name, Model, Repository);
 
             System.Timers.Timer timer = new System.Timers.Timer(100);
             timer.AutoReset = true;

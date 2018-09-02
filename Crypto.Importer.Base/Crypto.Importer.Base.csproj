@@ -117,6 +117,7 @@
     <Compile Include="IDbHanlder.cs" />
     <Compile Include="IFileHandler.cs" />
     <Compile Include="Importer.cs" />
+    <Compile Include="MetaData.cs" />
     <Compile Include="Migrations\20180428204536_init.cs" />
     <Compile Include="Migrations\20180428204536_init.Designer.cs">
       <DependentUpon>20180428204536_init.cs</DependentUpon>

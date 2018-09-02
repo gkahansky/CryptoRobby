@@ -7,16 +7,19 @@ using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
 using CryptoRobert.Infra;
 using CryptoRobert.Infra.Data;
+using Crypto.Infra.MarketData;
 
 namespace CryptoRobert.Importer.Base
 {
     public class DbHandler : IDbHandler
     {
         private readonly ILogger _logger;
+        private MetaData metaData { get; set; }
 
         public DbHandler(ILogger logger)
         {
             _logger = logger;
+            metaData = new MetaData();
             System.Timers.Timer timer = new System.Timers.Timer(1000);
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -26,11 +29,11 @@ namespace CryptoRobert.Importer.Base
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-                while (MetaDataContainer.KlineQueue.Count > 0)
-                {
-                    var list = MetaDataContainer.KlineQueue.Dequeue();
-                    //SaveKlines(list);
-                }
+            while (MetaDataContainer.KlineQueue.Count > 0)
+            {
+                var list = MetaDataContainer.KlineQueue.Dequeue();
+                //SaveKlines(list);
+            }
 
         }
         #region CMC Methods
@@ -87,63 +90,10 @@ namespace CryptoRobert.Importer.Base
             _logger.Info(String.Format("{0} Coin Pairs updated in database", numOfRows * -1));
         }
 
-        //public void SaveKlines(List<Kline> klines)
-        //{
-        //    if (klines.Count > 0)
-        //    {
-        //        int numOfRows = 0;
-        //        int state = 0;
-        //        try
-        //        {
-                    
-        //            using (var context = new InfraContext())
-        //            {
-        //                foreach (var kline in klines)
-        //                {
-        //                    context.Klines.Add(kline);
-        //                    numOfRows += 1;
-        //                }
-        //                state = context.SaveChanges();
-        //            }
-        //            _logger.Info(String.Format("{0} klines updated in database for {1} {2}", numOfRows, klines[0].Symbol, klines[0].Interval));
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            _logger.Error(String.Format("Failed to save klines to database.\nSymbol: {0}, Interval: {1},\nOpen/Close Time: {2}/{3}\nOpen/Close: {4}/{5},\nHigh/Low: {6}/{7}\nVolume: {8}\n{9}",
-        //                klines[numOfRows].Symbol, klines[numOfRows].Interval
-        //                , klines[numOfRows].OpenTime, klines[numOfRows].CloseTime
-        //                , klines[numOfRows].Open, klines[numOfRows].Close
-        //                , klines[numOfRows].High, klines[numOfRows].Low
-        //                , klines[numOfRows].Volume
-        //                , e.ToString()));
-        //        }
-        //    }
-        //    else
-        //        _logger.Info("No new data received for current interval");
-        //}
-
         #endregion
 
         #region Generic Methods
 
-        public IQueryable<User> LoadUsers()
-        {
-            using (var context = new InfraContext())
-            {
-                var users = from u in context.Users
-                            select u;
-
-                _logger.Info(String.Format("Found {0} Users in database", users.Count()));
-                foreach (var user in users)
-                {
-                    _logger.Info(String.Format("UserName: {0}, UserId: {1}, API: {2}, Secret: {3}",
-                        user.UserName, user.Id, user.BinanceAPI, user.BinanceSecret));
-                }
-                return users;
-                //Logger.Log(String.Format("New Coin Saved: Id={0}, Symbol = {1}, Name={2}", coin.Id, coin.Symbol, coin.Name));
-            }
-
-        }
 
         public long FindKlineLastUpdate(string symbol, string interval)
         {
@@ -187,6 +137,78 @@ namespace CryptoRobert.Importer.Base
 
         }
 
+        public Dictionary<CoinInterval, List<TickGap>> FindMissingTicks(Dictionary<string, long> intervals)
+        {
+            try
+            {
+                var gaps = new Dictionary<CoinInterval, List<TickGap>>();
+                var keys = FindUniqueKeysInKlinesTable();
+
+                foreach (var key in keys)
+                {
+                    var gapList = FindGapsForCoinInterval(key, intervals);
+                    if (gapList.Count() > 0)
+                    {
+                        _logger.Info(string.Format("Found {0} gaps for {1}-{2}", gapList.Count(), key.Symbol, key.Interval));
+                        gaps.Add(key, gapList);
+                    }
+                        
+                }
+
+                return gaps;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to Retrieve missing ticks from database." + e);
+                return null;
+            }
+        }
+
+        private List<TickGap> FindGapsForCoinInterval(CoinInterval key, Dictionary<string, long> intervals)
+        {
+            var gapList = new List<TickGap>();
+            var ticks = GetAllTicksForCoinInterval(key);
+            long openTime = 0;
+            long lastOpenTime = 0;
+            var interval = intervals[key.Interval];
+            foreach (var tick in ticks)
+            {
+                lastOpenTime = openTime;
+                openTime = tick.OpenTime;
+                if (openTime - lastOpenTime > interval && lastOpenTime > 0)
+                {
+                    var gap = new TickGap(lastOpenTime + interval, openTime - interval);
+                    gapList.Add(gap);
+                }
+            }
+
+            return gapList;
+        }
+
+        private List<Kline> GetAllTicksForCoinInterval(CoinInterval key)
+        {
+            using (var context = new InfraContext())
+            {
+                var klineList = context.Klines.Where(i => i.Symbol == key.Symbol && i.Interval == key.Interval).OrderBy(i => i.OpenTime).ToList();
+                return klineList;
+            }
+
+        }
+
+        private List<CoinInterval> FindUniqueKeysInKlinesTable()
+        {
+            var keyList = new List<CoinInterval>();
+            using (var context = new InfraContext())
+            {
+                var data = context.Klines.Select(i => new { i.Symbol, i.Interval }).Distinct().ToList();
+                foreach (var item in data)
+                {
+                    var coinKey = new CoinInterval(item.Symbol, item.Interval);
+                    keyList.Add(coinKey);
+                }
+            }
+            return keyList;
+        }
         #endregion
 
 

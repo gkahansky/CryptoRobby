@@ -78,6 +78,8 @@ namespace RuleTester
             PatternsListBox.Items.Add("TrendShift");
             PatternsListBox.Items.Add("Spring");
             PatternsListBox.Items.Add("Streak");
+            PatternsListBox.Items.Add("RulePattern");
+            
         }
 
         private TesterOutput GenerateTesterOutput(TesterOutput output)

@@ -46,8 +46,21 @@ namespace RobbyConsole
             var fileHandler = new FileHandler(logger);
 
             var _dbHandler = new CryptoRobert.Importer.Base.DbHandler(logger);
+
             MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+
             var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit, fileHandler);
+
+            //var gaps = _dbHandler.FindMissingTicks(bnb.metaData.Intervals);
+
+            var dbl = new CryptoRobert.DBLoader.DbHandler(logger,repository);
+            repository.Klines.Enqueue(new Kline { Symbol = "GUYBTC", Interval = "5m", OpenTime = 1520249700000, CloseTime = 1520249999999, Open = 0.00002623m, Close = 0.00002630m, High = 0.00002641m, Low = 0.00002620m, Volume = 883552.00000000m });
+
+            //bnb.FillGapsinDb();
+
+            
+
+            //bnb.GetKlinesForDbGaps(gaps);
 
             bnb.UpdateTickerPrices();
             bnb.SaveCandleStickData();

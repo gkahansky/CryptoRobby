@@ -18,6 +18,7 @@ namespace CryptoRobert.DBLoader
         private readonly ILogger _logger;
         public DataRepository KlineRepository;
         private List<Kline> klineList { get; set; }
+        private bool timeToSave { get; set; }
         //private InfraContext context;
 
         public DbHandler(ILogger logger, DataRepository repository)
@@ -26,38 +27,49 @@ namespace CryptoRobert.DBLoader
             klineList = new List<Kline>();
             KlineRepository = repository;
             //context = new InfraContext();
-            Timer timer = new Timer(1000);
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
-            timer.Elapsed += Timer_Elapsed;
+            //Timer timer = new Timer(1000);
+            //timer.AutoReset = true;
+            //timer.Enabled = true;
+            
+            //timer.Elapsed += Timer_Elapsed;
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (klineList.Count() > 0)
-            {
-                _logger.Debug(string.Format("Saving {0} klines", klineList.Count()));
-                SaveKlines(klineList);
-            }
-        }
+        //private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    if (klineList.Count() > 0)
+        //    {
+        //        _logger.Info(string.Format("Saving {0} klines", klineList.Count()));
+        //        SaveKlines(klineList);
+        //    }
+        //}
 
 
         public void OnKlineReceived(object source, EventArgs e)
         {
-            var kline = (KlineRepository.Klines.Peek());
+            var kline = KlineRepository.Klines.Peek();
             SaveKline(kline);
-            _logger.Debug(string.Format("Kline Received: {0}, {1}, {2}, {3}", kline.Symbol, kline.Interval, kline.OpenTime, kline.Close));
             KlineRepository.Klines.Dequeue();
+            _logger.Debug("Kline Dequeued");
+            //var kline = (KlineRepository.Klines.Peek());
+            //SaveKline(kline);
+            //_logger.Debug(string.Format("Kline Received: {0}, {1}, {2}, {3}", kline.Symbol, kline.Interval, kline.OpenTime, kline.Close));
+            //KlineRepository.Klines.Dequeue();
         }
 
         private void SaveKline(Kline kline)
         {
-            klineList.Add(kline);
-            if (klineList.Count() > 1000)
+            _logger.Debug("kline received for " + kline.Symbol + "-" + kline.Interval);
+            using (var context = new InfraContext())
             {
-                SaveKlines(klineList);
-                klineList = new List<Kline>();
+                try
+                {
+                    context.Klines.Add(kline);
+                    context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("Failed to save kline.\n" + e);
+                }
             }
         }
 
@@ -118,50 +130,34 @@ namespace CryptoRobert.DBLoader
 
         public void SaveKlines(List<Kline> klines)
         {
+            
             var numOfKlines = klines.Count();
-            if(numOfKlines > 0)
-            {
+            _logger.Info(string.Format("{0} updates received, saving data to database",numOfKlines));
+            //if (numOfKlines > 0)
+            //{
                 try
                 {
                     using (var context = new InfraContext())
                     {
                         context.Klines.AddRange(klines);
-                        klines.RemoveRange(0, numOfKlines);
+                        //klines.RemoveRange(0, numOfKlines);
                         context.SaveChanges();
-                    }
-                    _logger.Info(String.Format("{0} klines updated in database for {1} {2}", klines.Count(), klines[0].Symbol, klines[0].Interval));
+                        context.Klines.RemoveRange(klines);
+                }
+                _logger.Info(String.Format("{0} klines updated in database for {1} {2}", klines.Count(), klines[0].Symbol, klines[0].Interval));
                 }
                 catch (Exception e)
                 {
                     _logger.Error(String.Format("Failed to save klines to database. Symbol: {0}, Interval: {1}.\n{3}", klines[0].Symbol, klines[0].Interval, e.ToString()));
                 }
                 
-            }
+            //}
 
         }
         
         #endregion
 
         #region Generic Methods
-
-        public IQueryable<User> LoadUsers()
-        {
-            using (var context = new InfraContext())
-            {
-                var users = from u in context.Users
-                            select u;
-
-                _logger.Info(String.Format("Found {0} Users in database", users.Count()));
-                foreach (var user in users)
-                {
-                    _logger.Info(String.Format("UserName: {0}, UserId: {1}, API: {2}, Secret: {3}",
-                        user.UserName, user.Id, user.BinanceAPI, user.BinanceSecret));
-                }
-                return users;
-                //Logger.Log(String.Format("New Coin Saved: Id={0}, Symbol = {1}, Name={2}", coin.Id, coin.Symbol, coin.Name));
-            }
-
-        }
 
         public long FindKlineLastUpdate(string symbol, string interval)
         {

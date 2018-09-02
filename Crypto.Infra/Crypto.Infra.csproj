@@ -87,15 +87,18 @@
   <ItemGroup>
     <Compile Include="MarketData\Coin.cs" />
     <Compile Include="MarketData\CoinCmc.cs" />
+    <Compile Include="MarketData\CoinInterval.cs" />
     <Compile Include="MarketData\CoinPair.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="DataRepository.cs" />
+    <Compile Include="MarketData\TickGap.cs" />
     <Compile Include="MetaData\PatternConfig.cs" />
     <Compile Include="Patterns\IPattern.cs" />
     <Compile Include="Patterns\Pattern.cs" />
     <Compile Include="Patterns\PatternRepository.cs" />
     <Compile Include="Patterns\PatternView.cs" />
-    <Compile Include="Patterns\TrendShiftPattern - Copy.cs" />
+    <Compile Include="Patterns\RulePattern.cs" />
+    <Compile Include="Patterns\TrendShiftPattern.cs" />
     <Compile Include="Patterns\TrendInclinePattern.cs" />
     <Compile Include="Patterns\SpringPattern.cs" />
     <Compile Include="Patterns\StreakPattern.cs" />
@@ -110,8 +113,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\RabbitClient.cs" />
     <Compile Include="Rabbit\RabbitHandler.cs" />
-    <Compile Include="NotInUse\User.cs" />
-    <Compile Include="NotInUse\Wallet.cs" />
+    <Compile Include="Rules\Action.cs" />
+    <Compile Include="Rules\IAction.cs" />
+    <Compile Include="Rules\IRule.cs" />
+    <Compile Include="Rules\Rule.cs" />
+    <Compile Include="Rules\RulePriceTrendUp.cs" />
     <Compile Include="Trading\ITradeEngine.cs" />
     <Compile Include="Trading\StopLossDefinition.cs" />
     <Compile Include="Trading\TradeEngine.cs" />

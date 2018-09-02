@@ -9,7 +9,6 @@ namespace CryptoRobert.DBLoader
 {
     public interface IDbHandler
     {
-        IQueryable<User> LoadUsers();
 
         void SaveMarketData(GlobalMarketData mdObject);
 
