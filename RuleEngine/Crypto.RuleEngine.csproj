@@ -116,6 +116,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Publisher.cs" />
+    <Compile Include="Data\RuleContext.cs" />
+    <Compile Include="Entities\RuleDefinition.cs" />
+    <Compile Include="Entities\RuleDefinitionRepository.cs" />
+    <Compile Include="Entities\RuleManager.cs" />
+    <Compile Include="Entities\RuleRepository.cs" />
+    <Compile Include="Entities\RuleSet.cs" />
+    <Compile Include="Entities\RuleSetDefinition.cs" />
+    <Compile Include="Entities\RuleSetRepository.cs" />
+    <Compile Include="Interfaces\IRuleCalculator.cs" />
+    <Compile Include="Interfaces\IRuleRepository.cs" />
+    <Compile Include="Interfaces\IRuleSetRepository.cs" />
+    <Compile Include="Migrations\20180915184556_InitialCreate.cs" />
+    <Compile Include="Migrations\20180915184556_InitialCreate.designer.cs">
+      <DependentUpon>20180915184556_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20180915192304_AddRuleSetDefinitions.cs" />
+    <Compile Include="Migrations\20180915192304_AddRuleSetDefinitions.designer.cs">
+      <DependentUpon>20180915192304_AddRuleSetDefinitions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20180915193003_AddRuleSetDefinitionsChangeKey.cs" />
+    <Compile Include="Migrations\20180915193003_AddRuleSetDefinitionsChangeKey.designer.cs">
+      <DependentUpon>20180915193003_AddRuleSetDefinitionsChangeKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\RuleContextModelSnapshot.cs" />
     <Compile Include="NotInUse\CoinMonitor.cs" />
     <Compile Include="NotInUse\CoinPairTicker.cs" />
     <Compile Include="Data\DataHandler.cs" />
@@ -131,6 +155,10 @@
       <DependentUpon>RuleEngineService.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\Unsubscriber.cs" />
+    <Compile Include="Interfaces\IRule.cs" />
+    <Compile Include="Entities\RuleBase.cs" />
+    <Compile Include="RuleCalculator.cs" />
+    <Compile Include="Entities\RulePriceTrend.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -147,7 +175,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Rules\" />
     <Folder Include="Transactions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -66,7 +66,7 @@ namespace CryptoRobert.Infra.Trading
                 var t = Transactions[symbol];
                 profit = ((price / t.BuyPrice) - 1);
                 var profitText = (profit*100).ToString();
-                if (profitText.Length > 5)
+                if (profitText.Length > 6)
                     profitText = profit.ToString().Substring(0, 5);
                 var msg = string.Format("Trade: SELLING {0}!!! Buy Price: {1}, Sell Price: {2}, Profit: {3}%", t.Symbol, t.BuyPrice, price.ToString(), profitText);
                 _logger.Email(string.Format("SELL notice! selling {0} at {1}% from buy price", t.Symbol, profitText), msg);

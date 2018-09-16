@@ -97,7 +97,6 @@
     <Compile Include="Patterns\Pattern.cs" />
     <Compile Include="Patterns\PatternRepository.cs" />
     <Compile Include="Patterns\PatternView.cs" />
-    <Compile Include="Patterns\RulePattern.cs" />
     <Compile Include="Patterns\TrendShiftPattern.cs" />
     <Compile Include="Patterns\TrendInclinePattern.cs" />
     <Compile Include="Patterns\SpringPattern.cs" />
@@ -113,11 +112,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\RabbitClient.cs" />
     <Compile Include="Rabbit\RabbitHandler.cs" />
-    <Compile Include="Rules\Action.cs" />
-    <Compile Include="Rules\IAction.cs" />
-    <Compile Include="Rules\IRule.cs" />
-    <Compile Include="Rules\Rule.cs" />
-    <Compile Include="Rules\RulePriceTrendUp.cs" />
     <Compile Include="Trading\ITradeEngine.cs" />
     <Compile Include="Trading\StopLossDefinition.cs" />
     <Compile Include="Trading\TradeEngine.cs" />
@@ -132,6 +126,8 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Rules\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

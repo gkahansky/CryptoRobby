@@ -20,6 +20,10 @@ using System.Reflection;
 using RabbitMQ.Client;
 using CryptoRobert.RuleEngine.Patterns;
 using CryptoRobert.Infra.Patterns;
+using CryptoRobert.RuleEngine.Entities;
+using Crypto.RuleEngine.Interfaces;
+using CryptoRobert.RuleEngine.Data;
+using Crypto.RuleEngine.Entities;
 
 namespace RobbyConsole
 {
@@ -34,36 +38,43 @@ namespace RobbyConsole
 
 
             var logger = new Logger("Robby");
-
- 
-
             Config.LoadConfiguration(logger);
 
+            IRuleRepository repo = new RuleRepository();
+            IRuleSetRepository setRepo = new RuleSetRepository();
 
-            var repository = new DataRepository();
-            repository.Klines = new Queue<Kline>();
-            var _rabbit = new RabbitHandler(logger, "BNB");
-            var fileHandler = new FileHandler(logger);
-
-            var _dbHandler = new CryptoRobert.Importer.Base.DbHandler(logger);
-
-            MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
-
-            var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit, fileHandler);
-
-            //var gaps = _dbHandler.FindMissingTicks(bnb.metaData.Intervals);
-
-            var dbl = new CryptoRobert.DBLoader.DbHandler(logger,repository);
-            repository.Klines.Enqueue(new Kline { Symbol = "GUYBTC", Interval = "5m", OpenTime = 1520249700000, CloseTime = 1520249999999, Open = 0.00002623m, Close = 0.00002630m, High = 0.00002641m, Low = 0.00002620m, Volume = 883552.00000000m });
-
-            //bnb.FillGapsinDb();
-
+            IDataHandler handler = new DataHandler(logger);
+            var manager = new RuleManager(repo, handler, setRepo);
+            manager.RuleConfigurationInitialize();
             
 
-            //bnb.GetKlinesForDbGaps(gaps);
 
-            bnb.UpdateTickerPrices();
-            bnb.SaveCandleStickData();
+
+            //*********IMPORTER TESTS**************
+            //var repository = new DataRepository();
+            //repository.Klines = new Queue<Kline>();
+            //var _rabbit = new RabbitHandler(logger, "BNB");
+            //var fileHandler = new FileHandler(logger);
+
+            //var _dbHandler = new CryptoRobert.Importer.Base.DbHandler(logger);
+
+            //MetaDataContainer.KlineQueue = new Queue<List<Kline>>();
+
+            //var bnb = new BnbCommunicator(logger, _dbHandler, _rabbit, fileHandler);
+
+            ////var gaps = _dbHandler.FindMissingTicks(bnb.metaData.Intervals);
+
+            //var dbl = new CryptoRobert.DBLoader.DbHandler(logger,repository);
+            //repository.Klines.Enqueue(new Kline { Symbol = "GUYBTC", Interval = "5m", OpenTime = 1520249700000, CloseTime = 1520249999999, Open = 0.00002623m, Close = 0.00002630m, High = 0.00002641m, Low = 0.00002620m, Volume = 883552.00000000m });
+
+            ////bnb.FillGapsinDb();
+
+
+
+            ////bnb.GetKlinesForDbGaps(gaps);
+
+            //bnb.UpdateTickerPrices();
+            //bnb.SaveCandleStickData();
 
         }
 

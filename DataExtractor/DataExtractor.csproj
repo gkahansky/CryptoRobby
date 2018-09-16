@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Crypto.Infra.Data\Crypto.Infra.Data.csproj" />
+    <ProjectReference Include="..\Crypto.Infra\Crypto.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

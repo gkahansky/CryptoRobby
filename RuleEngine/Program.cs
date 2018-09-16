@@ -5,9 +5,9 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
-using CryptoRobert.RuleEngine;
 
-namespace CryptoRobert.Importer.Bnb
+
+namespace CryptoRobert.RuleEngine
 {
     static class Program
     {

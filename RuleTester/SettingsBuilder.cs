@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.Infra.Patterns;
 using CryptoRobert.Infra;
 using CryptoRobert.Infra.Patterns;
 using RuleTester.Entities;
@@ -81,13 +80,6 @@ namespace RuleTester
                         p = new TrendInclinePattern(logger, settings, engineName);
                         break;
                     }
-
-                case "RulePattern":
-                    {
-                        p = new RulePattern(logger, settings, engineName);
-                        break;
-                    }
-
             }
 
             return (Pattern)p;

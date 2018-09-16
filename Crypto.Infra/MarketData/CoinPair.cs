@@ -16,6 +16,7 @@ namespace CryptoRobert.Infra
         public decimal AvgPrice { get; set; }
         public long AvgPriceOpenTime { get; set; }
         public Dictionary<string, long> LastUpdate { get; set; }
+        
 
         public CoinPair()
         {

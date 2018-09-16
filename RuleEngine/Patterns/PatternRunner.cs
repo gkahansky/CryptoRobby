@@ -1,5 +1,4 @@
-﻿using Crypto.Infra.Patterns;
-using CryptoRobert.Infra;
+﻿using CryptoRobert.Infra;
 using CryptoRobert.Infra.Patterns;
 using CryptoRobert.Infra.Trading;
 using System;
@@ -69,11 +68,7 @@ namespace CryptoRobert.RuleEngine.Patterns
                                     patternRepo.Add(c.Key, new TrendInclinePattern(_logger, c.Value));
                                     break;
                                 }
-                            case "RulePattern":
-                                {
-                                    patternRepo.Add(c.Key, new RulePattern(_logger, c.Value));
-                                    break;
-                                }
+
                                 
 
                         }

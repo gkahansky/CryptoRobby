@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleTester", "RuleTester\Ru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto.DBLoader", "DBLoader\Crypto.DBLoader.csproj", "{AA5172E7-0E59-455C-BE67-BA3B75A7DAAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExtractor", "DataExtractor\DataExtractor.csproj", "{F08971AE-A974-4005-9749-D01CEC44AF8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{AA5172E7-0E59-455C-BE67-BA3B75A7DAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA5172E7-0E59-455C-BE67-BA3B75A7DAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA5172E7-0E59-455C-BE67-BA3B75A7DAAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F08971AE-A974-4005-9749-D01CEC44AF8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F08971AE-A974-4005-9749-D01CEC44AF8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F08971AE-A974-4005-9749-D01CEC44AF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F08971AE-A974-4005-9749-D01CEC44AF8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{9577EF5F-F224-4EFB-B8F3-75E06B1CAFF7} = {601A1E46-4D42-4AFA-98A2-57F6C8141194}
 		{8D421CD4-8E8D-43C5-9C63-DAEE4C6BD377} = {D641498B-672B-451C-AE60-EBFAB9A3DF8B}
 		{AA5172E7-0E59-455C-BE67-BA3B75A7DAAE} = {979ACDA4-ECAB-4AF2-8403-D77C33C77FED}
+		{F08971AE-A974-4005-9749-D01CEC44AF8D} = {D641498B-672B-451C-AE60-EBFAB9A3DF8B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {605109E5-0F91-4BE1-BCED-128A823F056A}

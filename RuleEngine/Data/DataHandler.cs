@@ -1,10 +1,13 @@
 ﻿using System;
-using CryptoRobert.Infra;
-using CryptoRobert.Infra.Data;
 using System.Collections.Generic;
 using System.IO;
-using CryptoRobert.Infra.Patterns;
 using System.Data.SqlClient;
+using System.Linq;
+using CryptoRobert.Infra;
+using CryptoRobert.Infra.Patterns;
+using Crypto.RuleEngine.Entities;
+using Crypto.RuleEngine.Data;
+using CryptoRobert.RuleEngine.Interfaces;
 
 namespace CryptoRobert.RuleEngine
 {
@@ -16,6 +19,65 @@ namespace CryptoRobert.RuleEngine
         {
             _logger = logger;
             ConnectionString = Config.SqlConnectionString;
+        }
+
+        public List<RuleDefinition> LoadRulesFromDb()
+        {
+            try
+            {
+                var list = new List<RuleDefinition>();
+
+                using (var context = new RuleContext())
+                {
+                    list = context.RuleDefinitions.ToList();
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to Load Rules from Database.\n" + e);
+                throw;
+            }
+        }
+
+        public List<RuleSetDefinition> LoadRuleSetsFromDb()
+        {
+            try
+            {
+                var list = new List<RuleSetDefinition>();
+
+                using (var context = new RuleContext())
+                {
+                    list = context.RuleSetDefinitions.ToList();
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to Load Rule Sets from Database.\n" + e);
+                throw;
+            }
+        }
+
+
+        public RuleDefinition GetRuleById(int id)
+        {
+
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    var rule = (RuleDefinition)context.RuleDefinitions.Where(r => r.Id == id);
+                    return rule;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to Retrieve Rule with Id: " + id + e);
+                return null;
+            }
         }
 
         public void LoadCoinDataFromDb()
@@ -68,6 +130,7 @@ namespace CryptoRobert.RuleEngine
                 return null;
             }
         }
+
 
     }
 }
