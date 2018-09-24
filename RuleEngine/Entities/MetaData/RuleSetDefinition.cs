@@ -4,19 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine.Entities
+namespace CryptoRobert.RuleEngine.Entities.MetaData
 {
     public class RuleSetDefinition
     {
         public int Id { get; set; }
         public int RuleId { get; set; }
-        public int Priority { get; set; }
 
-        public RuleSetDefinition(int id, int ruleId, int priority)
+        public RuleSetDefinition(int id, int ruleId)
         {
             Id = id;
             RuleId = ruleId;
-            Priority = priority;
         }
 
         public RuleSetDefinition()

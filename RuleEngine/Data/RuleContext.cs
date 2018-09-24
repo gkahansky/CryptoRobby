@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Crypto.RuleEngine.Entities;
 using CryptoRobert.RuleEngine.Entities;
+using CryptoRobert.RuleEngine.Entities.MetaData;
 using CryptoRobert.RuleEngine.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Crypto.RuleEngine.Data
+namespace CryptoRobert.RuleEngine.Data
 {
     public class RuleContext : DbContext
     {
         public DbSet<RuleDefinition> RuleDefinitions { get; set; }
         public DbSet<RuleSetDefinition> RuleSetDefinitions { get; set; }
+        public DbSet<RuleSet> RuleSets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,8 +24,14 @@ namespace Crypto.RuleEngine.Data
         {
             modelBuilder.Entity<RuleSetDefinition>()
                 .HasKey(k => new { k.Id, k.RuleId });
+
+            modelBuilder.Entity<RuleDefinition>().Ignore(r => r.Key);
+
+            modelBuilder.Entity<RuleSet>()
+                .Ignore(s => s.Rules);
+            //modelBuilder.Entity<RuleSet>().Ignore(t => t.Rules);
         }
-        //    modelBuilder.Entity<RuleBase>().Ignore(p => p.RuleSets);
+        
         //    modelBuilder.Entity<RuleBase>().Ignore(p => p.Klines);
         //}
     }

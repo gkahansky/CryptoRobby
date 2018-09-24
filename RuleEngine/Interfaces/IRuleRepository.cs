@@ -1,19 +1,20 @@
-﻿using CryptoRobert.RuleEngine.Interfaces;
+﻿using CryptoRobert.RuleEngine.Entities.MetaData;
+using CryptoRobert.RuleEngine.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto.RuleEngine.Interfaces
+namespace CryptoRobert.RuleEngine.Interfaces
 {
     public interface IRuleRepository
     {
         Dictionary<string, Dictionary<string, IRule>> Rules { get; set; }
 
-        void Add(IRule rule);
+        void Add(IRule rule, int defId);
         void Remove(IRule rule);
-        IRule Find(string ruleKey);
-        string GenerateKey(IRule rule);
+        IRule FindByKey(string ruleKey);
+        IRule FindById(int id);
     }
 }

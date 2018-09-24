@@ -9,7 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
 using CryptoRobert.Infra.Rabbit;
+using CryptoRobert.RuleEngine.BusinessLogic;
 using CryptoRobert.RuleEngine.Data;
+using CryptoRobert.RuleEngine.Entities.Repositories;
+using CryptoRobert.RuleEngine.Interfaces;
 using CryptoRobert.RuleEngine.Patterns;
 using RabbitMQ.Client;
 
@@ -20,7 +23,13 @@ namespace CryptoRobert.RuleEngine
         private RabbitClient Rabbit;
         private String Name;
         private IModel Model;
-        private DataRepository Repository;
+        private DataRepository DataRepo;
+        private RuleRepository RuleRepo;
+        private RuleDefinitionRepository RuleDefinitionRepo;
+        private RuleSetRepository RuleSetRepo;
+        private IRuleCalculator Calculator;
+        private RuleManager Manager;
+        
         public RuleEngineService()
         {
             InitializeComponent();
@@ -31,19 +40,29 @@ namespace CryptoRobert.RuleEngine
             var logger = new Logger("RuleEngine");
             Name = "RuleEngine";
             Config.LoadConfiguration(logger);
-            Repository = new DataRepository();
-            Repository.Klines = new Queue<Kline>();
-            Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, Repository);
-            var runner = new PatternRunner(logger, Repository);
+            DataRepo = new DataRepository();
+            RuleRepo = new RuleRepository(logger);
+            RuleDefinitionRepo = new RuleDefinitionRepository(logger);
+            RuleSetRepo = new RuleSetRepository(logger);
             var dbHandler = new DataHandler(logger);
-            if (Config.UseSql)
-                dbHandler.SavePatterns(runner.PatternRepository);
-            Rabbit.KlineReceived += runner.OnKlineReceived;
+            Calculator = new RuleCalculator(logger);
+            Manager = new RuleManager(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, dbHandler, Calculator);
+            RuleValidator validator = new RuleValidator(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, Calculator, DataRepo);
+
+            DataRepo.Klines = new Queue<Kline>();
+            Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, DataRepo);
+
+
+            //var runner = new PatternRunner(logger, Repository);
+
+            //if (Config.UseSql)
+            //    dbHandler.SavePatterns(runner.PatternRepository);
+            Rabbit.KlineReceived += validator.OnKlineReceived;
 
 
             Model = Rabbit.Connect();
 
-            Rabbit.InitializeConsumer(Name, Model, Repository);
+            Rabbit.InitializeConsumer(Name, Model, DataRepo);
 
             logger.Info("*********************************");
             logger.Info("Rule Engine Started Successfully");

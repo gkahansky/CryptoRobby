@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CryptoRobert.RuleEngine;
 using CryptoRobert.RuleEngine.Interfaces;
 
-namespace CryptoRobert.RuleEngine.Entities
+namespace CryptoRobert.RuleEngine.Entities.Rules
 {
     public class RulePriceTrend : RuleBase , IRule
     {

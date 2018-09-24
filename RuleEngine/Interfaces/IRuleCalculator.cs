@@ -9,5 +9,6 @@ namespace CryptoRobert.RuleEngine.Interfaces
     public interface IRuleCalculator
     {
         decimal CalculateTrend(decimal LastAvgPrice, decimal avgPrice);
+        bool CheckThreshold(decimal threshold, decimal value, int op);
     }
 }

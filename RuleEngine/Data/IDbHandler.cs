@@ -5,8 +5,8 @@ using CryptoRobert.Infra.Patterns;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Crypto.RuleEngine.Entities;
-using CryptoRobert.RuleEngine.Interfaces;
+using CryptoRobert.RuleEngine.Entities;
+using CryptoRobert.RuleEngine.Entities.MetaData;
 
 namespace CryptoRobert.RuleEngine
 {
@@ -19,7 +19,8 @@ namespace CryptoRobert.RuleEngine
         void SavePatterns(Dictionary<string, IPattern> repo);
 
         List<RuleDefinition> LoadRulesFromDb();
-        List<RuleSetDefinition> LoadRuleSetsFromDb();
+        List<RuleSet> LoadRuleSetsFromDb();
+        List<RuleSetDefinition> LoadRuleSetToRulesFromDb();
         RuleDefinition GetRuleById(int Id);
 
     }

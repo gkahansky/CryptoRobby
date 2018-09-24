@@ -5,9 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using CryptoRobert.Infra;
 using CryptoRobert.Infra.Patterns;
-using Crypto.RuleEngine.Entities;
-using Crypto.RuleEngine.Data;
+using CryptoRobert.RuleEngine.Entities;
+using CryptoRobert.RuleEngine.Data;
 using CryptoRobert.RuleEngine.Interfaces;
+using CryptoRobert.RuleEngine.Entities.MetaData;
 
 namespace CryptoRobert.RuleEngine
 {
@@ -41,7 +42,7 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public List<RuleSetDefinition> LoadRuleSetsFromDb()
+        public List<RuleSetDefinition> LoadRuleSetToRulesFromDb()
         {
             try
             {
@@ -61,6 +62,17 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
+        public List<RuleSet> LoadRuleSetsFromDb()
+        {
+            var sets = new List<RuleSet>();
+
+            using (var context = new RuleContext())
+            {
+                sets = context.RuleSets.ToList();
+            }
+
+            return sets;
+        }
 
         public RuleDefinition GetRuleById(int id)
         {
