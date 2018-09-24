@@ -16,6 +16,7 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
         public decimal                              Score { get; set; }
         public decimal                              Threshold { get; set; }
         public bool Buy { get; set; }
+        public string PairToBuy { get; set; }
         #endregion
 
         #region CTOR
@@ -36,19 +37,20 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
 
         public void Add(RuleDefinition def)
         {
-            Rules.Add(def.Key, def);
+            var partialKey = def.Key.Substring(0, def.Key.LastIndexOf('_'));
+            Rules.Add(partialKey, def);
         }
 
         public void Calculate()
         {
-            var score = 0;
+            decimal score = 0;
             foreach(var rule in Rules)
             {
                 if (rule.Value.State)
                     score += 1;
             }
             Score = score / Rules.Count();
-            if (score > Threshold)
+            if (Score >= Threshold)
                 Buy = true;
             else
                 Buy=false;

@@ -34,6 +34,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             dataHandler = handler;
             ruleSetRepo = setRepo;
             nextId = 1;
+            calculator = calc;
         }
         #endregion
 
@@ -82,7 +83,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                     {
                         if (!set.Rules.ContainsKey(rule.Key))
                         {
-                            set.Rules.Add(rule.Key, rule);
+                            set.Add(rule);
                         }
                     }
                     else
@@ -117,7 +118,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             switch (def.RuleType)
             {
                 case "RulePriceTrend":
-                    IRule rule = new RulePriceTrend(def.Symbol, def.Interval, def.Retention, this.nextId);
+                    IRule rule = new RulePriceTrend(def.Symbol, def.Interval, def.Retention, this.nextId, "RulePriceTrend", this.calculator);
                     return rule;
 
                 default:

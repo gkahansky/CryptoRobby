@@ -9,7 +9,7 @@ using CryptoRobert.RuleEngine.Interfaces;
 
 namespace CryptoRobert.RuleEngine.Entities.Rules
 {
-    public class RulePriceTrend : RuleBase , IRule
+    public class RulePriceTrend : RuleBase, IRule
     {
         #region Members
         private decimal AvgPrice { get; set; }
@@ -18,10 +18,10 @@ namespace CryptoRobert.RuleEngine.Entities.Rules
 
         #endregion
         #region CTOR
-        public RulePriceTrend(string symbol, string interval, int retention, int id = 0, decimal value=0)
-            : base(symbol, interval, retention, id)
+        public RulePriceTrend(string symbol, string interval, int retention, int id, string ruleType, IRuleCalculator calc, decimal value = 0)
+            : base(symbol, interval, retention, id, ruleType, calc)
         {
-            RuleType = "RulePriceTrend";
+            RuleType = ruleType;
         }
         #endregion
 
@@ -34,10 +34,21 @@ namespace CryptoRobert.RuleEngine.Entities.Rules
         private decimal CalculateTrend()
         {
             decimal avgPriceChange = 0;
-            if (LastAvgPrice > 0)
+            if (this.Klines.Count() >= this.Retention)
             {
-                var avgPriceDelta = AvgPrice - LastAvgPrice;
-                avgPriceChange = (avgPriceDelta / AvgPrice);
+                if (LastAvgPrice > 0)
+                {
+                    AvgPrice = this.Calculator.CalculateAvgPrice(this.Klines);
+                    var avgPriceDelta = AvgPrice - LastAvgPrice;
+                    avgPriceChange = (avgPriceDelta / AvgPrice);
+                    LastAvgPrice = AvgPrice;
+                }
+                else
+                {
+                    AvgPrice = this.Calculator.CalculateAvgPrice(this.Klines);
+                    LastAvgPrice = AvgPrice;
+                }
+                    
             }
             return avgPriceChange;
         }

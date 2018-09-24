@@ -74,7 +74,12 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                 foreach (var set in RuleSetRepo.RuleSets)
                 {
                     if (set.Value.Rules.ContainsKey(key))
+                    {
                         set.Value.Calculate();
+                        if (set.Value.Buy)
+                            _logger.Info(string.Format("Rule Set {0} Threshold Matched!!! Buy {1}", set.Value.Id, set.Value.PairToBuy));
+                    }
+                        
                 }
             }
         }

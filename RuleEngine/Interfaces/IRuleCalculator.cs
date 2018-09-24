@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoRobert.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace CryptoRobert.RuleEngine.Interfaces
     {
         decimal CalculateTrend(decimal LastAvgPrice, decimal avgPrice);
         bool CheckThreshold(decimal threshold, decimal value, int op);
+        decimal CalculateAvgPrice(IEnumerable<Kline> klines);
     }
 }

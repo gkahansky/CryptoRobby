@@ -20,16 +20,19 @@ namespace CryptoRobert.RuleEngine.Entities.Rules
         public decimal      Value       { get; set; }
         public bool         IsActive    { get; set; }
         public Queue<Kline> Klines      { get; set; }
+        public IRuleCalculator Calculator;
 
 
-        public RuleBase(string symbol, string interval, int retention, int id=0)
+        public RuleBase(string symbol, string interval, int retention, int id, string ruleType, IRuleCalculator calc)
         {
             Symbol      = symbol;
             Interval     = interval;
             Retention   = retention;
             Klines       = new Queue<Kline>();
             Value        = 0;
+            RuleType = ruleType;
             Key          = GenerateKey();
+            Calculator = calc;
         }
 
         public abstract void Calculate(Kline kline);

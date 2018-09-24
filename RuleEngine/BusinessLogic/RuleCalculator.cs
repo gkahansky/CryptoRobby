@@ -42,25 +42,35 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             return avgPriceChange;
         }
 
+        public decimal CalculateAvgPrice(IEnumerable<Kline> klines)
+        {
+            decimal sum = 0;
+            foreach (var kline in klines)
+            {
+                sum += kline.Close;
+            }
+            return sum / klines.Count();
+        }
+
         public bool CheckThreshold(decimal threshold, decimal value, int op)
         {
             var isTrue = false ;
             switch (op)
             {
                 case 0:
-                    return isTrue = (threshold == value);
+                    return isTrue = (value == threshold);
 
                 case 1:
-                    return isTrue = (threshold > value);
+                    return isTrue = (value > threshold);
 
                 case 2:
-                    return isTrue = (threshold < value);
+                    return isTrue = (value < threshold);
 
                 case 3:
-                    return isTrue = (threshold >= value);
+                    return isTrue = (value >= threshold);
 
                 case 4:
-                    return isTrue = (threshold <= value);
+                    return isTrue = (value <= threshold);
 
                 default:
                     return false;
