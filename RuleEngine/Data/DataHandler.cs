@@ -4,7 +4,6 @@ using System.IO;
 using System.Data.SqlClient;
 using System.Linq;
 using CryptoRobert.Infra;
-using CryptoRobert.Infra.Patterns;
 using CryptoRobert.RuleEngine.Entities;
 using CryptoRobert.RuleEngine.Data;
 using CryptoRobert.RuleEngine.Interfaces;
@@ -95,29 +94,6 @@ namespace CryptoRobert.RuleEngine
         public void LoadCoinDataFromDb()
         {
             new NotImplementedException();
-        }
-
-        public void SavePatterns(Dictionary<string, IPattern> repo)
-        {
-            SqlConnection con = new SqlConnection(this.ConnectionString);
-            
-            try
-            {
-                con.Open();
-                foreach (var item in repo)
-                {
-                    var p = new PatternView(item.Value);
-                    var commandString = string.Format(@"EXECUTE [dbo].[SavePatterns] '{0}', '{1}', '{2}', {3}, {4}", p.Name, p.Symbol, p.Interval, p.DefaultStopLossThreshold, p.DynamicStopLossThreshold);
-                    SqlCommand command = new SqlCommand(commandString, con);
-                    command.ExecuteNonQuery();
-                }
-                con.Close();
-            }
-            catch (Exception e)
-            {
-                _logger.Info("Failed to save Patterns.\n" + e.ToString());
-                throw;
-            }
         }
 
         public List<string> LoadCoinDataFromCsv(string path)

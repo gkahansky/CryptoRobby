@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.Infra;
+using CryptoRobert.Trading;
 
 namespace CryptoRobert.RuleEngine.BusinessLogic
 {
@@ -19,20 +20,23 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
         IRuleSetRepository ruleSetRepo { get; set; }
         IDataHandler dataHandler { get; set; }
         IRuleCalculator calculator { get; set; }
+        PriceRepository priceRepo { get; set; }
         ILogger _logger { get; set; }
+
 
         int nextId { get; set; }
 
         #endregion
 
         #region CTOR
-        public RuleManager(ILogger logger, IRuleRepository repo, IRuleDefinitionRepository defRepo, IRuleSetRepository setRepo, IDataHandler handler, IRuleCalculator calc)
+        public RuleManager(ILogger logger, IRuleRepository repo, IRuleDefinitionRepository defRepo, IRuleSetRepository setRepo, IDataHandler handler, IRuleCalculator calc, PriceRepository prices)
         {
             _logger = logger;
             ruleRepo = repo;
             ruleDefRepo = defRepo;
             dataHandler = handler;
             ruleSetRepo = setRepo;
+            priceRepo = prices;
             nextId = 1;
             calculator = calc;
         }
@@ -118,7 +122,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             switch (def.RuleType)
             {
                 case "RulePriceTrend":
-                    IRule rule = new RulePriceTrend(def.Symbol, def.Interval, def.Retention, this.nextId, "RulePriceTrend", this.calculator);
+                    IRule rule = new RulePriceTrend(def.Symbol, def.Interval, def.Retention, this.nextId, "RulePriceTrend", this.calculator, this.priceRepo);
                     return rule;
 
                 default:

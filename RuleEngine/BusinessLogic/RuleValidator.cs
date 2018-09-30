@@ -1,13 +1,12 @@
 ﻿using CryptoRobert.RuleEngine.Interfaces;
 using CryptoRobert.Infra;
-using CryptoRobert.Infra.Trading;
-using CryptoRobert.RuleEngine.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.RuleEngine.Entities.MetaData;
+using CryptoRobert.Trading;
 
 namespace CryptoRobert.RuleEngine.BusinessLogic
 {
@@ -20,7 +19,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
         IRuleCalculator calculator { get; set; }
         ILogger _logger { get; set; }
         public DataRepository KlineRepository;
-        public TradeEngine Trade { get; set; }
+        public ITradeEngine Trade { get; set; }
 
         //public delegate void RuleProcessedEventHandler(object source, EventArgs args);
         //public event RuleProcessedEventHandler RuleProcessed;
@@ -29,15 +28,15 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
 
         #region CTOR
 
-        public RuleValidator(ILogger logger, IRuleRepository ruleRepo, IRuleDefinitionRepository defRepo, IRuleSetRepository ruleSetRepo, IRuleCalculator calc, DataRepository repository)
+        public RuleValidator(ILogger logger, IRuleRepository ruleRepo, IRuleDefinitionRepository defRepo, IRuleSetRepository ruleSetRepo, IRuleCalculator calc, ITradeEngine trade, DataRepository repository)
         {
             _logger = logger;
             RuleRepo = ruleRepo;
             RuleDefRepo = defRepo;
             RuleSetRepo = ruleSetRepo;
             KlineRepository = repository;
+            Trade = trade;
             calculator = calc;
-            Trade = new TradeEngine(_logger);
         }
 
         #endregion
@@ -46,7 +45,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
 
         public void OnKlineReceived(object source, EventArgs e)
         {
-            
+
             var kline = KlineRepository.Klines.Peek();
             _logger.Debug(string.Format("Kline Received {0}-{1}: Processing...", kline.Symbol, kline.Interval));
             ProcessKline(kline);
@@ -63,12 +62,62 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             _logger.Debug(string.Format("Rules Processed for {0}: {1}", kline.Symbol, rulesProcessed.Count));
             ProcessRuleDefinitions(rulesProcessed);
             _logger.Debug(string.Format("Rule Definitions Processed for {0}: {1}", kline.Symbol, rulesProcessed.Count));
-            ProcessRuleSets(rulesProcessed);
-            _logger.Debug(string.Format("Rule Sets Process for {0}: {1}", kline.Symbol, rulesProcessed.Count));
+            BuySellCheck(rulesProcessed, kline);
+
         }
 
-        private void ProcessRuleSets(List<string> rulesProcessed)
+        private void BuySellCheck(List<string> rulesProcessed, Kline kline)
         {
+            BuyPairs(rulesProcessed, kline);
+            SellPairs(rulesProcessed, kline);
+
+        }
+
+        private void SellPairs(List<string> rulesProcessed, Kline kline)
+        {
+            if(Trade.Transactions.Count() > 0)
+            {
+                foreach(var trade in Trade.Transactions)
+                {
+                    var sell = false;
+                    decimal profit = 0;
+                    var t = trade.Value;
+                    if (t.Symbol == kline.Symbol)
+                    {
+                        sell = Trade.CheckStopLoss(kline);
+                        if (sell)
+                            Trade.Sell(kline, out profit);
+                    }
+                }
+            }
+        }
+
+        private void BuyPairs(List<string> rulesProcessed, Kline kline)
+        {
+            var pairsToBuy = ProcessRuleSets(rulesProcessed);
+            if (pairsToBuy.Count > 0)
+            {
+                _logger.Debug(string.Format("Rule Sets Process for {0}: {1}", kline.Symbol, rulesProcessed.Count));
+                var stopLoss = RuleSetRepo.Find(pairsToBuy.First().Key).StopLoss;
+                PrintSetsToBuy(pairsToBuy);
+                Trade.BuyPair(kline, stopLoss);
+            }
+            else
+                _logger.Debug(string.Format("Rule Sets Process for {0}: {1}", kline.Symbol, rulesProcessed.Count));
+        }
+
+        private void PrintSetsToBuy(Dictionary<int, int> sets)
+        {
+            foreach (var id in sets)
+            {
+                var set = RuleSetRepo.Find(id.Key);
+                _logger.Info(string.Format("Set {0} is now FULFILLED. Buying {1}", id.Key,set.PairToBuy ));
+            }
+        }
+
+        private Dictionary<int,int> ProcessRuleSets(List<string> rulesProcessed)
+        {
+            var setsFulfilled = new Dictionary<int, int>();
             foreach (var key in rulesProcessed)
             {
                 foreach (var set in RuleSetRepo.RuleSets)
@@ -77,11 +126,23 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                     {
                         set.Value.Calculate();
                         if (set.Value.Buy)
+                        {
                             _logger.Info(string.Format("Rule Set {0} Threshold Matched!!! Buy {1}", set.Value.Id, set.Value.PairToBuy));
+                            var pair = key.Substring(0, key.IndexOf('_'));
+                            AddPairToBuyList(setsFulfilled, set.Value.Id);
+                        }
+
                     }
-                        
+
                 }
             }
+            return setsFulfilled;
+        }
+
+        private void AddPairToBuyList(Dictionary<int, int> sets, int setId)
+        {
+            if (!sets.ContainsKey(setId))
+                sets.Add(setId, setId);
         }
 
         private void ProcessRuleDefinitions(List<string> rulesProcessed)
@@ -113,22 +174,14 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                     foreach (var r in rules)
                     {
                         r.Calculate(kline);
+                        r.HighPrice = calculator.UpdateHighPrice(r.HighPrice, kline.Close);
                         rulesProcessed.Add(r.Key);
-                        _logger.Debug(string.Format("Rule Processed: {0}, Value: {1}", r.Key,r.Value));
+                        _logger.Debug(string.Format("Rule Processed: {0}, Value: {1}", r.Key, r.Value));
                     }
                 }
             }
             return rulesProcessed;
         }
-
-        //public virtual void OnRuleProcessed(string key)
-        //{
-
-        //    if (RuleProcessed != null)
-        //    {
-        //        RuleProcessed(this, EventArgs.Empty);
-        //    }
-        //}
 
         private IEnumerable<T> PartialMatch<T>(Dictionary<string, T> dictionary, string partialKey)
         {

@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using CryptoRobert.Infra.Patterns;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +14,6 @@ namespace CryptoRobert.RuleEngine
         void LoadCoinDataFromDb();
 
         List<string> LoadCoinDataFromCsv(string path);
-
-        void SavePatterns(Dictionary<string, IPattern> repo);
 
         List<RuleDefinition> LoadRulesFromDb();
         List<RuleSet> LoadRuleSetsFromDb();

@@ -93,14 +93,6 @@
     <Compile Include="DataRepository.cs" />
     <Compile Include="MarketData\TickGap.cs" />
     <Compile Include="MetaData\PatternConfig.cs" />
-    <Compile Include="Patterns\IPattern.cs" />
-    <Compile Include="Patterns\Pattern.cs" />
-    <Compile Include="Patterns\PatternRepository.cs" />
-    <Compile Include="Patterns\PatternView.cs" />
-    <Compile Include="Patterns\TrendShiftPattern.cs" />
-    <Compile Include="Patterns\TrendInclinePattern.cs" />
-    <Compile Include="Patterns\SpringPattern.cs" />
-    <Compile Include="Patterns\StreakPattern.cs" />
     <Compile Include="Rabbit\IRabbitHandler.cs" />
     <Compile Include="MetaData\MetaDataContainer.cs" />
     <Compile Include="MetaData\EnumCollection.cs" />

@@ -13,7 +13,7 @@ using CryptoRobert.RuleEngine.BusinessLogic;
 using CryptoRobert.RuleEngine.Data;
 using CryptoRobert.RuleEngine.Entities.Repositories;
 using CryptoRobert.RuleEngine.Interfaces;
-using CryptoRobert.RuleEngine.Patterns;
+using CryptoRobert.Trading;
 using RabbitMQ.Client;
 
 namespace CryptoRobert.RuleEngine
@@ -27,6 +27,9 @@ namespace CryptoRobert.RuleEngine
         private RuleRepository RuleRepo;
         private RuleDefinitionRepository RuleDefinitionRepo;
         private RuleSetRepository RuleSetRepo;
+        private PriceRepository Prices;
+        private TradeEngine Trader { get; set; }
+
         private IRuleCalculator Calculator;
         private RuleManager Manager;
         
@@ -46,8 +49,10 @@ namespace CryptoRobert.RuleEngine
             RuleSetRepo = new RuleSetRepository(logger);
             var dbHandler = new DataHandler(logger);
             Calculator = new RuleCalculator(logger);
-            Manager = new RuleManager(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, dbHandler, Calculator);
-            RuleValidator validator = new RuleValidator(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, Calculator, DataRepo);
+            Prices = new PriceRepository();
+            Trader = new TradeEngine(logger, Prices);
+            Manager = new RuleManager(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, dbHandler, Calculator, Prices); 
+            RuleValidator validator = new RuleValidator(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, Calculator,Trader, DataRepo);
 
             DataRepo.Klines = new Queue<Kline>();
             Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, DataRepo);

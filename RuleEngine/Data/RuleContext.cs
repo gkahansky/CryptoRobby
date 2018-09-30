@@ -27,8 +27,8 @@ namespace CryptoRobert.RuleEngine.Data
 
             modelBuilder.Entity<RuleDefinition>().Ignore(r => r.Key);
 
-            modelBuilder.Entity<RuleSet>()
-                .Ignore(s => s.Rules);
+            modelBuilder.Entity<RuleSet>().Ignore(s => s.Rules);
+            modelBuilder.Entity<RuleSet>().Ignore(s => s.StopLoss);
             //modelBuilder.Entity<RuleSet>().Ignore(t => t.Rules);
         }
         

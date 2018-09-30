@@ -176,6 +176,10 @@
       <Project>{6ff1207d-4f5f-4cc8-8614-96071db529b6}</Project>
       <Name>Crypto.Infra</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Crypto.TradeEngine\CryptoRobert.Trading\CryptoRobert.Trading.csproj">
+      <Project>{166236a9-274d-4d0c-84a7-f6f380b60ccc}</Project>
+      <Name>CryptoRobert.Trading</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Transactions\" />

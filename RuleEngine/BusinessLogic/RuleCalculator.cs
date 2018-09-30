@@ -52,6 +52,14 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             return sum / klines.Count();
         }
 
+        public decimal UpdateHighPrice(decimal highPrice, decimal price)
+        {
+            if (highPrice < price)
+                highPrice = price;
+
+            return highPrice;
+        }
+
         public bool CheckThreshold(decimal threshold, decimal value, int op)
         {
             var isTrue = false ;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoRobert.RuleEngine;
 using CryptoRobert.RuleEngine.Interfaces;
+using CryptoRobert.Trading;
 
 namespace CryptoRobert.RuleEngine.Entities.Rules
 {
@@ -18,8 +19,8 @@ namespace CryptoRobert.RuleEngine.Entities.Rules
 
         #endregion
         #region CTOR
-        public RulePriceTrend(string symbol, string interval, int retention, int id, string ruleType, IRuleCalculator calc, decimal value = 0)
-            : base(symbol, interval, retention, id, ruleType, calc)
+        public RulePriceTrend(string symbol, string interval, int retention, int id, string ruleType, IRuleCalculator calc, PriceRepository priceRepo, decimal value = 0)
+            : base(symbol, interval, retention, id, ruleType, calc, priceRepo)
         {
             RuleType = ruleType;
         }

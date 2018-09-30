@@ -17,6 +17,7 @@ namespace CryptoRobert.RuleEngine.Interfaces
         int Retention { get; set; }
         decimal Value { get; set; }
         string RuleType { get; set; }
+        decimal HighPrice { get; set; }
 
         void Calculate(Kline kline);
 

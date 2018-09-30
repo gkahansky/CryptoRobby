@@ -12,5 +12,6 @@ namespace CryptoRobert.RuleEngine.Interfaces
         decimal CalculateTrend(decimal LastAvgPrice, decimal avgPrice);
         bool CheckThreshold(decimal threshold, decimal value, int op);
         decimal CalculateAvgPrice(IEnumerable<Kline> klines);
+        decimal UpdateHighPrice(decimal highPrice, decimal price);
     }
 }

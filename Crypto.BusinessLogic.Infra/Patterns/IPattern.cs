@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Crypto.Infra.Trading;
 using CryptoRobert.Infra;
-using CryptoRobert.Infra.Trading;
+using CryptoRobert.Trading;
 
-
-namespace CryptoRobert.Infra.Patterns
+namespace CryptoRobert.RuleEngine.Patterns
 {
     public interface IPattern
     {
