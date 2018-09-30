@@ -77,11 +77,11 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
         {
             if(Trade.Transactions.Count() > 0)
             {
-                foreach(var trade in Trade.Transactions)
+                if(Trade.Transactions.ContainsKey(kline.Symbol))
                 {
+                    var t = Trade.Transactions[kline.Symbol];
                     var sell = false;
                     decimal profit = 0;
-                    var t = trade.Value;
                     if (t.Symbol == kline.Symbol)
                     {
                         sell = Trade.CheckStopLoss(kline);
