@@ -11,9 +11,10 @@ using System;
 namespace CryptoRobert.RuleEngine.Migrations
 {
     [DbContext(typeof(RuleContext))]
-    partial class RuleContextModelSnapshot : ModelSnapshot
+    [Migration("20181003191834_AddRuleSetFields")]
+    partial class AddRuleSetFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +56,7 @@ namespace CryptoRobert.RuleEngine.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<DateTime>("LastModified");
+                    b.Property<string>("LastModified");
 
                     b.Property<string>("Name");
 

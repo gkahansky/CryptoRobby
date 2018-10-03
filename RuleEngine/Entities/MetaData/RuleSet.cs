@@ -13,6 +13,9 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
     {
         #region Members
         public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime LastModified { get; set; }
+        public string Description { get; set; }
         public SortedList<string, RuleDefinition> Rules { get; set; }
         public decimal Score { get; set; }
         public decimal Threshold { get; set; }

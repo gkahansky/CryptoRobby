@@ -142,6 +142,14 @@
     <Compile Include="Migrations\20180924173425_AddRuleSets.designer.cs">
       <DependentUpon>20180924173425_AddRuleSets.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181003191834_AddRuleSetFields.cs" />
+    <Compile Include="Migrations\20181003191834_AddRuleSetFields.designer.cs">
+      <DependentUpon>20181003191834_AddRuleSetFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181003192704_ChangeRuleSetLastUpdateToDateTime.cs" />
+    <Compile Include="Migrations\20181003192704_ChangeRuleSetLastUpdateToDateTime.designer.cs">
+      <DependentUpon>20181003192704_ChangeRuleSetLastUpdateToDateTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\RuleContextModelSnapshot.cs" />
     <Compile Include="NotInUse\CoinMonitor.cs" />
     <Compile Include="NotInUse\CoinPairTicker.cs" />
