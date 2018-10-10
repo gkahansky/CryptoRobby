@@ -119,6 +119,7 @@
     <Compile Include="Data\Publisher.cs" />
     <Compile Include="Data\RuleContext.cs" />
     <Compile Include="Entities\MetaData\Operator.cs" />
+    <Compile Include="Entities\MetaData\Pair.cs" />
     <Compile Include="Entities\MetaData\RuleDefinition.cs" />
     <Compile Include="BusinessLogic\RuleManager.cs" />
     <Compile Include="Entities\Repositories\RuleDefinitionRepository.cs" />

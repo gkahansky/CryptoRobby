@@ -14,6 +14,7 @@ namespace CryptoRobert.RuleEngine.Data
         public DbSet<RuleDefinition> RuleDefinitions { get; set; }
         public DbSet<RuleSetDefinition> RuleSetDefinitions { get; set; }
         public DbSet<RuleSet> RuleSets { get; set; }
+        public DbSet<Pair> Pairs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

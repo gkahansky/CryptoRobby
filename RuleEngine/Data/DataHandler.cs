@@ -8,6 +8,7 @@ using CryptoRobert.RuleEngine.Entities;
 using CryptoRobert.RuleEngine.Data;
 using CryptoRobert.RuleEngine.Interfaces;
 using CryptoRobert.RuleEngine.Entities.MetaData;
+using Microsoft.EntityFrameworkCore;
 
 namespace CryptoRobert.RuleEngine
 {
@@ -139,6 +140,35 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
+        public List<Pair> LoadCoinPairsFromDb()
+        {
+            List<Pair> pairs = new List<Pair>();
 
+            using(var context = new RuleContext())
+            {
+                pairs = context.Pairs.FromSql("SELECT Id, Symbol FROM CoinPairs").ToList();
+            }
+
+            return pairs;
+        }
+
+        public bool SaveRuleSet(RuleSet set)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    context.Add(set);
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to save Rule Set.\n" + e);
+                return false;
+            }
+            
+        }
     }
 }

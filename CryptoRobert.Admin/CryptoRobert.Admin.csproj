@@ -191,6 +191,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\RuleSets\Index.cshtml" />
     <Content Include="Views\RuleSets\Edit.cshtml" />
+    <Content Include="Views\RuleSets\New.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

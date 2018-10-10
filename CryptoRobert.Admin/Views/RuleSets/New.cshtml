@@ -1,0 +1,38 @@
+﻿@model CryptoRobert.Admin.Models.RuleSetModel
+
+@{
+	ViewBag.Title = "New";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Rule Set</h2>
+
+@using (Html.BeginForm("Create", "RuleSets"))
+{
+	<div class="form-group">
+		@Html.LabelFor(r => r.Name)
+		@Html.TextBoxFor(r => r.Name, new { @class = "form-control" })
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(r => r.Description)
+		@Html.TextBoxFor(r => r.Description, new { @class = "form-control" })
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(r => r.PairToBuy)
+		@*@Html.DropDownListFor(r => r.PairToBuy, new SelectList(Model.pairs, "Symbol", "Symbol"), "", new { @class = "form-control" })*@
+		@Html.TextBoxFor(r => r.PairToBuy, new { @class = "form-control" })
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(r => r.Threshold)
+		@Html.TextBoxFor(r => r.Threshold, new { @class = "form-control", @type = "number", @step = "0.1", @min = "0", @max = "1" })
+	</div>
+
+	<div>
+		<button type ="submit" class="btn btn-primary">Save</button>
+	</div>
+
+}
+
