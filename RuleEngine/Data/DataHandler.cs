@@ -21,16 +21,26 @@ namespace CryptoRobert.RuleEngine
             ConnectionString = Config.SqlConnectionString;
         }
 
-        public List<RuleDefinition> LoadRulesFromDb()
+        public List<RuleDefinition> LoadRulesFromDb(int id = 0)
         {
             try
             {
                 var list = new List<RuleDefinition>();
-
-                using (var context = new RuleContext())
+                if (id == 0)
                 {
-                    list = context.RuleDefinitions.ToList();
+                    using (var context = new RuleContext())
+                    {
+                        list = context.RuleDefinitions.ToList();
+                    }
                 }
+                else
+                {
+                    using (var context = new RuleContext())
+                    {
+                        list = context.RuleDefinitions.Where(r => r.Id==id).ToList();
+                    }
+                }
+
 
                 return list;
             }
@@ -61,15 +71,25 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public List<RuleSet> LoadRuleSetsFromDb()
+        public List<RuleSet> LoadRuleSetsFromDb(int id = 0)
         {
             var sets = new List<RuleSet>();
 
-            using (var context = new RuleContext())
+            if (id == 0)
             {
-                sets = context.RuleSets.ToList();
+                using (var context = new RuleContext())
+                {
+                    sets = context.RuleSets.ToList();
+                }
             }
-
+            else
+            {
+                using (var context = new RuleContext())
+                {
+                    sets = context.RuleSets.Where(s => s.Id == id).ToList();
+                }
+            }
+            
             return sets;
         }
 

@@ -1,0 +1,47 @@
+﻿@model RuleSetDictionaryModel
+@*@using System.Collections;*@
+@using CryptoRobert.Admin.Models;
+
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Welcome to RuleSets Page</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>PairToBuy</th>
+			<th>Score</th>
+			<th>Threshold</th>
+			<th>LastModified</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Sets)
+		{
+		<tr>
+			<td>@item.Value.Id</td>
+			<td>@item.Value.Name</td>
+			<td>@item.Value.Description</td>
+			<td>@item.Value.PairToBuy</td>
+			<td>@item.Value.Score</td>
+			<td>@item.Value.Threshold</td>
+			<td>@item.Value.LastModified</td>
+			<td>@item.Value.LastModified</td>
+			<td>
+				@Html.ActionLink("Edit", "Edit", new { id = item.Value.Id }) |
+				@Html.ActionLink("Details", "Details", new { id = item.Value.Id }) |
+				@Html.ActionLink("Delete", "Delete", new { id = item.Value.Id })
+			</td>
+		</tr>
+		}
+	</tbody>
+
+</table>
+
