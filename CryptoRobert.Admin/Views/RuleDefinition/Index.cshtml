@@ -1,0 +1,51 @@
+﻿@model RuleDefinitionsModel 
+@using CryptoRobert.Admin.Models;
+
+
+
+
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Rule Definitions</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>RuleType</th>
+			<th>Symbol</th>
+			<th>Interval</th>
+			<th>Retention</th>
+			<th>Operator</th>
+			<th>Threshold</th>
+			@*<th>Priority</th>*@
+			<th>Current State</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+			@foreach(var item in Model.RuleList)
+			{
+		<tr>
+			<td>@item.Id</td>
+			<td>@item.RuleType</td>
+			<td>@item.Symbol</td>
+			<td>@item.Interval</td>
+			<td>@item.Retention</td>
+			<td>@Enum.GetName(typeof(Operator), item.Operator)</td>
+			<td>@item.Threshold</td>
+			@*<td>@item.Priority</td>*@
+			<td>@item.State</td>
+			<td>
+				@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+				@Html.ActionLink("Details", "Details", new { id = item.Id }) |
+				@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+			</td>
+		</tr>
+			}
+	</tbody>
+</table>
+

@@ -170,5 +170,32 @@ namespace CryptoRobert.RuleEngine
             }
             
         }
+
+        public bool SaveRuleDefinition(RuleDefinition rule)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    if (rule.Id == 0)
+                    {
+                        context.RuleDefinitions.Add(rule);
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        context.RuleDefinitions.Attach(rule);
+                        context.Update(rule);
+                        context.SaveChanges();
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to save Rule Definition.\n" + e);
+                return false;
+            }
+        }
     }
 }

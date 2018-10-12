@@ -21,5 +21,6 @@ namespace CryptoRobert.RuleEngine
         RuleDefinition GetRuleById(int Id);
         List<Pair> LoadCoinPairsFromDb();
         bool SaveRuleSet(RuleSet set);
+        bool SaveRuleDefinition(RuleDefinition rule);
     }
 }
