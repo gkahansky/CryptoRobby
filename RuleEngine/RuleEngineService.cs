@@ -29,13 +29,14 @@ namespace CryptoRobert.RuleEngine
         private RuleSetRepository RuleSetRepo;
         private PriceRepository Prices;
         private TradeEngine Trader { get; set; }
-
+        private int counter { get; set; }
         private IRuleCalculator Calculator;
         private RuleManager Manager;
         
         public RuleEngineService()
         {
             InitializeComponent();
+            counter = 0;
         }
 
         protected override void OnStart(string[] args)
@@ -53,6 +54,8 @@ namespace CryptoRobert.RuleEngine
             Trader = new TradeEngine(logger, Prices);
             Manager = new RuleManager(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, dbHandler, Calculator, Prices); 
             RuleValidator validator = new RuleValidator(logger, RuleRepo, RuleDefinitionRepo, RuleSetRepo, Calculator,Trader, DataRepo);
+
+            Manager.RuleConfigurationInitialize();
 
             DataRepo.Klines = new Queue<Kline>();
             Rabbit = new RabbitClient(logger, Name, Config.RabbitExchanges, DataRepo);
@@ -77,13 +80,16 @@ namespace CryptoRobert.RuleEngine
             timer.AutoReset = true;
             timer.Enabled = true;
 
+            System.Timers.Timer configTimer = new System.Timers.Timer(10000);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
             timer.Elapsed += Timer_Elapsed;
 
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-
         }
 
         protected override void OnStop()

@@ -24,6 +24,7 @@ namespace CryptoRobert.RuleEngine
 
         public List<RuleDefinition> LoadRulesFromDb(int id = 0)
         {
+            _logger.Info("********* Loading Rules from Database *********");
             try
             {
                 var list = new List<RuleDefinition>();
@@ -32,13 +33,18 @@ namespace CryptoRobert.RuleEngine
                     using (var context = new RuleContext())
                     {
                         list = context.RuleDefinitions.ToList();
+                        _logger.Info(list.Count() + " rules loaded from Crypto.dbo.RuleDefinitions");
                     }
                 }
                 else
                 {
                     using (var context = new RuleContext())
                     {
-                        list = context.RuleDefinitions.Where(r => r.Id==id).ToList();
+                        list = context.RuleDefinitions.Where(r => r.Id == id).ToList();
+                        if (list.Count() > 0)
+                            _logger.Info(string.Format("Rule id: {0} succesfully loaded from Crypto.dbo.RuleDefinitions", id));
+                        else
+                            _logger.Info(string.Format("Rule id: {0} was not found in Crypto.dbo.RuleDefinitions", id));
                     }
                 }
 
@@ -63,6 +69,7 @@ namespace CryptoRobert.RuleEngine
                     list = context.RuleSetDefinitions.ToList();
                 }
 
+                _logger.Info(string.Format("{0} rule set definitions were loaded from Crypto.dbo.RuleSets", list.Count()));
                 return list;
             }
             catch (Exception e)
@@ -81,6 +88,10 @@ namespace CryptoRobert.RuleEngine
                 using (var context = new RuleContext())
                 {
                     sets = context.RuleSets.ToList();
+                    if (sets.Count() > 0)
+                        _logger.Info(string.Format("RuleSet id: {0} was succesfully loaded from Crypto.dbo.RuleDefinitions", id));
+                    else
+                        _logger.Info(string.Format("RuleSet id: {0} was not found in Crypto.dbo.RuleDefinitions", id));
                 }
             }
             else
@@ -88,9 +99,11 @@ namespace CryptoRobert.RuleEngine
                 using (var context = new RuleContext())
                 {
                     sets = context.RuleSets.Where(s => s.Id == id).ToList();
+                    _logger.Info(string.Format("{0} rule sets were loaded from Crypto.dbo.RuleSets", sets.Count()));
                 }
             }
-            
+
+            _logger.Info(string.Format("{0} rule sets were loaded from Crypto.dbo.RuleSets", sets.Count()));
             return sets;
         }
 
@@ -110,11 +123,6 @@ namespace CryptoRobert.RuleEngine
                 _logger.Error("Failed to Retrieve Rule with Id: " + id + e);
                 return null;
             }
-        }
-
-        public void LoadCoinDataFromDb()
-        {
-            new NotImplementedException();
         }
 
         public List<string> LoadCoinDataFromCsv(string path)
@@ -144,7 +152,7 @@ namespace CryptoRobert.RuleEngine
         {
             List<Pair> pairs = new List<Pair>();
 
-            using(var context = new RuleContext())
+            using (var context = new RuleContext())
             {
                 pairs = context.Pairs.FromSql("SELECT Id, Symbol FROM CoinPairs").ToList();
             }
@@ -168,7 +176,7 @@ namespace CryptoRobert.RuleEngine
                 _logger.Error("Failed to save Rule Set.\n" + e);
                 return false;
             }
-            
+
         }
 
         public bool SaveRuleDefinition(RuleDefinition rule)

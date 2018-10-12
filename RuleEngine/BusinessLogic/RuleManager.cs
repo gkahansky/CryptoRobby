@@ -45,6 +45,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
         #region Public Methods
         public void RuleConfigurationInitialize()
         {
+            _logger.Info("********* Loading Configuration *********");
             //Load Rule Definitions & Generate/Update rules
             var ruleDefinitions = dataHandler.LoadRulesFromDb();
             UpdateRuleRepository(ruleDefinitions);
@@ -88,6 +89,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                         if (!set.Rules.ContainsKey(rule.Key))
                         {
                             set.Add(rule);
+                            _logger.Info(string.Format("Added Rule {0} to Rule Set {1} configuration",rule.Id,set.Id ));
                         }
                     }
                     else
@@ -123,6 +125,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             {
                 case "RulePriceTrend":
                     IRule rule = new RulePriceTrend(def.Symbol, def.Interval, def.Retention, this.nextId, "RulePriceTrend", this.calculator, this.priceRepo);
+                    _logger.Info(string.Format("PriceTrend Rules initiated: Id:{0}, Key:{1}", rule.Id, rule.Key));
                     return rule;
 
                 default:

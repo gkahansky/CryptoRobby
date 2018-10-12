@@ -11,8 +11,6 @@ namespace CryptoRobert.RuleEngine
 {
     public interface IDataHandler
     {
-        void LoadCoinDataFromDb();
-
         List<string> LoadCoinDataFromCsv(string path);
 
         List<RuleDefinition> LoadRulesFromDb(int id=0);
