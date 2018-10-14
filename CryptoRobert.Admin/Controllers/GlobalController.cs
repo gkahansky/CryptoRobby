@@ -11,6 +11,11 @@ namespace CryptoRobert.Admin.Controllers
     {
         public ILogger logger { get; set; }
 
+        public GlobalController()
+        {
+            InitializeLogger();
+        }
+
         private void InitializeLogger()
         {
             logger = new Logger("Admin");

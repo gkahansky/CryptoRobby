@@ -17,12 +17,13 @@ namespace CryptoRobert.Admin.Controllers
         private RuleSetDictionaryModel sets { get; set; }
         private List<Pair> pairs { get; set; }
         private IDataHandler dbHandler { get; set; }
+
         public RuleSetsController()
         {
             this.sets = new RuleSetDictionaryModel();
             this.sets.Sets = new Dictionary<int, RuleSetModel>();
             this.pairs = new List<Pair>();
-            this.dbHandler = new DataHandler(logger);
+            this.dbHandler = new DataHandler(this.logger);
         }
         public ActionResult Index()
         {
@@ -64,6 +65,8 @@ namespace CryptoRobert.Admin.Controllers
             ruleSet.PairToBuy = set.PairToBuy;
             ruleSet.Threshold = set.Threshold;
             ruleSet.LastModified = DateTime.Now;
+            ruleSet.Id = set.Id;
+            ruleSet.Score = set.Score;
 
             var success = dbHandler.SaveRuleSet(ruleSet);
 

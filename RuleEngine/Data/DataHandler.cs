@@ -166,10 +166,19 @@ namespace CryptoRobert.RuleEngine
             {
                 using (var context = new RuleContext())
                 {
-                    context.Add(set);
-                    context.SaveChanges();
+                    if (set.Id == 0)
+                    {
+                        context.RuleSets.Add(set);
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        context.RuleSets.Attach(set);
+                        context.Update(set);
+                        context.SaveChanges();
+                    }
                 }
-                return true;
+                    return true;
             }
             catch (Exception e)
             {
@@ -203,6 +212,40 @@ namespace CryptoRobert.RuleEngine
             {
                 _logger.Error("Failed to save Rule Definition.\n" + e);
                 return false;
+            }
+        }
+
+        public void DeleteRuleDefinition(int id)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    List<RuleDefinition> rules = context.RuleDefinitions.Where(r => r.Id == id).ToList();
+                    context.Remove(rules[0]);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to save Rule Definition.\n" + e);
+            }
+        }
+
+        public void DeleteRuleSet(int id)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    List<RuleSet> rules = context.RuleSets.Where(r => r.Id == id).ToList();
+                    context.Remove(rules[0]);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to save Rule Definition.\n" + e);
             }
         }
     }

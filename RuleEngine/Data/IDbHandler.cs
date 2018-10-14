@@ -20,5 +20,7 @@ namespace CryptoRobert.RuleEngine
         List<Pair> LoadCoinPairsFromDb();
         bool SaveRuleSet(RuleSet set);
         bool SaveRuleDefinition(RuleDefinition rule);
+        void DeleteRuleDefinition(int id);
+        void DeleteRuleSet(int id);
     }
 }

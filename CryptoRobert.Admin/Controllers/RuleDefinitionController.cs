@@ -16,7 +16,7 @@ namespace CryptoRobert.Admin.Controllers
 
         public RuleDefinitionController()
         {
-            dbHandler = new DataHandler(logger);
+            dbHandler = new DataHandler(this.logger);
             Rules = new RuleDefinitionsModel();
 
         }
@@ -33,6 +33,13 @@ namespace CryptoRobert.Admin.Controllers
             var dbRules = dbHandler.LoadRulesFromDb(id);
             var rule = ConvertDbRulesToModel(dbRules);
             return View(rule[0]);
+        }
+
+        public ActionResult New()
+        {
+            var rule = new RuleDefinitionModel();
+
+            return View(rule);
         }
 
         [HttpPost]

@@ -80,10 +80,6 @@ namespace CryptoRobert.RuleEngine
             timer.AutoReset = true;
             timer.Enabled = true;
 
-            System.Timers.Timer configTimer = new System.Timers.Timer(10000);
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
             timer.Elapsed += Timer_Elapsed;
 
         }

@@ -39,6 +39,17 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             priceRepo = prices;
             nextId = 1;
             calculator = calc;
+
+            System.Timers.Timer timer = new System.Timers.Timer(30000);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            timer.Elapsed += Timer_Elapsed;
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            RuleConfigurationInitialize();
         }
         #endregion
 
