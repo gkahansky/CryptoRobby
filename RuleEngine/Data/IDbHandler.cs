@@ -15,7 +15,7 @@ namespace CryptoRobert.RuleEngine
 
         List<RuleDefinition> LoadRulesFromDb(int id=0);
         List<RuleSet> LoadRuleSetsFromDb(int id=0);
-        List<RuleSetDefinition> LoadRuleSetToRulesFromDb();
+        List<RuleSetDefinition> LoadRuleSetToRulesFromDb(int id=0);
         RuleDefinition GetRuleById(int Id);
         List<Pair> LoadCoinPairsFromDb();
         bool SaveRuleSet(RuleSet set);

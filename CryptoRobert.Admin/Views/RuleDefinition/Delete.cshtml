@@ -1,0 +1,41 @@
+﻿@model CryptoRobert.Admin.Models.RuleDefinitionModel
+
+@{
+	ViewBag.Title = "Delete";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+	<h4>Delete Rule Definition</h4>
+	<hr />
+	<dl class="dl-horizontal"></dl>
+
+	@using (Html.BeginForm("DeleteRule", "RuleDefinition"))
+	{
+		{
+			var id = Url.RequestContext.RouteData.Values["id"];
+			@Html.HiddenFor(model => model.Id);
+		}
+		<div>
+			<div>
+				<p>Are you sure you want to delete Rule '<i>@Html.Encode(Model.Key)</i>'?</p>
+			</div>
+			<div class="form-group">
+				<div class="col-md-offset-2 col-md-10">
+					<input type="submit" value="Delete" class="btn btn-primary" />
+				</div>
+
+			</div>
+		</div>
+	}
+
+	<div>
+		<div>
+			@Html.ActionLink("Back To List", "Index", new { Model.Id })
+		</div>
+	</div>
+</div>
+
+
+

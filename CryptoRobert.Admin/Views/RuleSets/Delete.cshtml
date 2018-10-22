@@ -1,0 +1,34 @@
+﻿@model CryptoRobert.Admin.Models.RuleSetModel
+
+@{
+	ViewBag.Title = "Delete";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+	Delete Confirmation
+</h2>
+
+@using (Html.BeginForm("DeleteSet", "RuleSets"))
+{
+	{
+		var id = Url.RequestContext.RouteData.Values["id"];
+		@Html.HiddenFor(model => model.Id);
+	}
+	<div>
+		<div>
+			<p>Are you sure you want to delete Rule Set '<i>@Html.Encode(Model.Name)</i>'?</p>
+		</div>
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="Delete" class="btn btn-primary" />
+			</div>
+
+		</div>
+	</div>
+}
+
+<div>
+	<div>
+		@Html.ActionLink("Back To List", "Index", new { Model.Id })
+	</div>
+</div>

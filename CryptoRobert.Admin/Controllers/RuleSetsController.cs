@@ -27,7 +27,7 @@ namespace CryptoRobert.Admin.Controllers
         }
         public ActionResult Index()
         {
-            this.sets = GetRuleSets();
+            this.sets = GetRuleSetsModel();
 
             return View(sets);
         }
@@ -38,11 +38,11 @@ namespace CryptoRobert.Admin.Controllers
 
             if (id > 0)
             {
-                var setList = GetRuleSets(id);
+                var setList = GetRuleSetsModel(id);
                 if (setList.Sets.Count() == 1)
                     set = setList.Sets.First().Value;
             }
-            
+
 
             //logger.Info(string.Format("Rule Set Id {0} Was Edited"));
             return View(set);
@@ -54,6 +54,39 @@ namespace CryptoRobert.Admin.Controllers
             set.pairs = GetCoinPairs();
 
             return View(set);
+        }
+
+
+        public ActionResult Delete(int Id)
+        {
+
+            List<RuleSet> sets = GetRuleSets(Id);
+            var model = GetRuleSetsModel(Id);
+            if (sets.Count == 1 && model.Sets.Count == 1)
+                return View(model.Sets[Id]);
+            else
+                return View("Oops! Rule Set Not Found");
+        }
+
+        public ActionResult Details(int id)
+        {
+            var setConfig = dbHandler.LoadRuleSetToRulesFromDb(id);
+            var rules = new RuleDefinitionsModel();
+            foreach (var rule in setConfig)
+            {
+                var r = dbHandler.LoadRulesFromDb(rule.Id);
+                var rd = ConvertRuleDefToRuleDefModel(r[0]);
+                rules.RuleList.Add(rd);
+            }
+                return View(rules);
+        }
+
+        
+        [HttpPost]
+        public ActionResult DeleteSet(int id)
+        {
+            dbHandler.DeleteRuleSet(id);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -70,7 +103,15 @@ namespace CryptoRobert.Admin.Controllers
 
             var success = dbHandler.SaveRuleSet(ruleSet);
 
-            return RedirectToAction("Index","RuleSets");
+            return RedirectToAction("Index", "RuleSets");
+        }
+
+        private List<RuleSet> GetRuleSets(int id = 0)
+        {
+            var list = new List<RuleSet>();
+            list = dbHandler.LoadRuleSetsFromDb(id).ToList();
+
+            return list;
         }
 
         private List<Pair> GetCoinPairs()
@@ -79,7 +120,7 @@ namespace CryptoRobert.Admin.Controllers
             return pairList;
         }
 
-        private RuleSetDictionaryModel GetRuleSets(int id = 0)
+        private RuleSetDictionaryModel GetRuleSetsModel(int id = 0)
         {
             var list = dbHandler.LoadRuleSetsFromDb(id);
             sets.Sets = new Dictionary<int, RuleSetModel>();
@@ -94,10 +135,32 @@ namespace CryptoRobert.Admin.Controllers
                 rs.Score = set.Score;
                 rs.Threshold = set.Threshold;
                 rs.LastModified = set.LastModified.ToString("yyyy-MM-dd hh:mm:ss");
+                var rules = dbHandler.LoadRuleSetToRulesFromDb(set.Id);
+                foreach(var r in rules)
+                {
+                    rs.RulesAssigned.Add(r.RuleId);
+                }
+
                 sets.Sets.Add(rs.Id, rs);
             }
 
             return sets;
+        }
+
+        private RuleDefinitionModel ConvertRuleDefToRuleDefModel(RuleDefinition r)
+        {
+            var rd = new RuleDefinitionModel();
+            rd.Id = r.Id;
+            rd.Interval = r.Interval;
+            rd.Key = r.Key;
+            rd.Operator = r.Operator;
+            rd.Priority = r.Priority;
+            rd.Retention = r.Retention;
+            rd.RuleType = r.RuleType;
+            rd.State = r.State;
+            rd.Symbol = r.Symbol;
+            rd.Threshold = r.Threshold;
+            return rd;
         }
     }
 }

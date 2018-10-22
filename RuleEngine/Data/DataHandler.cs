@@ -58,18 +58,27 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public List<RuleSetDefinition> LoadRuleSetToRulesFromDb()
+        public List<RuleSetDefinition> LoadRuleSetToRulesFromDb(int id=0)
         {
             try
             {
                 var list = new List<RuleSetDefinition>();
-
-                using (var context = new RuleContext())
+                if (id == 0)
                 {
-                    list = context.RuleSetDefinitions.ToList();
+                    using (var context = new RuleContext())
+                    {
+                        list = context.RuleSetDefinitions.ToList();
+                    }
+                    _logger.Info(string.Format("{0} rule set definitions were loaded from Crypto.dbo.RuleSets", list.Count()));
                 }
-
-                _logger.Info(string.Format("{0} rule set definitions were loaded from Crypto.dbo.RuleSets", list.Count()));
+                else
+                {
+                    using (var context = new RuleContext())
+                    {
+                        list = context.RuleSetDefinitions.Where(set => set.Id == id).ToList();
+                    }
+                    _logger.Info(string.Format("Successfully fetched {0} for RuleSet {1}", list.Count(), id));
+                }
                 return list;
             }
             catch (Exception e)
@@ -114,8 +123,11 @@ namespace CryptoRobert.RuleEngine
             {
                 using (var context = new RuleContext())
                 {
-                    var rule = (RuleDefinition)context.RuleDefinitions.Where(r => r.Id == id);
-                    return rule;
+                    var rules = context.RuleDefinitions.Where(r => r.Id == id);
+                    if (rules.Count() == 1)
+                        return rules.First();
+                    else
+                        return null;
                 }
             }
             catch (Exception e)

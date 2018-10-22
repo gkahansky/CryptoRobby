@@ -19,5 +19,11 @@ namespace CryptoRobert.Admin.Models
         public int Operator { get; set; }
         public int Priority { get; set; }
         public bool State { get; set; }
+        public List<int> SetsAssigned { get; set; }
+
+        public RuleDefinitionModel()
+        {
+            SetsAssigned = new List<int>();
+        }
     }
 }

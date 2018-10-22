@@ -5,11 +5,11 @@
 
 
 @{
-	ViewBag.Title = "Index";
+	ViewBag.Title = "Details";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Rule Definitions</h1>
+<h1>Rule Definitions for RuleSet @Url.RequestContext.RouteData.Values["id"]</h1>
 
 <table class="table">
 	<thead>
@@ -23,7 +23,6 @@
 			<th>Threshold</th>
 			@*<th>Priority</th>*@
 			<th>Current State</th>
-			<th>Rule Sets</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -41,18 +40,7 @@
 				@*<td>@item.Priority</td>*@
 				<td>@item.State</td>
 				<td>
-					@for (var i = 1; i <= item.SetsAssigned.Count(); i++)
-					{
-										//linkText,	actionName, controllerName, routeValues, htmlAttributes
-						@Html.ActionLink(i.ToString(), "Details", "RuleSets", new { id = i }, null);
-						if(i < item.SetsAssigned.Count())
-						{
-							<a>,</a>
-						}
-					}
-				</td>
-				<td>
-					@Html.ActionLink("Edit", "Details", new { id = item.Id }) |
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
 					@Html.ActionLink("Delete", "Delete", new { id = item.Id })
 				</td>
 			</tr>
@@ -62,4 +50,7 @@
 		@Html.ActionLink("New Rule", "New")
 	</div>
 </table>
+
+
+
 
