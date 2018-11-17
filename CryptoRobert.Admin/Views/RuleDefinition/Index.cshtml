@@ -1,7 +1,6 @@
 ﻿@model RuleDefinitionsModel
 @using CryptoRobert.Admin.Models;
-
-
+@using CryptoRobert.RuleEngine.Entities.MetaData;
 
 
 @{
@@ -23,7 +22,7 @@
 			<th>Threshold</th>
 			@*<th>Priority</th>*@
 			<th>Current State</th>
-			<th>Rule Sets</th>
+			<th>Rule Set</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -31,29 +30,39 @@
 		@foreach (var item in Model.RuleList)
 		{
 			<tr>
-				<td>@item.Id</td>
-				<td>@item.RuleType</td>
-				<td>@item.Symbol</td>
-				<td>@item.Interval</td>
-				<td>@item.Retention</td>
-				<td>@Enum.GetName(typeof(Operator), item.Operator)</td>
-				<td>@item.Threshold</td>
+				<td>@item.RuleDef.Id</td>
+				<td>@item.RuleDef.RuleType</td>
+				<td>@item.RuleDef.Symbol</td>
+				<td>@item.RuleDef.Interval</td>
+				<td>@item.RuleDef.Retention</td>
+				<td>@Enum.GetName(typeof(CryptoRobert.Admin.Models.Operator), item.RuleDef.Operator)</td>
+				<td>@item.RuleDef.Threshold</td>
 				@*<td>@item.Priority</td>*@
-				<td>@item.State</td>
+				<td>@item.RuleDef.State</td>
 				<td>
-					@for (var i = 1; i <= item.SetsAssigned.Count(); i++)
+					@if (item.RuleDef.RuleSetId > 0)
 					{
-										//linkText,	actionName, controllerName, routeValues, htmlAttributes
-						@Html.ActionLink(i.ToString(), "Details", "RuleSets", new { id = i }, null);
-						if(i < item.SetsAssigned.Count())
-						{
-							<a>,</a>
-						}
+							@Html.ActionLink(item.RuleDef.RuleSetId.ToString(), "Details", "RuleSets", new { id = item.RuleDef.RuleSetId }, null);
+					}
+					else
+					{
+					<i>Unassigned</i>
 					}
 				</td>
+				@*<td>
+						@for (var i = 1; i <= item.SetsAssigned.Count(); i++)
+						{
+											//linkText,	actionName, controllerName, routeValues, htmlAttributes
+							@Html.ActionLink(i.ToString(), "Details", "RuleSets", new { id = i }, null);
+							if(i < item.SetsAssigned.Count())
+							{
+								<a>,</a>
+							}
+						}
+					</td>*@
 				<td>
-					@Html.ActionLink("Edit", "Details", new { id = item.Id }) |
-					@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+					@Html.ActionLink("Edit", "Edit", new { id = item.RuleDef.Id }) |
+					@Html.ActionLink("Delete", "Delete", new { id = item.RuleDef.Id })
 				</td>
 			</tr>
 		}

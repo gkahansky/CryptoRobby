@@ -150,16 +150,7 @@ namespace CryptoRobert.Admin.Controllers
         private RuleDefinitionModel ConvertRuleDefToRuleDefModel(RuleDefinition r)
         {
             var rd = new RuleDefinitionModel();
-            rd.Id = r.Id;
-            rd.Interval = r.Interval;
-            rd.Key = r.Key;
-            rd.Operator = r.Operator;
-            rd.Priority = r.Priority;
-            rd.Retention = r.Retention;
-            rd.RuleType = r.RuleType;
-            rd.State = r.State;
-            rd.Symbol = r.Symbol;
-            rd.Threshold = r.Threshold;
+            rd.RuleDef = r;
             return rd;
         }
     }

@@ -26,10 +26,10 @@ namespace CryptoRobert.Admin.Controllers
             var dbRules = dbHandler.LoadRulesFromDb();
             var setsToRules = dbHandler.LoadRuleSetToRulesFromDb();
             Rules.RuleList = ConvertDbRulesToModel(dbRules);
-            foreach (var rule in Rules.RuleList)
-            {
-                rule.SetsAssigned = AssignSetsToRuleDefinition(setsToRules, rule.Id);
-            }
+            //foreach (var rule in Rules.RuleList)
+            //{
+            //    rule.SetsAssigned = AssignSetsToRuleDefinition(setsToRules, rule.Id);
+            //}
             return View(Rules);
         }
 
@@ -39,6 +39,8 @@ namespace CryptoRobert.Admin.Controllers
         {
             var dbRules = dbHandler.LoadRulesFromDb(id);
             var rule = ConvertDbRulesToModel(dbRules);
+            var sets = dbHandler.LoadRuleSetsFromDb();
+            rule[0].RuleSets = sets;
             return View(rule[0]);
         }
 
@@ -58,7 +60,8 @@ namespace CryptoRobert.Admin.Controllers
         public ActionResult New()
         {
             var rule = new RuleDefinitionModel();
-
+            var sets = dbHandler.LoadRuleSetsFromDb();
+            rule.RuleSets = sets;
             return View(rule);
         }
 
@@ -74,15 +77,7 @@ namespace CryptoRobert.Admin.Controllers
         public ActionResult Create(RuleDefinitionModel def)
         {
             var rule = new RuleDefinition();
-            rule.Id = def.Id;
-            rule.RuleType = def.RuleType;
-            rule.Interval = def.Interval;
-            rule.Symbol = def.Symbol;
-            rule.Operator = def.Operator;
-            rule.Priority = def.Priority;
-            rule.State = false;
-            rule.Threshold = def.Threshold;
-            rule.Retention = def.Retention;
+            rule = def.RuleDef;
             rule.Key = rule.GenerateKey();
 
             var success = dbHandler.SaveRuleDefinition(rule);
@@ -111,16 +106,7 @@ namespace CryptoRobert.Admin.Controllers
                 foreach (var rule in dbRules)
                 {
                     var r = new RuleDefinitionModel();
-                    r.Id = rule.Id;
-                    r.Symbol = rule.Symbol;
-                    r.Interval = rule.Interval;
-                    r.Operator = rule.Operator;
-                    r.Priority = rule.Priority;
-                    r.Retention = rule.Retention;
-                    r.State = rule.State;
-                    r.Threshold = rule.Threshold;
-                    r.Key = rule.Key;
-                    r.RuleType = rule.RuleType;
+                    r.RuleDef = rule;
                     list.Add(r);
                 }
             }

@@ -11,9 +11,10 @@ using System;
 namespace CryptoRobert.RuleEngine.Migrations
 {
     [DbContext(typeof(RuleContext))]
-    partial class RuleContextModelSnapshot : ModelSnapshot
+    [Migration("20181117183639_AddRuleSetIdToRuleDef")]
+    partial class AddRuleSetIdToRuleDef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15,10 +15,11 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
         public int      Operator    { get; set; }       
         public int      Priority    { get; set; }
         public bool     State { get; set; }
+        public int      RuleSetId { get; set; }
 
-        public RuleDefinition(string symbol, string interval, int retention, string ruleType, decimal threshold, int priority, int operatorInt)
+        public RuleDefinition(string symbol, string interval, int retention, string ruleType, decimal threshold, int priority, int operatorInt, int ruleSetId=0)
         {
-
+            
             Symbol = symbol;
             Interval = interval;
             Retention = retention;
@@ -28,6 +29,7 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
             Operator=operatorInt;
             State = false;
             Key = GenerateKey();
+            RuleSetId = ruleSetId;
         }
 
         public RuleDefinition()

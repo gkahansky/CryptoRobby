@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B1C24EF0-560A-43DC-BBF7-1D598D28E134}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CryptoRobert.RuleEngine</RootNamespace>
     <AssemblyName>RuleEngine</AssemblyName>
@@ -150,6 +150,10 @@
     <Compile Include="Migrations\20181003192704_ChangeRuleSetLastUpdateToDateTime.cs" />
     <Compile Include="Migrations\20181003192704_ChangeRuleSetLastUpdateToDateTime.designer.cs">
       <DependentUpon>20181003192704_ChangeRuleSetLastUpdateToDateTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181117183639_AddRuleSetIdToRuleDef.cs" />
+    <Compile Include="Migrations\20181117183639_AddRuleSetIdToRuleDef.designer.cs">
+      <DependentUpon>20181117183639_AddRuleSetIdToRuleDef.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\RuleContextModelSnapshot.cs" />
     <Compile Include="NotInUse\CoinMonitor.cs" />
