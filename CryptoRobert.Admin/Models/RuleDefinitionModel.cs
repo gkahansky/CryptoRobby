@@ -23,9 +23,20 @@ namespace CryptoRobert.Admin.Models
         //public int RuleSetId { get; set; }
         public RuleDefinition RuleDef { get; set; }
         public IEnumerable<RuleSet> RuleSets { get; set; }
+        public List<string> Intervals { get; set; }
+        public List<string> Pairs { get; set; }
+        public List<string> RuleTypes { get; set; }
+
+        public RuleDefinitionModel(List<string> intervals, List<string> pairs, List<string> ruleTypes)
+        {
+            Intervals = intervals;
+            Pairs = pairs;
+            RuleTypes = ruleTypes;
+        }
 
         public RuleDefinitionModel()
         {
+
         }
     }
 }

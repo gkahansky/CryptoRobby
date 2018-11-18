@@ -27,7 +27,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.RuleList)
+		@*@foreach (var item in Model.RuleList)
 		{
 			<tr>
 				<td>@item.Id</td>
@@ -38,12 +38,12 @@
 				<td>@Enum.GetName(typeof(Operator), item.Operator)</td>
 				<td>@item.Threshold</td>
 				@*<td>@item.Priority</td>*@
-				<td>@item.State</td>
+				@*<td>@item.State</td>
 				<td>
 					@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
 					@Html.ActionLink("Delete", "Delete", new { id = item.Id })
 				</td>
-			</tr>
+			</tr>*@
 		}
 	</tbody>
 	<div>

@@ -21,8 +21,8 @@
 
 	<div class="form-group">
 		@Html.LabelFor(r => r.PairToBuy)
-		@*@Html.DropDownListFor(r => r.PairToBuy, new SelectList(Model.pairs, "Symbol", "Symbol"), "", new { @class = "form-control" })*@
-		@Html.TextBoxFor(r => r.PairToBuy, new { @class = "form-control" })
+		@*@Html.TextBoxFor(r => r.PairToBuy, new { @class = "form-control" })*@
+		@Html.DropDownListFor(r => r.PairToBuy, new SelectList(Model.pairs), "Select Pair", new { @class = "form-control" })
 	</div>
 
 	<div class="form-group">

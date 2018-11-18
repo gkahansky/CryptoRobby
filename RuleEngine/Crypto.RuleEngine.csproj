@@ -127,6 +127,7 @@
     <Compile Include="Entities\MetaData\RuleSet.cs" />
     <Compile Include="Entities\MetaData\RuleSetDefinition.cs" />
     <Compile Include="Entities\Repositories\RuleSetRepository.cs" />
+    <Compile Include="Entities\Rules\TestRule.cs" />
     <Compile Include="Interfaces\IRuleCalculator.cs" />
     <Compile Include="Interfaces\IRuleDefinitionRepository.cs" />
     <Compile Include="Interfaces\IRuleRepository.cs" />

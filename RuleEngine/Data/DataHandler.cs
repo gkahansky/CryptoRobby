@@ -160,14 +160,20 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public List<Pair> LoadCoinPairsFromDb()
+        public List<string> LoadCoinPairsFromDb()
         {
-            List<Pair> pairs = new List<Pair>();
+            List<string> pairs = new List<string>();
 
             using (var context = new RuleContext())
             {
-                pairs = context.Pairs.FromSql("SELECT Id, Symbol FROM CoinPairs").ToList();
+                var DbPairs = context.Pairs.FromSql("SELECT Id,Symbol FROM CoinPairs").ToList();
+                foreach (var pair in DbPairs)
+                {
+                    pairs.Add(pair.Symbol);
+                }
             }
+
+            pairs.Sort();
 
             return pairs;
         }

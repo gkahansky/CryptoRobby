@@ -22,12 +22,12 @@ namespace CryptoRobert.Admin.Models
         public decimal  Score            { get; set; }
         public decimal  Threshold        { get; set; }
         public string   LastModified { get; set; }
-        public IEnumerable<Pair> pairs { get; set; }
+        public List<string> pairs { get; set; }
         public List<int> RulesAssigned { get; set; }
 
         public RuleSetModel()
         {
-            pairs = new List<Pair>();
+            pairs = new List<string>();
             RulesAssigned = new List<int>();
         }
     }

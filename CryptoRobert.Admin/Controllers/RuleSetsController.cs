@@ -15,14 +15,14 @@ namespace CryptoRobert.Admin.Controllers
     {
         // GET: RuleSets
         private RuleSetDictionaryModel sets { get; set; }
-        private List<Pair> pairs { get; set; }
+        private List<string> pairs { get; set; }
         private IDataHandler dbHandler { get; set; }
 
         public RuleSetsController()
         {
             this.sets = new RuleSetDictionaryModel();
             this.sets.Sets = new Dictionary<int, RuleSetModel>();
-            this.pairs = new List<Pair>();
+            this.pairs = new List<string>();
             this.dbHandler = new DataHandler(this.logger);
         }
         public ActionResult Index()
@@ -71,12 +71,11 @@ namespace CryptoRobert.Admin.Controllers
         public ActionResult Details(int id)
         {
             var setConfig = dbHandler.LoadRuleSetToRulesFromDb(id);
-            var rules = new RuleDefinitionsModel();
+            var rules = new RuleSet();
             foreach (var rule in setConfig)
             {
                 var r = dbHandler.LoadRulesFromDb(rule.Id);
                 var rd = ConvertRuleDefToRuleDefModel(r[0]);
-                rules.RuleList.Add(rd);
             }
                 return View(rules);
         }
@@ -114,7 +113,7 @@ namespace CryptoRobert.Admin.Controllers
             return list;
         }
 
-        private List<Pair> GetCoinPairs()
+        private List<string> GetCoinPairs()
         {
             var pairList = dbHandler.LoadCoinPairsFromDb();
             return pairList;
@@ -149,7 +148,7 @@ namespace CryptoRobert.Admin.Controllers
 
         private RuleDefinitionModel ConvertRuleDefToRuleDefModel(RuleDefinition r)
         {
-            var rd = new RuleDefinitionModel();
+            var rd = new RuleDefinitionModel(new List<string>(), this.pairs, new List<string>());
             rd.RuleDef = r;
             return rd;
         }
