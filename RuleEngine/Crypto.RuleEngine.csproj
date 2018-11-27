@@ -156,6 +156,10 @@
     <Compile Include="Migrations\20181117183639_AddRuleSetIdToRuleDef.designer.cs">
       <DependentUpon>20181117183639_AddRuleSetIdToRuleDef.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181124201515_AddIsActiveToRuleSet.cs" />
+    <Compile Include="Migrations\20181124201515_AddIsActiveToRuleSet.designer.cs">
+      <DependentUpon>20181124201515_AddIsActiveToRuleSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\RuleContextModelSnapshot.cs" />
     <Compile Include="NotInUse\CoinMonitor.cs" />
     <Compile Include="NotInUse\CoinPairTicker.cs" />

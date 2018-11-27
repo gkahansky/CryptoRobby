@@ -1,4 +1,5 @@
-﻿using CryptoRobert.Admin.Models;
+﻿using CryptoRobert.Admin.Entities;
+using CryptoRobert.Admin.Models;
 using CryptoRobert.Infra;
 using CryptoRobert.RuleEngine;
 using CryptoRobert.RuleEngine.Entities.MetaData;
@@ -13,10 +14,11 @@ namespace CryptoRobert.Admin.Controllers
 {
     public class RuleSetsController : GlobalController
     {
-        // GET: RuleSets
+
         private RuleSetDictionaryModel sets { get; set; }
         private List<string> pairs { get; set; }
         private IDataHandler dbHandler { get; set; }
+        private Mapper mapper { get; set; }
 
         public RuleSetsController()
         {
@@ -24,11 +26,13 @@ namespace CryptoRobert.Admin.Controllers
             this.sets.Sets = new Dictionary<int, RuleSetModel>();
             this.pairs = new List<string>();
             this.dbHandler = new DataHandler(this.logger);
+            this.mapper = new Mapper(this.logger);
+
         }
+
         public ActionResult Index()
         {
             this.sets = GetRuleSetsModel();
-
             return View(sets);
         }
 
@@ -70,17 +74,30 @@ namespace CryptoRobert.Admin.Controllers
 
         public ActionResult Details(int id)
         {
-            var setConfig = dbHandler.LoadRuleSetToRulesFromDb(id);
-            var rules = new RuleSet();
-            foreach (var rule in setConfig)
-            {
-                var r = dbHandler.LoadRulesFromDb(rule.Id);
-                var rd = ConvertRuleDefToRuleDefModel(r[0]);
-            }
-                return View(rules);
+            var dbSet = dbHandler.LoadRuleSetsFromDb(id);
+            var setModel = new RuleSetModel();
+            if (dbSet.Count() == 1)
+                setModel = mapper.MapRuleSetToModel(dbSet[0]);
+
+            //var setConfig = dbHandler.LoadRuleSetToRulesFromDb(id);
+            //var set = dbHandler.LoadRuleSetsFromDb(id);
+            //foreach (var rule in setConfig)
+            //{
+            //    var r = dbHandler.LoadRulesFromDb(rule.RuleId);
+            //    var key = r[0].GenerateKey();
+
+            //    set[0].Rules.Add(key, r[0]);
+            //}
+            //var model = mapper.MapRuleSetToModel(set[0]);
+            //foreach (var r in set[0].Rules)
+            //{
+            //    model.RulesAssigned.Add(r.Value.Id);
+            //}
+
+            return View(setModel);
         }
 
-        
+
         [HttpPost]
         public ActionResult DeleteSet(int id)
         {
@@ -91,19 +108,19 @@ namespace CryptoRobert.Admin.Controllers
         [HttpPost]
         public ActionResult Create(RuleSetModel set)
         {
-            var ruleSet = new RuleSet();
-            ruleSet.Name = set.Name;
-            ruleSet.Description = set.Description;
-            ruleSet.PairToBuy = set.PairToBuy;
-            ruleSet.Threshold = set.Threshold;
-            ruleSet.LastModified = DateTime.Now;
-            ruleSet.Id = set.Id;
-            ruleSet.Score = set.Score;
+
+            var ruleSet = mapper.MapModelToRuleSet(set);
+
+            var rules = dbHandler.LoadRuleSetToRulesFromDb(set.Id);
 
             var success = dbHandler.SaveRuleSet(ruleSet);
 
             return RedirectToAction("Index", "RuleSets");
         }
+
+        #region Private Methods
+
+
 
         private List<RuleSet> GetRuleSets(int id = 0)
         {
@@ -126,19 +143,20 @@ namespace CryptoRobert.Admin.Controllers
 
             foreach (var set in list)
             {
-                var rs = new RuleSetModel();
-                rs.Id = set.Id;
-                rs.Name = set.Name;
-                rs.Description = set.Description;
-                rs.PairToBuy = set.PairToBuy;
-                rs.Score = set.Score;
-                rs.Threshold = set.Threshold;
-                rs.LastModified = set.LastModified.ToString("yyyy-MM-dd hh:mm:ss");
-                var rules = dbHandler.LoadRuleSetToRulesFromDb(set.Id);
-                foreach(var r in rules)
-                {
-                    rs.RulesAssigned.Add(r.RuleId);
-                }
+                var rs = mapper.MapRuleSetToModel(set);
+                //rs.Id = set.Id;
+                //rs.IsActive = set.IsActive;
+                //rs.Name = set.Name;
+                //rs.Description = set.Description;
+                //rs.PairToBuy = set.PairToBuy;
+                //rs.Score = set.Score;
+                //rs.Threshold = set.Threshold;
+                //rs.LastModified = set.LastModified.ToString("yyyy-MM-dd hh:mm:ss");
+                //var rules = dbHandler.LoadRuleSetToRulesFromDb(set.Id);
+                //foreach (var r in rules)
+                //{
+                //    rs.RulesAssigned.Add(r.RuleId);
+                //}
 
                 sets.Sets.Add(rs.Id, rs);
             }
@@ -152,5 +170,7 @@ namespace CryptoRobert.Admin.Controllers
             rd.RuleDef = r;
             return rd;
         }
+
+        #endregion
     }
 }

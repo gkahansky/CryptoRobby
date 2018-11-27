@@ -1,6 +1,6 @@
 ﻿@model CryptoRobert.Admin.Models.RuleDefinitionModel
+@using CryptoRobert.RuleEngine.Entities.MetaData;
 
-@{
 	ViewBag.Title = "Edit";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -18,71 +18,71 @@
 		@Html.HiddenFor(model => model.RuleDef.Id)
 		@if (Model.RuleDef.Id > 0)
 		{
-		<div>
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.TextBoxFor(model => model.RuleDef.Id, new { @readonly = "readonly" })
-					@Html.ValidationMessageFor(model => model.RuleDef.Id, "", new { @class = "text-danger" })
+			<div>
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.TextBoxFor(model => model.RuleDef.Id, new { @readonly = "readonly" })
+						@Html.ValidationMessageFor(model => model.RuleDef.Id, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.RuleType, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.DropDownListFor(model => model.RuleDef.RuleType, new SelectList(Model.RuleTypes), "Select Type", new { @class = "form-control" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.Symbol, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.DropDownListFor(model => model.RuleDef.Symbol, new SelectList(Model.Pairs), "Select Pair", new { @class = "form-control" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.Interval, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.DropDownListFor(model => model.RuleDef.Interval, new SelectList(Model.Intervals), "Select Interval", new { @class = "form-control" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.Retention, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@*@Html.EditorFor(model => model.Retention, new { htmlAttributes = new { @class = "form-control" } })*@
+						@Html.TextBoxFor(model => model.RuleDef.Retention, new { @class = "form-control", @type = "number", @step = "1", @min = "0", @max = "20" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.Retention, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@*@Html.EditorFor(model => model.Retention, new { htmlAttributes = new { @class = "form-control" } })*@
+						@Html.TextBoxFor(model => model.RuleDef.Retention, new { @class = "form-control", @type = "number", @step = "1", @min = "0", @max = "20" })
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.RuleDef.RuleSetId, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.DropDownListFor(model => model.RuleDef.RuleSetId, new SelectList(Model.RuleSets, "Id", "Name"), "Select RuleSet", new { @class = "form-control" })
+						@**@
+					</div>
+				</div>
+
+
+
+
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="Save" class="btn btn-default" />
+					</div>
 				</div>
 			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.RuleType, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.DropDownListFor(model => model.RuleDef.RuleType, new SelectList(Model.RuleTypes), "Select Type", new { @class = "form-control" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.Symbol, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.DropDownListFor(model => model.RuleDef.Symbol, new SelectList(Model.Pairs), "Select Pair", new { @class = "form-control" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.Interval, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.DropDownListFor(model => model.RuleDef.Interval, new SelectList(Model.Intervals), "Select Interval", new { @class = "form-control" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.Retention, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@*@Html.EditorFor(model => model.Retention, new { htmlAttributes = new { @class = "form-control" } })*@
-					@Html.TextBoxFor(model => model.RuleDef.Retention, new { @class = "form-control", @type = "number", @step = "1", @min = "0", @max = "20" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.Retention, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@*@Html.EditorFor(model => model.Retention, new { htmlAttributes = new { @class = "form-control" } })*@
-					@Html.TextBoxFor(model => model.RuleDef.Retention, new { @class = "form-control", @type = "number", @step = "1", @min = "0", @max = "20" })
-				</div>
-			</div>
-
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.RuleDef.RuleSetId, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.DropDownListFor(model => model.RuleDef.RuleSetId, new SelectList(Model.RuleSets, "Id", "Name"), "Select RuleSet", new { @class = "form-control" })
-					@**@
-				</div>
-			</div>
-
-
-
-
-
-			<div class="form-group">
-				<div class="col-md-offset-2 col-md-10">
-					<input type="submit" value="Save" class="btn btn-default" />
-				</div>
-			</div>
-		</div>
 		}
 		else
 		{

@@ -1,4 +1,5 @@
 ﻿@model CryptoRobert.Admin.Models.RuleSetModel
+@using CryptoRobert.RuleEngine.Entities.MetaData;
 
 @{
 	ViewBag.Title = "Delete";
@@ -12,7 +13,7 @@
 {
 	{
 		var id = Url.RequestContext.RouteData.Values["id"];
-		@Html.HiddenFor(model => model.Id);
+		@Html.HiddenFor(model => Model.Id);
 	}
 	<div>
 		<div>

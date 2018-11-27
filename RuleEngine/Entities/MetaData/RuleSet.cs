@@ -21,6 +21,7 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
         public decimal Threshold { get; set; }
         public bool Buy { get; set; }
         public string PairToBuy { get; set; }
+        public bool IsActive { get; set; }
         public StopLossDefinition StopLoss {get;set;}
         #endregion
 

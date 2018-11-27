@@ -1,4 +1,5 @@
 ﻿@model CryptoRobert.Admin.Models.RuleDefinitionModel
+@using CryptoRobert.RuleEngine.Entities.MetaData;
 
 @{
 	ViewBag.Title = "New";
@@ -16,7 +17,7 @@
 		<hr />
 		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 		@Html.HiddenFor(model => model.RuleDef.Id)
-		
+
 		<div>
 			<div class="form-group">
 				@Html.LabelFor(model => model.RuleDef.RuleType, htmlAttributes: new { @class = "control-label col-md-2" })

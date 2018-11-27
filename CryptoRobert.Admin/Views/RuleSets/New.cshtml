@@ -10,28 +10,33 @@
 @using (Html.BeginForm("Create", "RuleSets"))
 {
 	<div class="form-group">
-		@Html.LabelFor(r => r.Name)
+		@Html.LabelFor(r => r.Name, htmlAttributes: new { @class = "control-label col-md-2" })
 		@Html.TextBoxFor(r => r.Name, new { @class = "form-control" })
 	</div>
 
 	<div class="form-group">
-		@Html.LabelFor(r => r.Description)
+		@Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+			@Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(r => r.Description, htmlAttributes: new { @class = "control-label col-md-2" })
 		@Html.TextBoxFor(r => r.Description, new { @class = "form-control" })
 	</div>
 
 	<div class="form-group">
-		@Html.LabelFor(r => r.PairToBuy)
+		@Html.LabelFor(r => r.PairToBuy, htmlAttributes: new { @class = "control-label col-md-2" })
 		@*@Html.TextBoxFor(r => r.PairToBuy, new { @class = "form-control" })*@
 		@Html.DropDownListFor(r => r.PairToBuy, new SelectList(Model.pairs), "Select Pair", new { @class = "form-control" })
 	</div>
 
 	<div class="form-group">
-		@Html.LabelFor(r => r.Threshold)
+		@Html.LabelFor(r => r.Threshold, htmlAttributes: new { @class = "control-label col-md-2" })
 		@Html.TextBoxFor(r => r.Threshold, new { @class = "form-control", @type = "number", @step = "0.1", @min = "0", @max = "1" })
 	</div>
 
 	<div>
-		<button type ="submit" class="btn btn-primary">Save</button>
+		<button type="submit" class="btn btn-primary">Save</button>
 	</div>
 
 }

@@ -42,11 +42,11 @@
 				<td>
 					@if (item.RuleDef.RuleSetId > 0)
 					{
-							@Html.ActionLink(item.RuleDef.RuleSetId.ToString(), "Details", "RuleSets", new { id = item.RuleDef.RuleSetId }, null);
+						@Html.ActionLink(item.RuleDef.RuleSetId.ToString(), "Details", "RuleSets", new { id = item.RuleDef.RuleSetId }, null);
 					}
 					else
 					{
-					<i>Unassigned</i>
+						<i>Unassigned</i>
 					}
 				</td>
 				@*<td>
@@ -67,8 +67,7 @@
 			</tr>
 		}
 	</tbody>
-	<div>
-		@Html.ActionLink("New Rule", "New")
-	</div>
 </table>
-
+<div>
+	@Html.ActionLink("New Rule", "New")
+</div>

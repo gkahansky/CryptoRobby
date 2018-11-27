@@ -2,6 +2,8 @@
 @using CryptoRobert.Admin.Models;
 
 
+
+
 @{
 	ViewBag.Title = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,37 +15,36 @@
 	<thead>
 		<tr>
 			<th>Id</th>
+			<th>Active</th>
 			<th>Name</th>
 			<th>Description</th>
 			<th>PairToBuy</th>
 			<th>Score</th>
 			<th>Threshold</th>
 			<th>LastModified</th>
-			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 		@foreach (var item in Model.Sets)
 		{
-			<tr>
-				<td>@item.Value.Id</td>
-				<td>@item.Value.Name</td>
-				<td>@item.Value.Description</td>
-				<td>@item.Value.PairToBuy</td>
-				<td>@item.Value.Score</td>
-				<td>@item.Value.Threshold</td>
-				<td>@item.Value.LastModified</td>
-				<td>@item.Value.LastModified</td>
-				<td>
-					@Html.ActionLink("Edit", "Edit", new { id = item.Value.Id }) |
-					@Html.ActionLink("Details", "Details", new { id = item.Value.Id }) |
-					@Html.ActionLink("Delete", "Delete", new { id = item.Value.Id })
-				</td>
-			</tr>
+		<tr>
+			<td>@item.Value.Id</td>
+			<td>@item.Value.IsActive</td>
+			<td>@item.Value.Name</td>
+			<td>@item.Value.Description</td>
+			<td>@item.Value.PairToBuy</td>
+			<td>@item.Value.Score</td>
+			<td>@item.Value.Threshold</td>
+			<td>@item.Value.LastModified</td>
+			<td>
+				@Html.ActionLink("Edit", "Edit", new { id = item.Value.Id }) |
+				@Html.ActionLink("Details", "Details", new { id = item.Value.Id }) |
+				@Html.ActionLink("Delete", "Delete", new { id = item.Value.Id })
+			</td>
+		</tr>
 		}
 	</tbody>
-	<div>
-		@Html.ActionLink("New Rule Set", "New")
-	</div>
 </table>
-
+<div>
+	@Html.ActionLink("New Rule Set", "New")
+</div>

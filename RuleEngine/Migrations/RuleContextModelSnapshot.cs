@@ -69,6 +69,8 @@ namespace CryptoRobert.RuleEngine.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<bool>("IsActive");
+
                     b.Property<DateTime>("LastModified");
 
                     b.Property<string>("Name");

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using CryptoRobert.Admin.Entities;
 
 namespace CryptoRobert.Admin.Controllers
 {
@@ -19,25 +19,20 @@ namespace CryptoRobert.Admin.Controllers
         public List<string> Intervals { get; set; }
         public List<string> Pairs { get; set; }
         public List<string> RuleTypes { get; set; }
+        private Mapper mapper { get; set; }
         
 
         public RuleDefinitionController()
         {
             dbHandler = new DataHandler(this.logger);
-            Intervals = GenerateIntervals();
+            mapper = new Mapper(logger);
+            Intervals = mapper.GenerateIntervals();
             Pairs = dbHandler.LoadCoinPairsFromDb();
             Rules = new RuleDefinitionsModel();
-            RuleTypes = GetAllEntities();
+            RuleTypes = mapper.GetAllEntities();
         }
 
-        public List<string> GetAllEntities()
-        {
-            var types = new List<string>();
-            types =  AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                 .Where(x => typeof(IRule).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                 .Select(x => x.Name).ToList();
-            return types;
-        }
+        
 
 
 
@@ -147,21 +142,7 @@ namespace CryptoRobert.Admin.Controllers
             return ruleIds;
         }
 
-        private List<string> GenerateIntervals()
-        {
-            var list = new List<string>();
-            list.Add("1m");
-            list.Add("3m");
-            list.Add("5m");
-            list.Add("15m");
-            list.Add("30m");
-            list.Add("1h");
-            list.Add("2h");
-            list.Add("4h");
-            list.Add("1d");
-            list.Add("1w");
-            return list;
-        }
+        
         #endregion
     }
 }

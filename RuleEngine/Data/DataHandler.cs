@@ -58,7 +58,56 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
-        public List<RuleSetDefinition> LoadRuleSetToRulesFromDb(int id=0)
+        public List<RuleDefinition> LoadRulesBySet(int id)
+        {
+            try
+            {
+                //var rules = new List<RuleDefinition>();
+                var ruleList = new List<int>();
+                using (var context = new RuleContext())
+                {
+                    var ruleSetDef = context.RuleSetDefinitions.Where(s => s.Id == id).ToList();
+                    foreach(var rule in ruleSetDef)
+                    {
+                        ruleList.Add(rule.RuleId);
+                    }
+
+                    var rules = context.RuleDefinitions.Where(r => ruleList.Contains(r.Id)).ToList();
+                    return rules;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(string.Format("Failed to Load Rule Definitions by RuleSet Id {0}.\n {1}", id, e));
+                return null;
+            }
+        }
+
+        public IEnumerable<RuleSet> LoadSetsByRuleId(int id)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    var sets = context.RuleSetDefinitions.Where(r => r.RuleId == id);
+                    var list = new List<RuleSet>();
+                    foreach (var ruleSet in sets)
+                    {
+                        var set = context.RuleSets.Where(s => s.Id == ruleSet.Id).ToList();
+                        if (set.Count() == 1)
+                            list.Add(set[0]);
+                    }
+                    return list;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(string.Format("Failed to Load Rule Sets by Rule Id {0}.\n {1}", id, e));
+                return null;
+            }
+        }
+
+        public List<RuleSetDefinition> LoadRuleSetToRulesFromDb(int id = 0)
         {
             try
             {
@@ -196,7 +245,7 @@ namespace CryptoRobert.RuleEngine
                         context.SaveChanges();
                     }
                 }
-                    return true;
+                return true;
             }
             catch (Exception e)
             {
