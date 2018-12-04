@@ -22,5 +22,7 @@ namespace CryptoRobert.RuleEngine
         bool SaveRuleDefinition(RuleDefinition rule);
         void DeleteRuleDefinition(int id);
         void DeleteRuleSet(int id);
+        bool AddRulesToRuleSet(List<int> ruleId, int setId);
+        bool RemoveRulesToRuleSet(List<int> ruleId, int setId);
     }
 }

@@ -36,22 +36,6 @@ namespace CryptoRobert.Admin.Controllers
             return View(sets);
         }
 
-        public ActionResult Edit(int id = 0)
-        {
-            RuleSetModel set = new RuleSetModel();
-
-            if (id > 0)
-            {
-                var setList = GetRuleSetsModel(id);
-                if (setList.Sets.Count() == 1)
-                    set = setList.Sets.First().Value;
-            }
-
-
-            //logger.Info(string.Format("Rule Set Id {0} Was Edited"));
-            return View(set);
-        }
-
         public ActionResult New()
         {
             var set = new RuleSetModel();
@@ -72,27 +56,34 @@ namespace CryptoRobert.Admin.Controllers
                 return View("Oops! Rule Set Not Found");
         }
 
-        public ActionResult Details(int id)
+        public ActionResult Edit(int id = 0)
         {
             var dbSet = dbHandler.LoadRuleSetsFromDb(id);
             var setModel = new RuleSetModel();
             if (dbSet.Count() == 1)
                 setModel = mapper.MapRuleSetToModel(dbSet[0]);
 
-            //var setConfig = dbHandler.LoadRuleSetToRulesFromDb(id);
-            //var set = dbHandler.LoadRuleSetsFromDb(id);
-            //foreach (var rule in setConfig)
-            //{
-            //    var r = dbHandler.LoadRulesFromDb(rule.RuleId);
-            //    var key = r[0].GenerateKey();
+            return View(setModel);
 
-            //    set[0].Rules.Add(key, r[0]);
-            //}
-            //var model = mapper.MapRuleSetToModel(set[0]);
-            //foreach (var r in set[0].Rules)
+            //RuleSetModel set = new RuleSetModel();
+            //if (id > 0)
             //{
-            //    model.RulesAssigned.Add(r.Value.Id);
+            //    var setList = GetRuleSetsModel(id);
+            //    if (setList.Sets.Count() == 1)
+            //        set = setList.Sets.First().Value;
             //}
+
+
+            //logger.Info(string.Format("Rule Set Id {0} Was Edited"));
+            //return View(set);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var dbSet = dbHandler.LoadRuleSetsFromDb(id);
+            var setModel = new RuleSetModel();
+            if (dbSet.Count() == 1)
+                setModel = mapper.MapRuleSetToModel(dbSet[0]);
 
             return View(setModel);
         }
@@ -108,15 +99,94 @@ namespace CryptoRobert.Admin.Controllers
         [HttpPost]
         public ActionResult Create(RuleSetModel set)
         {
-
+            var rulesToAdd = new List<int>();
+            var rulesToRemove = new List<int>();
             var ruleSet = mapper.MapModelToRuleSet(set);
 
             var rules = dbHandler.LoadRuleSetToRulesFromDb(set.Id);
 
             var success = dbHandler.SaveRuleSet(ruleSet);
+            if (!success)
+            {
+                logger.Error("Failed to load rule set " + set.Id);
+                return RedirectToAction("Index", "RuleSets");
+            }
+
+            if (success & ruleSet.Rules.Count()>0)
+            {
+                rulesToAdd = GetRulesToAdd(set.RulesAssigned, ruleSet.Rules);
+                rulesToRemove = GetRulesToRemove(set.RulesAssigned, ruleSet.Rules);
+            }
+
+            if (!success)
+            {
+                logger.Error("Failed to update rule set " + set.Id);
+                return RedirectToAction("Index", "RuleSets");
+            }
+
+            UpdateRules(rulesToAdd, rulesToRemove, set.Id);
 
             return RedirectToAction("Index", "RuleSets");
         }
+
+        private void UpdateRules(List<int> rulesToAdd, List<int> rulesToRemove, int setId)
+        {
+            if (rulesToAdd.Count() > 0)
+            {
+                foreach (var id in rulesToAdd)
+                {
+                    dbHandler.AddRulesToRuleSet(rulesToAdd, setId);
+                }
+            }
+
+            if (rulesToRemove.Count() > 0)
+            {
+                foreach (var id in rulesToRemove)
+                {
+                    dbHandler.RemoveRulesToRuleSet(rulesToRemove, setId);
+                }
+            }
+        }
+
+        private List<int> GetRulesToRemove(List<RuleDefinitionModel> rulesAssigned, SortedList<string, RuleDefinition> rules)
+        {
+            var modelRules = new List<int>();
+            foreach (var rule in rulesAssigned)
+            {
+                modelRules.Add(rule.RuleDef.Id);
+            }
+
+            var dbRules = new List<int>();
+            foreach (var rule in rulesAssigned)
+            {
+                dbRules.Add(rule.RuleDef.Id);
+            }
+
+
+            var rulesToRemove = dbRules.Except(modelRules).ToList();
+            return rulesToRemove;
+        }
+
+        private List<int> GetRulesToAdd(List<RuleDefinitionModel> rulesAssigned, SortedList<string, RuleDefinition> rules)
+        {
+            var modelRules = new List<int>();
+            foreach(var rule in rulesAssigned)
+            {
+                modelRules.Add(rule.RuleDef.Id);
+            }
+
+            var dbRules = new List<int>();
+            foreach (var rule in rulesAssigned)
+            {
+                dbRules.Add(rule.RuleDef.Id);
+            }
+
+
+            var rulesToAdd = modelRules.Except(dbRules).ToList();
+            return rulesToAdd;
+        }
+
+
 
         #region Private Methods
 

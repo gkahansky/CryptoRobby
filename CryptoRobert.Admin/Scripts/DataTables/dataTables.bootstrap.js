@@ -165,7 +165,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 		// completed
 		activeEl = $(host).find(document.activeElement).data('dt-idx');
 	}
-	catch (e) {}
+	catch (e) 
 
 	attach(
 		$(host).empty().html('<ul class="pagination"/>').children('ul'),

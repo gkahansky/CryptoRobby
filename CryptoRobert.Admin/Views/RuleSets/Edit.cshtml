@@ -67,6 +67,41 @@
 			</div>
 
 
+			<div>
+				<h3>Rules Assigned</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Id</th>
+							<th>RuleType</th>
+							<th>Symbol</th>
+							<th>Interval</th>
+							<th>Retention</th>
+							<th>Operator</th>
+							<th>Threshold</th>
+							<th>Current State</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var rule in Model.RulesAssigned)
+				{
+					<tr>
+						<td><button class="button btn-danger">Remove</button></td>
+						<td>@rule.RuleDef.Id</td>
+						<td>@rule.RuleDef.RuleType</td>
+						<td>@rule.RuleDef.Symbol</td>
+						<td>@rule.RuleDef.Interval</td>
+						<td>@rule.RuleDef.Retention</td>
+						<td>@rule.RuleDef.RuleType</td>
+						<td>@rule.RuleDef.Threshold</td>
+						<td>@rule.RuleDef.State</td>
+					</tr>
+		}
+					</tbody>
+				</table>
+			</div>
+
 
 			<div class="col-md-offset-2 col-md-10">
 				<input type="submit" value="Save" class="btn btn-default" />

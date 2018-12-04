@@ -315,5 +315,53 @@ namespace CryptoRobert.RuleEngine
                 _logger.Error("Failed to save Rule Definition.\n" + e);
             }
         }
+
+        public bool AddRulesToRuleSet(List<int> rules, int setId)
+        {
+            bool success = false;
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    foreach (var ruleId in rules)
+                    {
+                        var setDef = new RuleSetDefinition(setId, ruleId);
+                        context.RuleSetDefinitions.Add(setDef);
+                    }
+                    context.SaveChanges();
+                }
+                return success;
+            }
+
+            catch (Exception e)
+            {
+                _logger.Error(string.Format("Failed to update Rule Set Definition for RuleSet {0}.\n{1}", setId, e));
+                return false;
+            }
+        }
+
+        public bool RemoveRulesToRuleSet(List<int> rules, int setId)
+        {
+            bool success = false;
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    foreach (var ruleId in rules)
+                    {
+                        var setDef = new RuleSetDefinition(setId, ruleId);
+                        context.RuleSetDefinitions.Remove(setDef);
+                    }
+                    context.SaveChanges();
+                }
+                return success;
+            }
+
+            catch (Exception e)
+            {
+                _logger.Error(string.Format("Failed to update Rule Set Definition for RuleSet {0}.\n{1}", setId, e));
+                return false;
+            }
+        }
     }
 }
