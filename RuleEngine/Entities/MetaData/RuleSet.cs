@@ -22,7 +22,7 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
         public bool Buy { get; set; }
         public string PairToBuy { get; set; }
         public bool IsActive { get; set; }
-        public StopLossDefinition StopLoss {get;set;}
+        public StopLossDefinition StopLoss { get; set; }
         #endregion
 
         #region CTOR
@@ -45,13 +45,14 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
         public void Add(RuleDefinition def)
         {
             var partialKey = def.Key.Substring(0, def.Key.LastIndexOf('_'));
-            Rules.Add(partialKey, def);
+            if (!Rules.ContainsKey(partialKey))
+                Rules.Add(partialKey, def);
         }
 
         public void Calculate()
         {
             decimal score = 0;
-            foreach(var rule in Rules)
+            foreach (var rule in Rules)
             {
                 if (rule.Value.State)
                     score += 1;
@@ -60,7 +61,7 @@ namespace CryptoRobert.RuleEngine.Entities.MetaData
             if (Score >= Threshold)
                 Buy = true;
             else
-                Buy=false;
+                Buy = false;
         }
 
     }

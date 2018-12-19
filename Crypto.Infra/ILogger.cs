@@ -10,11 +10,10 @@ namespace CryptoRobert.Infra
     {
         Task LogAsync(string msg, int severity = 1);
         //void Log(string msg, int severity = 1);
-        void Debug(string msg);
-        void Info(string msg);
-        void Warning(string msg);
-        void Error(string msg);
-
+        Task Debug(string msg);
+        Task Info(string msg);
+        Task Warning(string msg);
+        Task Error(string msg);
         void Stats(string msg);
         void InitializeStatsReport();
 

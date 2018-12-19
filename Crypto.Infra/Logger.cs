@@ -47,30 +47,30 @@ namespace CryptoRobert.Infra
 
         public async Task LogAsync(string msg, int severity = 1)
         {
-            Log(msg, severity);
+            await Log(msg, severity);
         }
 
-        public void Debug(string msg)
+        public async Task Debug(string msg)
         {
-            Log(msg, 0);
+            await Log(msg, 0);
         }
 
-        public void Info(string msg)
+        public async Task Info(string msg)
         {
-            Log(msg, 1);
+            await Log(msg, 1);
         }
 
-        public void Warning(string msg)
+        public async Task Warning(string msg)
         {
-            Log(msg, 2);
+            await Log(msg, 2);
         }
 
-        public void Error(string msg)
+        public async Task Error(string msg)
         {
-            Log(msg, 3);
+            await Log(msg, 3);
         }
 
-        private void Log(string msg, int severity = 1)
+        private async Task Log(string msg, int severity = 1)
         {
             CheckDateChange();
             using (StreamWriter sw = File.AppendText(path))
@@ -100,7 +100,7 @@ namespace CryptoRobert.Infra
                         break;
                 }
                 if(severity >= Config.LogSeverity)
-                    sw.WriteLine(logPrefix + msg);
+                    await sw.WriteLineAsync(logPrefix + msg);
             }
         }
 

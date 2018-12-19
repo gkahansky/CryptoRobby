@@ -32,7 +32,7 @@ namespace CryptoRobert.Infra
         public static Dictionary<string, string> PairsToMonitor { get; set; }
         private static ILogger _logger;
         public static bool TestMode { get; set; }
-        public static int LogSeverity { get; internal set; }
+        public static int LogSeverity { get; set; }
         public static long BnbMinimumUpdateDate { get; set; }
         public static bool UseSql { get; set; }
         public static bool RecordTicksToFile { get; set; }

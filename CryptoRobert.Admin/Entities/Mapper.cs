@@ -58,7 +58,16 @@ namespace CryptoRobert.Admin.Entities
 
         }
 
-        
+        internal RuleSetDefinitionModel MapModelToRuleSetDefinition(Dictionary<string,RuleSetDefinition> sets)
+        {
+            var setModel = new RuleSetDefinitionModel();
+            foreach(var set in sets)
+            {
+                setModel.Sets.Add(set.Key, set.Value);
+            }
+
+            return setModel;
+        }
 
         public RuleSet MapModelToRuleSet(RuleSetModel model, bool isEdit = true)
         {

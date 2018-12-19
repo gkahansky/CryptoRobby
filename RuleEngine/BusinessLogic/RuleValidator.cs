@@ -63,7 +63,6 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             ProcessRuleDefinitions(rulesProcessed);
             _logger.Debug(string.Format("Rule Definitions Processed for {0}: {1}", kline.Symbol, rulesProcessed.Count));
             BuySellCheck(rulesProcessed, kline);
-
         }
 
         private void BuySellCheck(List<string> rulesProcessed, Kline kline)

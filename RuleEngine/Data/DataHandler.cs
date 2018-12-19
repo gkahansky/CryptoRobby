@@ -282,6 +282,27 @@ namespace CryptoRobert.RuleEngine
             }
         }
 
+        public bool SaveRuleSetDefinition(Dictionary<string,RuleSetDefinition> defs)
+        {
+            try
+            {
+                using (var context = new RuleContext())
+                {
+                    foreach(var def in defs)
+                    {
+                        context.RuleSetDefinitions.Add(def.Value);
+                    }
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to save Rule Definition.\n" + e);
+                return false;
+            }
+        }
+
         public void DeleteRuleDefinition(int id)
         {
             try

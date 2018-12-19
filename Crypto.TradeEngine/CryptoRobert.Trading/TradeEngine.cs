@@ -50,6 +50,7 @@ namespace CryptoRobert.Trading
                 //_logger.Email(string.Format("{0} Detected! Buy {1}", p.Name, t.Symbol), msg);
                 if (FirstTransactionTime == DateTime.MinValue)
                     FirstTransactionTime = time;
+                _logger.Info(string.Format("Trade: BUYING {0}!!! Buy Price: {1}",t.Symbol,t.BuyPrice));
             }
         }
 

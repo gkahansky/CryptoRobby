@@ -8,7 +8,7 @@ namespace CryptoRobert.Admin.Models
 {
     public class RuleSetDictionaryModel
     {
-        public Dictionary<int,RuleSetModel> Sets { get; set; }
+        public Dictionary<int, RuleSetModel> Sets { get; set; }
 
         public RuleSetDictionaryModel()
         {

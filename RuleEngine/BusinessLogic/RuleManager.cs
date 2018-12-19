@@ -49,7 +49,8 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            RuleConfigurationInitialize();
+            if (!Config.TestMode)
+                RuleConfigurationInitialize();
         }
         #endregion
 
@@ -67,6 +68,14 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
             var ruleSetDefs = dataHandler.LoadRuleSetToRulesFromDb();
             UpdateRuleSetToRules(ruleSetDefs);
 
+        }
+
+        //Todo
+        public void RuleTesterLoadConfiguration(List<RuleSet> setList, List<RuleDefinition> ruleDefList, List<RuleSetDefinition> ruleSetDefList)
+        {
+            UpdateRuleRepository(ruleDefList);
+            UpdateRuleSetRepository(setList);
+            UpdateRuleSetToRules(ruleSetDefList);
         }
 
         private void UpdateRuleSetRepository(List<RuleSet> sets)
@@ -100,7 +109,7 @@ namespace CryptoRobert.RuleEngine.BusinessLogic
                         if (!set.Rules.ContainsKey(rule.Key))
                         {
                             set.Add(rule);
-                            _logger.Info(string.Format("Added Rule {0} to Rule Set {1} configuration",rule.Id,set.Id ));
+                            _logger.Info(string.Format("Added Rule {0} to Rule Set {1} configuration", rule.Id, set.Id));
                         }
                     }
                     else

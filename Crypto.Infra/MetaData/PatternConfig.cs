@@ -21,12 +21,12 @@ namespace CryptoRobert.Infra
         {
         }
 
-        public PatternConfig(string name, string symbol, string interval, bool IsActive = false, decimal threshold = 0.03m, int retention=10, decimal defaultSl=0.05m, decimal dynamicSl=0.05m )
+        public PatternConfig(string name, string symbol, string interval, bool isActive = false, decimal threshold = 0.03m, int retention=10, decimal defaultSl=0.05m, decimal dynamicSl=0.05m )
         {
             Name = name;
             Symbol = symbol;
             Interval = interval;
-            IsActive = IsActive;
+            IsActive = isActive;
             Threshold = threshold;
             Retention = retention;
             DefaultStopLoss = defaultSl;

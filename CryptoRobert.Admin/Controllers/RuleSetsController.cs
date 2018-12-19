@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace CryptoRobert.Admin.Controllers
@@ -44,7 +46,6 @@ namespace CryptoRobert.Admin.Controllers
             return View(set);
         }
 
-
         public ActionResult Delete(int Id)
         {
 
@@ -65,17 +66,23 @@ namespace CryptoRobert.Admin.Controllers
 
             return View(setModel);
 
-            //RuleSetModel set = new RuleSetModel();
-            //if (id > 0)
-            //{
-            //    var setList = GetRuleSetsModel(id);
-            //    if (setList.Sets.Count() == 1)
-            //        set = setList.Sets.First().Value;
-            //}
+        }
 
+        // POST api/RuleSet/1
+        [System.Web.Mvc.HttpPost]
+        public void EditRuleSet(int id)
+        {
+            var dbSet = dbHandler.LoadRuleSetsFromDb(id);
+            var setModel = new RuleSetModel();
+            if (dbSet.Count() == 1)
+            {
 
-            //logger.Info(string.Format("Rule Set Id {0} Was Edited"));
-            //return View(set);
+            }
+            else
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
         }
 
         public ActionResult Details(int id)
@@ -89,14 +96,14 @@ namespace CryptoRobert.Admin.Controllers
         }
 
 
-        [HttpPost]
+        [System.Web.Http.HttpDelete]
         public ActionResult DeleteSet(int id)
         {
             dbHandler.DeleteRuleSet(id);
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public ActionResult Create(RuleSetModel set)
         {
             var rulesToAdd = new List<int>();

@@ -160,6 +160,7 @@
     <Compile Include="Controllers\Api\RulesController.cs" />
     <Compile Include="Controllers\GlobalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RuleSetDefinitionController.cs" />
     <Compile Include="Entities\Mapper.cs" />
     <Compile Include="Controllers\RuleDefinitionController.cs" />
     <Compile Include="Controllers\RuleSetsController.cs" />
@@ -168,6 +169,7 @@
     </Compile>
     <Compile Include="Models\RuleDefinitionModel.cs" />
     <Compile Include="Models\RuleDefinitionsModel.cs" />
+    <Compile Include="Models\RuleSetDefinitionModel.cs" />
     <Compile Include="Models\RuleSetDictionaryModel.cs" />
     <Compile Include="Models\RuleSetModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -422,6 +424,7 @@
     <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
+    <Content Include="Scripts\editRuleSet.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -455,6 +458,7 @@
     <Content Include="Views\RuleSets\Delete.cshtml" />
     <Content Include="Views\RuleSets\Details.cshtml" />
     <Content Include="Views\RuleDefinition\Delete.cshtml" />
+    <Content Include="Views\RuleSetDefinition\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

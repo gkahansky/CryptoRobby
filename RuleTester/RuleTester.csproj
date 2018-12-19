@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8D421CD4-8E8D-43C5-9C63-DAEE4C6BD377}</ProjectGuid>
+    <ProjectGuid>{7F57E737-0E04-493B-8440-EC7BA0D3052F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>RuleTester</RootNamespace>
     <AssemblyName>RuleTester</AssemblyName>
@@ -31,16 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Robert.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,26 +48,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\DefaultSLThreshold.cs" />
-    <Compile Include="Entities\DynamicSLThreshold.cs" />
-    <Compile Include="Entities\PatternAttribute.cs" />
-    <Compile Include="Entities\Retention.cs" />
-    <Compile Include="Entities\Threshold.cs" />
     <Compile Include="Executor.cs" />
-    <Compile Include="FileAnalyzer.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="RuleTester.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="RuleTester.Designer.cs">
+      <DependentUpon>RuleTester.cs</DependentUpon>
     </Compile>
-    <Compile Include="ISettingsBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsBuilder.cs" />
-    <Compile Include="Entities\TesterOutput.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="TesterConfig.cs" />
+    <Compile Include="Runner.cs" />
+    <EmbeddedResource Include="RuleTester.resx">
+      <DependentUpon>RuleTester.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -101,16 +87,17 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Crypto.Infra\Crypto.Infra.csproj">
-      <Project>{6ff1207d-4f5f-4cc8-8614-96071db529b6}</Project>
+      <Project>{6FF1207D-4F5F-4CC8-8614-96071DB529B6}</Project>
       <Name>Crypto.Infra</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Crypto.TradeEngine\CryptoRobert.Trading\CryptoRobert.Trading.csproj">
+      <Project>{166236A9-274D-4D0C-84A7-F6F380B60CCC}</Project>
+      <Name>CryptoRobert.Trading</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RuleEngine\Crypto.RuleEngine.csproj">
-      <Project>{b1c24ef0-560a-43dc-bbf7-1d598d28e134}</Project>
+      <Project>{B1C24EF0-560A-43DC-BBF7-1D598D28E134}</Project>
       <Name>Crypto.RuleEngine</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Robert.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

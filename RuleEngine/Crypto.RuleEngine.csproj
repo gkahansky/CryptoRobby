@@ -118,6 +118,8 @@
     <Compile Include="BusinessLogic\RuleValidator.cs" />
     <Compile Include="Data\Publisher.cs" />
     <Compile Include="Data\RuleContext.cs" />
+    <Compile Include="Entities\Configuration\RuleConfig.cs" />
+    <Compile Include="Entities\Configuration\RuleSetConfig.cs" />
     <Compile Include="Entities\MetaData\Operator.cs" />
     <Compile Include="Entities\MetaData\Pair.cs" />
     <Compile Include="Entities\MetaData\RuleDefinition.cs" />

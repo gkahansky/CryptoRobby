@@ -163,7 +163,26 @@ namespace CryptoRobert.Infra
             }
         }
 
+        public List<Kline> ConvertKlineTextToKlineList(string klinesText)
+        {
+            var klines = new List<Kline>();
+            var klineList = ConvertStringToKlineList(klinesText);
+
+            return klines;
+
+        }
+
         public List<Kline> ConvertKlineStringToList(string response, string interval, string symbol)
+        {
+            var klineList = ConvertStringToKlineList(response);
+
+            var jsons = ConvertKlineArraystoJobject(klineList, symbol, interval);
+
+            var list = ConvertJsonsToKlines(jsons, symbol, interval);
+            return list;
+        }
+
+        private List<string[]> ConvertStringToKlineList(string response)
         {
             List<string[]> klineList = new List<string[]>();
             string[] klineArray = response.Substring(1, response.Length - 1).Split('[');
@@ -173,13 +192,8 @@ namespace CryptoRobert.Infra
                 {
                     klineList.Add(kline.Substring(0, kline.Length - 2).Split(','));
                 }
-
             }
-
-            var jsons = ConvertKlineArraystoJobject(klineList, symbol, interval);
-
-            var list = ConvertJsonsToKlines(jsons, symbol, interval);
-            return list;
+            return klineList;
         }
 
         private List<JObject> ConvertKlineArraystoJobject(List<string[]> stringArrays, string symbol, string interval)

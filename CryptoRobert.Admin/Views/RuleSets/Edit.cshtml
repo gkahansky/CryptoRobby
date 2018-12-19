@@ -18,95 +18,100 @@
 		@Html.HiddenFor(model => model.Id)
 		@if (Model.Id > 0)
 		{
-		<div>
-			<div class="form-group">
-				@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.PairToBuy, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.PairToBuy, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.PairToBuy, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.Score, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.DisplayFor(model => model.Score, new { htmlAttributes = new { @class = "form-control" } })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.Threshold, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.Threshold, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.Threshold, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-
 			<div>
-				<h3>Rules Assigned</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Id</th>
-							<th>RuleType</th>
-							<th>Symbol</th>
-							<th>Interval</th>
-							<th>Retention</th>
-							<th>Operator</th>
-							<th>Threshold</th>
-							<th>Current State</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach (var rule in Model.RulesAssigned)
-				{
-					<tr>
-						<td><button class="button btn-danger">Remove</button></td>
-						<td>@rule.RuleDef.Id</td>
-						<td>@rule.RuleDef.RuleType</td>
-						<td>@rule.RuleDef.Symbol</td>
-						<td>@rule.RuleDef.Interval</td>
-						<td>@rule.RuleDef.Retention</td>
-						<td>@rule.RuleDef.RuleType</td>
-						<td>@rule.RuleDef.Threshold</td>
-						<td>@rule.RuleDef.State</td>
-					</tr>
-		}
-					</tbody>
-				</table>
-			</div>
+				<div class="form-group">
+					@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.PairToBuy, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.PairToBuy, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.PairToBuy, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.Score, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.DisplayFor(model => model.Score, new { htmlAttributes = new { @class = "form-control" } })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.Threshold, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.Threshold, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Threshold, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				
+				<div>
+					<h3>Rules Assigned</h3>
+					<table id="rulesTable" class="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Id</th>
+								<th>RuleType</th>
+								<th>Symbol</th>
+								<th>Interval</th>
+								<th>Retention</th>
+								<th>Operator</th>
+								<th>Threshold</th>
+								<th>Current State</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var rule in Model.RulesAssigned)
+							{
+								<tr id="@rule.RuleDef.Id">
+									<td>
+										<button id="@rule.RuleDef.Id" class="btn-link js-delete" onclick="removeItem(@rule.RuleDef.Id, @Model.Id)">
+											>
+											Remove
+										</button>
+									</td>
+									<td>@rule.RuleDef.Id</td>
+									<td>@rule.RuleDef.RuleType</td>
+									<td>@rule.RuleDef.Symbol</td>
+									<td>@rule.RuleDef.Interval</td>
+									<td>@rule.RuleDef.Retention</td>
+									<td>@rule.RuleDef.RuleType</td>
+									<td>@rule.RuleDef.Threshold</td>
+									<td>@rule.RuleDef.State</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
 
 
-			<div class="col-md-offset-2 col-md-10">
-				<input type="submit" value="Save" class="btn btn-default" />
+				<div class="col-md-offset-2 col-md-10">
+					<input type="submit" value="Save" class="btn btn-default" />
+				</div>
 			</div>
-		</div>
 		}
 		else
 		{
@@ -117,17 +122,25 @@
 }
 
 
-@*<div>
-		<select class="form-control" id="RulesToAdd" name="StudentGender">
-			<option>Select Rule</option>
-			<option>1</option>
-			<option>Female</option>
-		</select>
-		<button class="btn btn-primary">Add</button>
-
-	</div>*@
-
-
 <div>
 	@Html.ActionLink("Back to List", "Index")
 </div>
+
+@section scripts
+{
+	<script>
+		$(document).ready(function (int ruleId) {
+			$("#rulesTable .js-delete").on("click", function () {
+				if (confirm("Are you sure you want to remove this rule?")) {
+					$.ajax({
+						url: "/RuleSets/Edit/" + this.id,
+						method: "DELETE",
+						success: function () {
+							confirm(ruleId);
+						}
+					});
+				}
+			})
+		});
+	</script>
+}

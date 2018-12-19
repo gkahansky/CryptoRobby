@@ -1,118 +1,84 @@
-﻿using System;
+﻿using CryptoRobert.Infra;
+using CryptoRobert.RuleEngine.BusinessLogic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using CryptoRobert.Infra;
-using CryptoRobert.RuleEngine;
-using CryptoRobert.Infra.Patterns;
-using CryptoRobert.Infra.Trading;
-using Newtonsoft.Json.Linq;
-using CryptoRobert.RuleEngine.Patterns;
-using System.Threading;
 
 namespace RuleTester
 {
     public class Executor
     {
-        private Dictionary<string, PatternConfig> PatternConfig { get; set; }
-        //private PatternEngine Engine { get; set; }
-        private List<Kline> KlineList { get; set; }
-        private FileAnalyzer fileAnalyzer { get; set; }
-        private Dictionary<string, IPattern> PatternRepository { get; set; }
-        private ILogger logger { get; set; }
-        public bool Stop { get; set; }
+        ILogger logger;
+        Parser parser;
+        RuleValidator runner;
 
-
-        #region CTOR
-        public Executor(ILogger _logger, FileAnalyzer _fileAnalyzer, Dictionary<string, IPattern> patternRepository)
+        public Executor(ILogger _logger, RuleValidator validator)
         {
             logger = _logger;
-            fileAnalyzer = _fileAnalyzer;
-            PatternRepository = patternRepository;
-            KlineList = new List<Kline>();
-        }
-        #endregion
-
-        public void RunTest(ILogger logger, Dictionary<string, IPattern> patterns, string path)
-        {
-            KlineList = fileAnalyzer.GenerateKlinesFromCsv(logger, path);
-
-            DataRepository dataRepository = new DataRepository();
-            //InitializePatternConfiguration(settings);
-
-            var runner = new PatternRunner(logger, dataRepository);
-            logger.InitializeStatsReport();
-            runner.PatternRepository = patterns;
-
-            new Thread(() =>
-            {
-                int i = 0;
-            while (!Stop && i < 1)
-                {
-                    PublishKlines(KlineList, runner);
-                    i++;
-                }
-            }).Start();
-
-
-
+            parser = new Parser(logger);
+            runner = validator;
         }
 
-
-        private void PublishKlines(List<Kline> klineList, PatternRunner runner)
+        public void Execute(int mode, string path = null)
         {
-            foreach (var kline in klineList)
-            {
-                runner.RunMultiplePatterns(kline);
-            }
+            var klines = new List<Kline>();
+            if (mode == 0 && !string.IsNullOrEmpty(path))
+                klines = GetKlinesFromFile(path);
+            else
+                klines = GetKlinesFromDb();
 
-            runner.PublishResults();
+            RunTest(klines);
+        }
 
-            foreach (var pattern in runner.PatternRepository)
+        private void RunTest(List<Kline> klines)
+        {
+            foreach(var kline in klines)
             {
-                logger.Info(string.Format("TOTAL PROFIT OF ALL TRADES for {0} : {1}%", pattern.Value.Engine.Name, pattern.Value.Engine.TradeResults.Sum()));
+                runner.ProcessKline(kline);
             }
+        }
+
+        private List<Kline> GetKlinesFromFile(string path)
+        {
+            var klinesText = File.ReadAllLines(path);
+            var klines = ConvertKlineTextToKlineList(klinesText);
             
+            return klines;
         }
 
-
-        private void InitializePatternConfiguration(List<PatternConfig> settingsList) //CHANGE
+        private List<Kline> ConvertKlineTextToKlineList(string[] klinesText)
         {
-            //PatternConfig = new Dictionary<string, PatternConfig>();
-            //PatternConfiguration(settings);
-            //var pat = NewPattern(settings.Name, logger, settings);
-            //Config.PatternsConfig = new Dictionary<string, PatternConfig>();
-            //var hash = pat.Name + "_" + pat.Symbol + "_" + pat.Interval;
-            //Config.PatternsConfig.Add(hash, settings);
+            var klineList = new List<Kline>();
+            foreach (var line in klinesText)
+            {
+                if (!line.StartsWith("Symbol"))
+                {
+                    var split = line.Split(',');
+                    var kline = new Kline();
+
+                    kline.Symbol = split[0];
+                    kline.Interval = split[1];
+                    kline.OpenTime = long.Parse(split[2]);
+                    kline.CloseTime = long.Parse(split[3]);
+                    kline.Open = decimal.Parse(split[4]);
+                    kline.Close = decimal.Parse(split[5]);
+                    kline.High = decimal.Parse(split[6]);
+                    kline.Low = decimal.Parse(split[7]);
+                    kline.Volume = decimal.Parse(split[8]);
+                    klineList.Add(kline);
+                }
+            }
+            return klineList;
         }
 
-
-
-
-        private void PatternConfiguration(PatternConfig settings)
+        private List<Kline> GetKlinesFromDb()
         {
-            PatternConfig.Add(settings.Name, settings);
-        }
-
-        private void PreparePatternSpringConfig(JObject settings)
-        {
-            Config.PatternsConfig = new Dictionary<string, PatternConfig>();
-            var pConfig = new PatternConfig();
-            pConfig.Name = settings["Name"].ToString();
-            pConfig.Symbol = settings["Symbol"].ToString();
-            pConfig.Interval = settings["Interval"].ToString();
-            pConfig.Threshold = decimal.Parse(settings["Threshold"].ToString());
-            pConfig.Retention = int.Parse(settings["Retention"].ToString());
-            pConfig.DefaultStopLoss = decimal.Parse(settings["DefaultSLThreshold"].ToString());
-            pConfig.DynamicStopLoss = decimal.Parse(settings["DynamicSLThreshold"].ToString());
-            pConfig.IsActive = true;
-            Config.PatternSpringThreshold = decimal.Parse(settings["Threshold"].ToString());
-            Config.PatternSpringToKeep = int.Parse(settings["Retention"].ToString());
-            var hash = pConfig.Name + "_" + pConfig.Symbol + "_" + pConfig.Interval;
-            Config.PatternsConfig.Add(hash, pConfig);
+            throw new NotImplementedException();
         }
     }
 }
